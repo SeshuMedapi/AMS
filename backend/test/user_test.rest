@@ -1,0 +1,22 @@
+### Request Login 
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "arunsingh@jivass.com", 
+    "password": "Jivass@123"
+}
+
+### Request Create user 
+POST http://localhost:8000/api/user 
+content-type: application/json 
+Authorization: Token d64adc796eab8441a56d7758efdccfd11edd873f
+
+{
+    "email": "arunsingh@jivass.com", 
+    "first_name": "Arunsingh", 
+    "last_name": "G", 
+    "phone_number": "7708542767", 
+    "role_id" : 2,
+    "password" : "Jivass@123"
+}
