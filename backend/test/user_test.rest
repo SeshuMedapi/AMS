@@ -3,14 +3,14 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "arunsingh@jivass.com", 
+    "username": "swetha@jivass.com", 
     "password": "Jivass@123"
 }
 
 ### Request Create user 
 POST http://localhost:8000/api/user 
 content-type: application/json 
-Authorization: Token d64adc796eab8441a56d7758efdccfd11edd873f
+Authorization: Token b3fa4c66272c6e2a53989036bef1631e29157e9d
 
 {
     "email": "arunsingh@jivass.com", 

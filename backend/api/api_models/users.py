@@ -19,7 +19,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number', 'password')
+        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number')
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
