@@ -1,9 +1,9 @@
 from ..authentication import SkipAuth, PermissionBasedAccess
 from ..services.user_service import UserService
-from api.api_models.users import UserSerializer
+from api.api_models.users import UserSerializer, GroupSerializer
 from api.exception.app_exception import *
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -36,16 +36,24 @@ class LoginView(APIView):
         else:
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-class UserView(viewsets.ViewSet):
-    permission_classes = [PermissionBasedAccess]
-    permission_config = {
-        "post":{
-                    "permissions": ["create_user"],
-                    "any": True
-                }
-        }
+class RoleView(viewsets.ViewSet):
+    permission_classes = [SkipAuth]
 
-    def post(sel, request):
+    def get(self, request):
+        role = Group.objects.all()
+        serializer = GroupSerializer(role, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+class UserView(viewsets.ViewSet):
+    permission_classes = [SkipAuth]
+    # permission_config = {
+    #     "post":{
+    #                 "permissions": ["create_user"],
+    #                 "any": True
+    #             }
+    #     }
+
+    def post(self, request):
         service = UserService()
         user ={
             'email': (request.data['email']).lower(),
