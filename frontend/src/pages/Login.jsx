@@ -1,14 +1,14 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/Auth.css'; // Import the CSS file
+import '../styles/Auth.css';
 
 const Login = () => {
-    const [username, setUsername] = useState(''); // Username field
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Hook for navigation
+    const [successMessage, setSuccessMessage] = useState(''); // State for success message
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,11 +18,14 @@ const Login = () => {
                 password
             });
             console.log(response.data);
-            // Handle successful login
-            navigate('/'); // Redirect to home or dashboard on successful login
+            // Show success message and redirect after a short delay
+            setSuccessMessage('Login successful! Redirecting...');
+            setTimeout(() => {
+                navigate('/'); // Redirect to home or dashboard on successful login
+            }, 2000);
         } catch (err) {
             console.error(err.response);
-            setError(err.response?.data?.detail || 'Invalid credentials'); // Display error message
+            setError(err.response?.data?.detail || 'Invalid credentials');
         }
     };
 
@@ -46,6 +49,7 @@ const Login = () => {
                 />
                 <button type="submit">Login</button>
                 {error && <p className="error">{error}</p>}
+                {successMessage && <p className="success">{successMessage}</p>} {/* Success message display */}
             </form>
             <div className="link">
                 <p>Don't have an account? <Link to="/register">Register here</Link></p>
