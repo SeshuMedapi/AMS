@@ -1,19 +1,30 @@
 // src/pages/Register.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/Auth.css'; // Import the CSS file
+import '../styles/Auth.css';
 
 const Register = () => {
-    const [username, setUsername] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [roles, setRoles] = useState([]);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/api/role')
+            .then(response => {
+                setRoles(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching roles:', error);
+            });
+    }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,12 +35,12 @@ const Register = () => {
 
         try {
             const response = await axios.post('http://localhost:8000/api/user', {
-                username, 
-                email,
+                email: email,
                 first_name: firstName,
                 last_name: lastName,
                 phone_number: phoneNumber,
-                password
+                role_id:1,
+                password: password
             }, {
                 headers: {
                     'Content-Type': 'application/json' // Set content type
@@ -51,13 +62,6 @@ const Register = () => {
             <form onSubmit={handleSubmit}>
                 <input 
                     type="text" 
-                    placeholder="Username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                    required 
-                />
-                <input 
-                    type="text" 
                     placeholder="First Name" 
                     value={firstName} 
                     onChange={(e) => setFirstName(e.target.value)} 
@@ -77,6 +81,20 @@ const Register = () => {
                     onChange={(e) => setEmail(e.target.value)} 
                     required 
                 />
+
+                <select
+                    value={roles}
+                    onChange={(e) => setRoles(e.target.value)}
+                    required
+                >
+                    <option value="" disabled>Select Role</option>
+                    {roles.map((role) => (
+                        <option key={role.id} value={role.name}>
+                            {role.name}
+                        </option>
+                    ))}
+                </select>
+
                 <input 
                     type="text" 
                     placeholder="Phone Number" 
