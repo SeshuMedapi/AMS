@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -10,48 +9,56 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [roles, setRoles] = useState([]);
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [username, setUsername] = useState(''); // New username state
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [selectedRoleId, setSelectedRoleId] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/role')
-            .then(response => {
+        const fetchRoles = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/role');
                 setRoles(response.data);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching roles:', error);
-            });
+            }
+        };
+        fetchRoles();
     }, []);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (password !== confirmPassword) {
             setError("Passwords do not match");
             return;
         }
 
+        const registrationData = {
+            username, // Add username to registration data
+            email,
+            first_name: firstName,
+            last_name: lastName,
+            phone_number: phoneNumber,
+            role_id: selectedRoleId,
+            password
+        };
+
         try {
-            const response = await axios.post('http://localhost:8000/api/user', {
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                phone_number: phoneNumber,
-                role_id:1,
-                password: password
-            }, {
+            console.log("Registration Data: ", registrationData);
+
+            const response = await axios.post('http://localhost:8000/api/user', registrationData, {
                 headers: {
-                    'Content-Type': 'application/json' // Set content type
-                    // Add 'Authorization' header here if required
+                    'Content-Type': 'application/json'
                 }
             });
-            console.log(response.data);
-            // Handle successful registration
-            navigate('/login'); // Redirect to login after successful registration
+
+            console.log("Registration Response: ", response.data);
+            navigate('/login');
         } catch (err) {
-            console.error(err.response); // Log error response for debugging
+            console.error('Registration error:', err.response);
             setError(err.response?.data?.detail || 'Registration failed');
         }
     };
@@ -75,26 +82,31 @@ const Register = () => {
                     required 
                 />
                 <input 
+                    type="text" 
+                    placeholder="Username" // New username input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)} 
+                    required 
+                />
+                <input 
                     type="email" 
                     placeholder="Email" 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)} 
                     required 
                 />
-
                 <select
-                    value={roles}
-                    onChange={(e) => setRoles(e.target.value)}
+                    value={selectedRoleId}
+                    onChange={(e) => setSelectedRoleId(e.target.value)}
                     required
                 >
                     <option value="" disabled>Select Role</option>
                     {roles.map((role) => (
-                        <option key={role.id} value={role.name}>
+                        <option key={role.id} value={role.id}>
                             {role.name}
                         </option>
                     ))}
                 </select>
-
                 <input 
                     type="text" 
                     placeholder="Phone Number" 
@@ -125,4 +137,5 @@ const Register = () => {
         </div>
     );
 };
+
 export default Register;
