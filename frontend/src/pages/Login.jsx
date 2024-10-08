@@ -52,7 +52,7 @@ const Login = () => {
                 {successMessage && <p className="success">{successMessage}</p>} {/* Success message display */}
             </form>
             <div className="link">
-                <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                <p >Don't have an account? <Link to="/register">Register here</Link></p>
             </div>
         </div>
     );

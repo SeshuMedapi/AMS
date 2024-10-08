@@ -47,7 +47,7 @@ button {
     padding: 10px; /* Padding inside the button */
     border: none; /* Remove default border */
     background-color: #28a745; /* Green background for the button */
-    color: white; /* White text color */
+    color: rgb(255, 255, 255); /* White text color */
     border-radius: 4px; /* Rounded corners for button */
     cursor: pointer; /* Pointer cursor on hover */
 }
@@ -64,4 +64,7 @@ button:hover {
 .link {
     text-align: center; /* Center the link */
     margin-top: 10px; /* Space above the link */
+}
+p{
+    color:#333
 }
