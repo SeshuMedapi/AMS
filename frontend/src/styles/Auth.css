@@ -68,3 +68,74 @@ button:hover {
 p{
     color:#333
 }
+
+/* Container for the dashboard */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling */
+.dashboard-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Section headers */
+.dashboard-container h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Common feature and permissions sections */
+.dashboard-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.dashboard-container li {
+    padding: 10px;
+    background-color: #311111;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+}
+
+.dashboard-container p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Common section styling */
+.dashboard-container .common-section {
+    margin-bottom: 40px;
+}
+
+/* HR-only and Employee-only section styling */
+.dashboard-container .employee-section,
+.dashboard-container .hr-section {
+    margin-bottom: 40px;
+}
+
+/* Success and error message styling (optional) */
+.success {
+    color: green;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.error {
+    color: red;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
