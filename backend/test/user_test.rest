@@ -3,24 +3,36 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "arunsingh19101999@jivass.com", 
+    "username": "arunsingh19101999@gmail.com", 
     "password": "Jivass@123"
 }
 
-### Request Create user 
-POST http://localhost:8000/api/user 
+### Request Create Admin 
+POST http://localhost:8000/api/admin
 content-type: application/json 
-# Authorization: Token b3fa4c66272c6e2a53989036bef1631e29157e9d
 
-{
+{   
+    "company": "Jivass",
     "email": "arunsingh19101999@jivass.com", 
     "first_name": "Arunsingh", 
-    "last_name": "G", 
-    "phone_number": "7708542767", 
-    "role_id" : 2,
+    "last_name": "G",
+    "password" : "Jivass@123"
+}
+
+### Request Create user 
+POST http://localhost:8000/api/user?user_id=2
+content-type: application/json 
+Authorization: Token ddf836499758677b500e83df26b9f05ec176c460
+
+{
+    "email": "manager@gmail.com", 
+    "first_name": "manager", 
+    "last_name": "m", 
+    "phone_number": "11238547", 
+    "role_id" : 4,
     "password" : "Jivass@123"
 }
 
 ### Get All Roles
-GET  http://localhost:8000/api/role 
+GET  http://localhost:8000/api/role/4
 content-type: application/json 
