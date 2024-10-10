@@ -7,3 +7,6 @@ class ValidationException(Exception):
 class UserNameConflict(Exception):
     "User email id conflict"
     pass
+
+class CompanyExistException(Exception):
+    "Company already registered"

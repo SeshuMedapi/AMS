@@ -1,6 +1,7 @@
 from api.api_models.users import User
 from django.db import transaction
 from api.api_models.reset_password import ResetPassword
+from api.api_models.company import Compnay
 from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
 from api.exception.app_exception import *
@@ -12,13 +13,44 @@ class UserService():
     email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     password_rule = r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$]).{8,}$'
 
-    def createUser(self, **kwargs):
+    @transaction.atomic()
+    def createAdmin(self, **kwargs):
+        if Compnay.objects.filter(name=kwargs.get('company')):
+            raise CompanyExistException
+        company = Compnay.objects.create(name=kwargs.get('company'))
+        company.save()
         user = User()
         user.email = kwargs.get('email')
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
         user.is_active = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.company = company
+        user.password = make_password(kwargs.get('password'))
+        self._validateUserCreation(user)
+        user.save()
+        reset_token = uuid.uuid1().hex
+        ResetPassword.objects.create(
+            user_id = user.id,
+            reset_token = reset_token
+        )
+        
+        role = Group.objects.get(name='Admin')
+        user.groups.clear()
+        user.groups.add(role)
+        return user
+
+    def createUser(self, user_id, **kwargs):
+        company = User.objects.get(id=user_id).company
+        user = User()
+        user.email = kwargs.get('email')
+        user.first_name = kwargs.get('first_name')
+        user.last_name = kwargs.get('last_name')
+        user.phone_number = kwargs.get('phone_number')
+        user.is_active = True
+        user.company = company
         user.is_staff = True
         user.is_superuser = True
         user.password = make_password(kwargs.get('password'))
