@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     group.save()
         users = User.objects.all()
         if not users or len(users) == 0:
-            print("HR creation")
+            print("SuperAdmin creation")
             user = User()
             user.email = "swetha@jivass.com"
             user.password = make_password("Jivass@123")
@@ -34,4 +34,4 @@ class Command(BaseCommand):
             user.is_staff = True
             user.is_superuser = True
             user.save()
-            user.groups.add(Group.objects.get(name = "HR"))
+            user.groups.add(Group.objects.get(name = "SuperAdmin"))
