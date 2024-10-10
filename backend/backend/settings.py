@@ -215,24 +215,47 @@ PERMISSIONS = (
                 ('create_user', ''),('edit_user', ''),('activate_user', ''),('view_users', ''),
             )
 
-ROLES = ['HR', 
-         'Employee'
+ROLES = ['SuperAdmin', 
+         'Admin',
+         'HR',
+         'Manager',
+         'User'
          ]
 
 ROLE_PERMISSION = [
     {
-        "role": "HR",
+        "role": "SuperAdmin",
         "permissions": [
-                        'create_user', 
-                        'edit_user', 
-                        'activate_user', 
-                        'view_users', 
+            'activate_user', 
+            'view_user', 
         ]
     },
     {
-        "role": "Employee",
+        "role": "Admin",
         "permissions": [
-            
+            'view_user',
+            'create_user',
+            'edit_user',            
+        ]
+    },
+        {
+        "role": "HR",
+        "permissions": [
+            'view_user',
+            'create_user',
+            'edit_user',
+        ]
+    },
+        {
+        "role": "Manager",
+        "permissions": [
+            'view_user'
+        ]
+    },
+        {
+        "role": "User",
+        "permissions": [
+            'view_user'
         ]
     }
 ]
