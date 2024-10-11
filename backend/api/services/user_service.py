@@ -21,9 +21,6 @@ class UserService():
         company.save()
         user = User()
         user.email = kwargs.get('email')
-        user.first_name = kwargs.get('first_name')
-        user.last_name = kwargs.get('last_name')
-        user.phone_number = kwargs.get('phone_number')
         user.is_active = True
         user.is_staff = True
         user.is_superuser = True

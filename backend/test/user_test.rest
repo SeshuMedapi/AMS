@@ -12,10 +12,8 @@ POST http://localhost:8000/api/admin
 content-type: application/json 
 
 {   
-    "company": "Jivass Technolgies",
-    "email": "admin1@jivass.com", 
-    "first_name": "admin", 
-    "last_name": "a",
+    "company": "Jivass",
+    "email": "admin@jivass.com", 
     "password" : "Jivass@123"
 }
 
