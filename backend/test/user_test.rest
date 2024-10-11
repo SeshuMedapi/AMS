@@ -34,9 +34,9 @@ Authorization: Token 80ff28c7245a776e716dbc067acfd1d56af561bd
 }
 
 ###To get users
-GET http://localhost:8000/api/user?user_id=9
+GET http://localhost:8000/api/user?user_id=10
 content-type: application/json 
-Authorization: Token 4f5d60a78aab67b0735a9d76ee9b69df2c155e34
+Authorization: Token f8bf20aef06aa970a84f0d61bbfdda40f2bfa0f8
 
 ### Get All Roles
 GET  http://localhost:8000/api/role/10
