@@ -3,7 +3,7 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "admin1@jivass.com", 
+    "username": "hr@gmail.com", 
     "password": "Jivass@123"
 }
 
@@ -32,6 +32,11 @@ Authorization: Token 80ff28c7245a776e716dbc067acfd1d56af561bd
     "role_id" : 3,
     "password" : "Jivass@123"
 }
+
+###To get users
+GET http://localhost:8000/api/user?user_id=9
+content-type: application/json 
+Authorization: Token 4f5d60a78aab67b0735a9d76ee9b69df2c155e34
 
 ### Get All Roles
 GET  http://localhost:8000/api/role/10

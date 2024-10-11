@@ -46,14 +46,14 @@ select {
 button {
     padding: 10px; /* Padding inside the button */
     border: none; /* Remove default border */
-    background-color: #28a745; /* Green background for the button */
+    background-color: rgb(122, 196, 62); /* Green background for the button */
     color: rgb(255, 255, 255); /* White text color */
     border-radius: 4px; /* Rounded corners for button */
     cursor: pointer; /* Pointer cursor on hover */
 }
 
 button:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: rgb(149, 184, 121)18838; /* Darker green on hover */
 }
 
 .error {
