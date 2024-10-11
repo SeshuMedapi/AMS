@@ -135,80 +135,89 @@
 
 // export default Dashboard;
 
-
 // Dashboard.jsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import '../styles/Auth.css';
+import axios from 'axios'; // Make sure to import axios for API calls
+import CreateUser from './CreateUser'; // Import the CreateUser component
+import '../styles/Auth.css'; // Make sure you have appropriate styles
 
 const Dashboard = () => {
-  const [permissions, setPermissions] = useState([]);
-  const [users, setUsers] = useState([]);
+    const [permissions, setPermissions] = useState([]);
+    const [users, setUsers] = useState([]); // State to store users
+    const [showCreateUserModal, setShowCreateUserModal] = useState(false); // State to control modal visibility
 
-  useEffect(() => {
-    // Get permissions and users
-    const storedPermissions = JSON.parse(localStorage.getItem('permissions')) || [];
-    setPermissions(storedPermissions);
-    fetchUsers();
-  }, []);
+    useEffect(() => {
+        const storedPermissions = JSON.parse(localStorage.getItem('permissions')) || [];
+        setPermissions(storedPermissions);
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://localhost:8000/api/users', {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` }
-      });
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-    }
-  };
+        // Fetch users from the backend
+        fetchUsers();
+    }, []);
 
-  const hasPermission = (permission) => {
-    return permissions.includes(permission);
-  };
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/user?user_id=3'); // Adjust URL as necessary
+            setUsers(response.data.users); // Assuming the API returns an array of users
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
 
-  const openCreateUserForm = () => {
-    
-  };
+    const hasPermission = (permission) => {
+        return permissions.includes(permission);
+    };
 
-  const handleEditUser = (userId) => {
-    // Logic to open edit user form as a modal
-  };
+    // Handle user creation
+    const handleUserCreated = (newUser) => {
+        setUsers(prevUsers => [...prevUsers, newUser]); // Update the user list with the newly created user
+    };
 
-  const handleViewUser = (userId) => {
-    // Logic to view user details in a modal
-  };
+    return (
+        <div className="dashboard-container">
+            <h2>Admin Dashboard</h2>
 
-  return (
-    <div className="dashboard-container">
-      <h2>Admin Dashboard</h2>
-      
-      {hasPermission('create_user') && (
-        <button className="action-button" onClick={openCreateUserForm}>
-          + Create User
-        </button>
-      )}
+            {/* Check if the user has permission to view users */}
+            {hasPermission('view_users') && (
+                <div className="user-section">
+                    <h3>Users</h3>
+                    {hasPermission('create_user') && (
+                        <button onClick={() => setShowCreateUserModal(true)}>
+                            Create New User
+                        </button>
+                    )}
 
-      <h3>Users List</h3>
-      <ul>
-        {users.map(user => (
-          <li key={user.id}>
-            {user.email}
-            {hasPermission('view_user') && (
-              <button className="action-icon" onClick={() => handleViewUser(user.id)}>
-                View
-              </button>
+                    <ul>
+                        {users.length > 0 ? (
+                            users.map(user => (
+                                <li key={user.id}>
+                                    {user.username}
+                                    {/* Add Edit and View icons here if permissions allow */}
+                                    {hasPermission('edit_user') && <button>Edit</button>}
+                                    <button>View</button>
+                                </li>
+                            ))
+                        ) : (
+                            <li>No users found.</li>
+                        )}
+                    </ul>
+                </div>
             )}
-            {hasPermission('edit_user') && (
-              <button className="action-icon" onClick={() => handleEditUser(user.id)}>
-                Edit
-              </button>
+
+            {/* Display the modal for creating a new user */}
+            {showCreateUserModal && (
+                <CreateUser 
+                    onClose={() => setShowCreateUserModal(false)} 
+                    onUserCreated={handleUserCreated} 
+                />
             )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+
+            {/* Common section available to all users */}
+            <div className="common-section">
+                <h3>Common Features</h3>
+                <p>All users can see this section.</p>
+            </div>
+        </div>
+    );
 };
 
 export default Dashboard;
