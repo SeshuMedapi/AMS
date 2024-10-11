@@ -89,11 +89,25 @@ class AdminView(viewsets.ViewSet):
 class UserView(viewsets.ViewSet):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
+        "get":{
+                    "permissions": ["view_user"],
+                    "any": True
+                },
         "post":{
                     "permissions": ["create_user"],
                     "any": True
                 }
         }
+    
+    def get(self, request):
+        service = UserService()
+        user_id = request.query_params.get('user_id')
+        try:
+            user = service.GetUsers(user_id)
+            serializer = UserSerializer(user, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
         service = UserService()

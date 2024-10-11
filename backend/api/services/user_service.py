@@ -13,6 +13,26 @@ class UserService():
     email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     password_rule = r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$]).{8,}$'
 
+    def GetUsers(self, user_id):
+        user_ = User.objects.get(id=user_id)
+        role_id = user_.groups.values_list('id', flat=True).first()
+        hr = Group.objects.get(name="HR")
+        manager = Group.objects.get(name="Manager")
+        user = Group.objects.get(name="User")
+
+        if role_id == hr.id:
+            ids = Group.objects.filter(name='Admin').values_list('id', flat=True)
+            users = User.objects.filter(groups__id__in=ids)
+            return users
+        elif role_id == manager.id:
+            ids = Group.objects.filter(name='Manager').values_list('id', flat=True)
+            users = User.objects.filter(groups__id__in=ids)
+            return users
+        elif role_id == user.id:
+            ids = Group.objects.filter(name='User').values_list('id', flat=True)
+            users = User.objects.filter(groups__id__in=ids)
+            return users
+
     @transaction.atomic()
     def createAdmin(self, **kwargs):
         if Compnay.objects.filter(name=kwargs.get('company')):
