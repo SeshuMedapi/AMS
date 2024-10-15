@@ -137,32 +137,58 @@
 
 // Dashboard.jsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Make sure to import axios for API calls
+import axios from 'axios'; // Ensure axios is imported
 import CreateUser from './CreateUser'; // Import the CreateUser component
-import '../styles/Auth.css'; // Make sure you have appropriate styles
+import '../styles/Auth.css'; // Ensure styles are correctly imported
 
 const Dashboard = () => {
-    const [permissions, setPermissions] = useState([]);
-    const [users, setUsers] = useState([]); // State to store users
-    const [showCreateUserModal, setShowCreateUserModal] = useState(false); // State to control modal visibility
+    const [permissions, setPermissions] = useState([]); // Permissions state
+    const [users, setUsers] = useState([]); // Users state
+    const [roles, setRoles] = useState([]); // State to store roles
+    const [showCreateUserModal, setShowCreateUserModal] = useState(false); // State to control the modal visibility
 
     useEffect(() => {
         const storedPermissions = JSON.parse(localStorage.getItem('permissions')) || [];
         setPermissions(storedPermissions);
 
-        // Fetch users from the backend
+        // Fetch users and roles from the backend
         fetchUsers();
+        fetchRoles();
     }, []);
 
+    // Fetch users from the backend with token
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/user?user_id=3'); // Adjust URL as necessary
-            setUsers(response.data.users); // Assuming the API returns an array of users
+            const token = localStorage.getItem('token'); // Retrieve the token
+            const response = await axios.get('http://localhost:8000/api/user?user_id=3', {
+                headers: {
+                    Authorization: `Token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setUsers(response.data.users); // Assuming the API returns a list of users
         } catch (error) {
             console.error("Error fetching users:", error);
         }
     };
 
+    // Fetch roles from the backend
+    const fetchRoles = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Retrieve the token
+            const response = await axios.get('http://localhost:8000/api/role/10', {
+                headers: {
+                    Authorization: `Token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setRoles(response.data.roles); // Assuming the API returns a list of roles
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    };
+
+    // Check if the user has a specific permission
     const hasPermission = (permission) => {
         return permissions.includes(permission);
     };
@@ -207,7 +233,8 @@ const Dashboard = () => {
             {showCreateUserModal && (
                 <CreateUser 
                     onClose={() => setShowCreateUserModal(false)} 
-                    onUserCreated={handleUserCreated} 
+                    onUserCreated={handleUserCreated}
+                    roles={roles} // Pass roles to the CreateUser component
                 />
             )}
 
@@ -221,4 +248,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
