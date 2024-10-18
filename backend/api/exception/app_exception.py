@@ -10,3 +10,19 @@ class UserNameConflict(Exception):
 
 class CompanyExistException(Exception):
     "Company already registered"
+
+class ResetPasswordTokenExpired(Exception):
+    "User password token expired"
+    pass
+
+class InvalidResetPasswordToken(Exception):
+    """Reset Password Token Invalid"""
+    pass
+
+class PasswordPolicyViolation(Exception):
+    "If any violation in the password policy"
+    pass
+
+class EmailException(Exception):
+    '''Email not connected'''
+    pass
