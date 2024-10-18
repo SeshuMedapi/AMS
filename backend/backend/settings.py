@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from string import Template
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -100,13 +101,32 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD':os.getenv('DB_PASSWORD'),
-        'HOST':os.getenv('DB_HOST'),
-        'PORT':os.getenv('DB_PORT'),
+        'OPTIONS': {
+        'options': '-c search_path='+'public'
+        },
+        'NAME': 'ams',
+        'USER': 'postgres',
+        'PASSWORD':'1234',
+        'HOST':'localhost',
+        'PORT':'',
     }
 }
+
+# SMTP_EMAIL_BACKEND = os.getenv('SMTP_EMAIL_BACKEND')
+# SMTP_EMAIL_HOST = os.getenv('SMTP_EMAIL_HOST')
+# SMTP_EMAIL_PORT = os.getenv('SMTP_EMAIL_PORT')
+# SMTP_EMAIL_USE_TLS = os.getenv('SMTP_EMAIL_USE_TLS')
+# SMTP_EMAIL_USERNAME = os.getenv('SMTP_EMAIL_USERNAME')
+# SMTP_EMAIL_PASSWORD = os.getenv('SMTP_EMAIL_PASSWORD')
+# DEFAULT_FROM_EMAIL = SMTP_EMAIL_USERNAME
+
+SMTP_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SMTP_EMAIL_HOST = 'smtp.zoho.com'
+SMTP_EMAIL_PORT = 587
+SMTP_EMAIL_USE_TLS = True
+SMTP_EMAIL_USERNAME = 'arunsingh@jivass.com'
+SMTP_EMAIL_PASSWORD = 'TXxtbLkR0XkV'
+DEFAULT_FROM_EMAIL = SMTP_EMAIL_USERNAME
 
 
 # Password validation
@@ -151,68 +171,71 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# FORMATTERS = (
-#     {
-#         "verbose": {
-#             "format": "{levelname} {asctime:s} {threadName} {thread:d} {module} {filename} {lineno:d} {name} {funcName} {process:d} {message}",
-#             "style": "{",
-#         },
-#         "simple": {
-#             "format": "{levelname} {asctime:s} {module} {filename} {lineno:d} {funcName} {message}",
-#             "style": "{",
-#         },
-#     },
-# )
+APP_DOMAIN_BASE_URL = "http://localhost:3000"
+RESET_PASSWORD_TOKEN_EXPIRE_DAYS = 3
 
-# HANDLERS = {
-#     "console_handler": {
-#         "class": "logging.StreamHandler",
-#         "formatter": "simple",
-#     },
-#     "my_handler": {
-#         "class": "logging.handlers.RotatingFileHandler",
-#         "filename": f"{BASE_DIR}/logs/simple.log",
-#         "mode": "a",
-#         "encoding": "utf-8",
-#         "formatter": "simple",
-#         "backupCount": 5,
-#         "maxBytes": 1024 * 1024 * 5,  # 5 MB
-#     },
-#     "my_handler_detailed": {
-#         "class": "logging.handlers.RotatingFileHandler",
-#         "filename": f"{BASE_DIR}/logs/detailed.log",
-#         "mode": "a",
-#         "formatter": "verbose",
-#         "backupCount": 5,
-#         "maxBytes": 1024 * 1024 * 5,  # 5 MB
-#     },
-# }
+FORMATTERS = (
+    {
+        "verbose": {
+            "format": "{levelname} {asctime:s} {threadName} {thread:d} {module} {filename} {lineno:d} {name} {funcName} {process:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {asctime:s} {module} {filename} {lineno:d} {funcName} {message}",
+            "style": "{",
+        },
+    },
+)
 
-# LOGGERS = (
-#     {
-#         "app_log": {
-#             "handlers": ["console_handler", "my_handler_detailed"],
-#             "level": "INFO",
-#             "propagate": False,
-#         },
-#         "django.request": {
-#             "handlers": ["my_handler"],
-#             "level": "WARNING",
-#             "propagate": False,
-#         },
-#     },
-# )
+HANDLERS = {
+    "console_handler": {
+        "class": "logging.StreamHandler",
+        "formatter": "simple",
+    },
+    "my_handler": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": f"{BASE_DIR}/logs/simple.log",
+        "mode": "a",
+        "encoding": "utf-8",
+        "formatter": "simple",
+        "backupCount": 5,
+        "maxBytes": 1024 * 1024 * 5,  # 5 MB
+    },
+    "my_handler_detailed": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": f"{BASE_DIR}/logs/detailed.log",
+        "mode": "a",
+        "formatter": "verbose",
+        "backupCount": 5,
+        "maxBytes": 1024 * 1024 * 5,  # 5 MB
+    },
+}
 
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": FORMATTERS[0],
-#     "handlers": HANDLERS,
-#     "loggers": LOGGERS[0],
-# }
+LOGGERS = (
+    {
+        "app_log": {
+            "handlers": ["console_handler", "my_handler_detailed"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["my_handler"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": FORMATTERS[0],
+    "handlers": HANDLERS,
+    "loggers": LOGGERS[0],
+}
 
 PERMISSIONS = (
-                ('create_user', ''),('edit_user', ''),('activate_user', ''),('view_users', ''),
+                ('create_company', ''), ('view_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
             )
 
 ROLES = ['SuperAdmin', 
@@ -226,6 +249,8 @@ ROLE_PERMISSION = [
     {
         "role": "SuperAdmin",
         "permissions": [
+            'create_company',
+            'view_company',
             'activate_user', 
             'view_user', 
         ]
@@ -259,3 +284,77 @@ ROLE_PERMISSION = [
         ]
     }
 ]
+
+
+WELCOME_COMPANY_EMAIL=Template(
+                '''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <title>WELCOME</title>
+                </head>
+                <body>
+                    Hi $company,<br><br>
+                    Welcome to the Attendance Management Portal!<br><br>
+                    Your account has been successfully created, and you can start using the platform.<br><br><br>
+                    <b>Login Credentials:</b><br><br>
+                    Email: $email<br>
+                  	Password: <a href='$password_reset_url'>Please click here to set your password<a><br><br><br>                
+                    Please note that the password set link will expire in 3 days for your account’s security. After that, it will no longer be valid, and you’ll need to request a new link. If you did not request a password set, please ignore this email or contact our support team immediately at <a href="mailto:contact@jivass.com">contact@jivass.com</a>.<br><br><br>
+                    Best,<br>
+                    Jivass Technologies<br><br>
+                    -------------------------------------------------------<br>
+                    1st Floor Ashwamedha Velachery Main Rd<br> 
+                    Guindy Chennai 600032<br>          
+                </body>
+                </html>
+                '''
+               )
+
+WELCOME_EMAIL=Template(
+                '''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <title>WELCOME</title>
+                </head>
+                <body>
+                    Hi $first_name,<br><br>
+                    Welcome to the Attendance Management Portal!<br><br>
+                    Your account has been successfully created, and you can start using the platform.<br><br><br>
+                    <b>Login Credentials:</b><br><br>
+                    Username: $first_name $last_name<br>
+                    Email: $email<br>
+                  	Password: <a href='$password_reset_url'>Please click here to set your password<a><br><br><br>                
+                    Please note that the password set link will expire in 3 days for your account’s security. After that, it will no longer be valid, and you’ll need to request a new link. If you did not request a password set, please ignore this email or contact our support team immediately at <a href="mailto:contact@jivass.com">contact@jivass.com</a>.<br><br><br>
+                    Best,<br>
+                    Jivass Technologies<br><br>
+                    -------------------------------------------------------<br>
+                    1st Floor Ashwamedha Velachery Main Rd<br> 
+                    Guindy Chennai 600032<br>          
+                </body>
+                </html>
+                '''
+               )
+
+RESET_PASSWORD=Template(
+                '''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Password Reset Request</title>
+                </head>
+                <body>
+                    Hi $first_name,<br><br>
+                    We received a request to reset the password for your Attendance Management Portal. Just click the link below to create a new password.<br><br>
+                    <a href='$password_reset_url'>Reset Your Password</a><br><br>
+                    Please note that the password reset link will expire in 3 days for your account’s security. After that, it will no longer be valid, and you’ll need to request a new link. If you did not request a password reset, please ignore this email or contact our support team immediately at <a href="mailto:contact@jivass.com">contact@jivass.com</a>.<br><br><br>
+                    Best,<br>
+                    Jivass Technologies<br><br>
+                    -------------------------------------------------------<br>
+                    1st Floor Ashwamedha Velachery Main Rd<br> 
+                    Guindy Chennai 600032<br>
+                </body>
+                </html>
+                '''
+               )
