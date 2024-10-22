@@ -50,23 +50,26 @@ class UserService():
         user.is_staff = True
         user.is_superuser = True
         user.company = company
-        self._validateUserCreation(user)
+        self._validateUserCreation(user.email)
         user.save()
-        reset_token = uuid.uuid1().hex
-        ResetPassword.objects.create(
-            user_id = user.id,
-            reset_token = reset_token
-        )
+        if user:
+            reset_token = uuid.uuid1().hex
+            ResetPassword.objects.create(
+                user_id = user.id,
+                reset_token = reset_token
+            )
+            
+            role = Group.objects.get(name='Admin')
+            user.groups.clear()
+            user.groups.add(role)
         
-        role = Group.objects.get(name='Admin')
-        user.groups.clear()
-        user.groups.add(role)
-        formatted_email = settings.WELCOME_EMAIL.substitute(
-                    {"first_name": user.company,
-                    "password_reset_url": (f"{settings.APP_DOMAIN_BASE_URL}/ResetPassword?token={reset_token}")
-                    })
-        EmailService().send_smtp_email(user.email, formatted_email, "DIS Subrogation Portal - Welcome")
-        return user
+            formatted_email = settings.WELCOME_COMPANY_EMAIL.substitute(
+                        {"company": user.company,
+                        "password_reset_url": (f"{settings.APP_DOMAIN_BASE_URL}/ResetPassword?token={reset_token}"),
+                        "email": user.email
+                        })
+            EmailService(settings.SMTP_EMAIL_HOST, settings.SMTP_EMAIL_USERNAME, settings.SMTP_EMAIL_PASSWORD).send_smtp_email(user.email, formatted_email, "Attendance Management Portal - welcome")
+            return user
 
     def createUser(self, user_id, **kwargs):
         company = User.objects.get(id=user_id).company
@@ -79,7 +82,6 @@ class UserService():
         user.company = company
         user.is_staff = True
         user.is_superuser = True
-        user.password = make_password(kwargs.get('password'))
         self._validateUserCreation(user)
         with transaction.atomic():
             user.save()
@@ -96,12 +98,12 @@ class UserService():
     def _validateUserCreation(self, user):
         if not user:
             raise ValidationException("Invalid email id")
-        if not re.fullmatch(self.email_regex, user.email):
-            raise ValidationException(f"Invalid email id {user.email}")
+        if not re.fullmatch(self.email_regex, user):
+            raise ValidationException(f"Invalid email id {user}")
+        existing_user = User.objects.filter(email=user).first()
         
-        existing_user = User.objects.filter(email=user.email).first()
         if existing_user:
-            raise UserNameConflict(f"{user.email}")
+            raise UserNameConflict(f"{user}")
         
     def passwordResetRequest(self, email):
         if not email:

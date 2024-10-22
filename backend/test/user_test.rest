@@ -3,17 +3,23 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "swetha@jivass.com", 
+    "username": "arunsingh@jivass.com", 
     "password": "Jivass@123"
 }
+
+### Request get Admin 
+GET http://localhost:8000/api/admin
+content-type: application/json 
+Authorization: Token 87f4c7d631393007f6eea48a830a74a842ed2566
 
 ### Request Create Admin 
 POST http://localhost:8000/api/admin
 content-type: application/json 
+Authorization: Token cafa98ec2683e9e78c38b6e988216280738a596b
 
 {   
     "company": "Jivass",
-    "email": "admin@jivass.com"
+    "email": "arunsingh19101999@gmail.com"
 }
 
 ### Request Create user 
