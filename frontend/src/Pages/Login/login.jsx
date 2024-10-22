@@ -67,7 +67,7 @@ function LoginPage() {
       if (storedPermissions) {
         const permission = JSON.parse(storedPermissions);
         if (permission.includes("create_company")) {
-          navigate("/Admin");
+          navigate("/dashboard");
         } else {
           navigate("/User");
         }
@@ -119,7 +119,7 @@ function LoginPage() {
 
             //navigate("/dashboard");
             if (permissionvalue.includes("create_company")) {
-              navigate("/Admin");
+              navigate("/dashboard");
             } else {
               navigate("/User");
             }

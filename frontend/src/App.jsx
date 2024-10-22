@@ -6,9 +6,8 @@ import ResetPassword from "./Pages/Reset Password/Reset_password";
 import LoginPage from './Pages/Login/login'
 // import Register from './Pages/Login/AdminRegister'
 import Dashboard from "./Pages/Dashboard/dashboard";
-import Admin from './Pages/Login/Admin';
-import User from './Pages/Login/User';
 import Usermanagement from './Pages/UserManagement/UserManagement';
+import AdminProfile from "./Pages/Profile/AdminProfile";
 import PrivateRoute from "./Shared modules/Context management/privateRoutes";
 import { AuthProvider } from "./Shared modules/Context management/authContext";
 import SessionExpiredModal from "./View Components/Session components/SessionTimeoutModal";
@@ -111,9 +110,8 @@ function App() {
                 <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route element={<PrivateRouteWithLayout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/AdminProfile" element={<AdminProfile />} />
                   <Route path="/User-Management" element={<Usermanagement />} />
-                  <Route path="/Admin" element={<Admin />} />
-                  <Route path="/User" element={<User />} />
                   </Route>
             </Routes>
         </Router>

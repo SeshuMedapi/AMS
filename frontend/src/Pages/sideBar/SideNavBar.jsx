@@ -24,36 +24,14 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       name: "Dashboard",
       icon: Dashboard,
       hoverIcon: DashboardHover,
-      permission: "view_summary",
-    },
-    {
-      name: "Reports",
-      icon: Report,
-      hoverIcon: ReportHover,
-      permission: [
-        "view_referral_report",
-        "view_kpi_report",
-        "view_subrogation_activity",
-      ],
-    },
-    {
-      name: "Invoices",
-      icon: Invoices,
-      hoverIcon: InvoicesHover,
-      permission: "invoice_history",
+      permission: "view_user",
     },
     {
       name: "User Management",
       icon: UserManagement,
       hoverIcon: UserManagementHover,
-      permission: "view_users",
-    },
-    {
-      name: "OIC",
-      icon: OIC,
-      hoverIcon: OICHover,
-      permission: "oic_list",
-    },
+      permission: "view_user",
+    }
   ];
 
   const handleClick = (name) => {
