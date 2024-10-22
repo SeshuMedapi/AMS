@@ -1,61 +1,132 @@
-import React, { useEffect, useState } from 'react';
-import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
-import CreateUser from './CreateUser'; // Import the CreateUser component
+import React, { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
+import EditUser from "./Edit_User";
+import ResetPass from "./Reset_Pass";
+import User from "./User";
+import AddUser from "./Add_User";
+import useAxios from "../../Shared modules/Web Service/axiosConfig";
 
-const UserManagement = () => {
-    const [users, setUsers] = useState([]);
-    const [showCreateUserModal, setShowCreateUserModal] = useState(false); // State to control modal visibility
+const Usermanagement = () => {
+  const [data, setData] = useState([]);
+  const [showPage, setShowPage] = useState(false);
+  const [showResetPass, setShowResetPass] = useState(false);
+  const [showUser, setShowUser] = useState(false);
+  const [addUser, setAddUser] = useState(false);
+  const [activeButton, setActiveButton] = useState("all");
 
-    useEffect(() => {
-        fetchUsers(); // Fetch users when the component mounts
-    }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    const fetchUsers = async () => {
-        try {
-            const response = await axiosInstance.get('/user'); // Adjust URL as necessary
-            setUsers(response.data.users); // Assuming the API returns an array of users
-        } catch (error) {
-            console.error("Error fetching users:", error);
-        }
-    };
+  const fetchData = async () => {
+    try {
+      const response = await useAxios.get('admin');
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-    const handleUserCreated = (newUser) => {
-        setUsers(prevUsers => [...prevUsers, newUser]); // Update the user list with the newly created user
-    };
+  const handleShowChangePage = () => setShowPage(true);
+  const handleResetPassword = () => setShowResetPass(true);
+  const handleUser = () => setShowUser(true);
+  const handleAddUser = () => setAddUser(true);
+  const handleCancel = () => {
+    setShowPage(false);
+    setShowResetPass(false);
+    setShowUser(false);
+    setAddUser(false);
+  };
 
-    const handleEditUser = (user) => {
-        // Handle user edit functionality here
-        console.log("Edit user:", user);
-    };
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`your-api-endpoint/${id}`, { method: "DELETE" });
+      setData((prevData) => prevData.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
 
-    return (
-        <div className="user-management-container">
-            <h3>User Management</h3>
-            <button onClick={() => setShowCreateUserModal(true)}>Create New User</button>
-
-            <ul>
-                {users.length > 0 ? (
-                    users.map(user => (
-                        <li key={user.id}>
-                            {user.username}
-                            <button onClick={() => handleEditUser(user)}>Edit</button>
-                            <button>View</button>
-                        </li>
-                    ))
-                ) : (
-                    <li>No users found.</li>
-                )}
-            </ul>
-
-            {/* Display the modal for creating a new user */}
-            {showCreateUserModal && (
-                <CreateUser 
-                    onClose={() => setShowCreateUserModal(false)} 
-                    onUserCreated={handleUserCreated} 
-                />
-            )}
+  const columns = [
+    {
+      name: "Company",
+      selector: (row) => row.company,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => row.email,
+      sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="d-flex">
+          <button
+            className="Action-icon"
+            onClick={() => {
+              handleShowChangePage();
+            }}
+          >
+            <img src="src/assets/Edit/Edit.svg" alt="Edit Icon" className="icon" />
+          </button>
+          <button
+            className="Action-icon"
+            onClick={() => {
+              handleResetPassword();
+            }}
+          >
+            <img src="src/assets/Setting/setting.svg" alt="Setting Icon" className="icon" />
+          </button>
         </div>
-    );
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      width: "150px",
+    },
+  ];
+
+  return (
+    <div>
+      <div className="container">
+        <div className="row">
+          <div className="col-9 d-flex">
+            <div className="btn-group" role="group">
+              <button
+                className={`btn btn-non ${activeButton === "all" ? "active" : ""}`}
+                onClick={() => setActiveButton("all")}
+              >
+                Registered Company
+              </button>
+            </div>
+          </div>
+          <div className="col-3 d-flex justify-content-end">
+            <button className="border-btn" onClick={handleAddUser}>
+              + Register Company
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="container mt-3">
+        <DataTable
+          columns={columns}
+          data={data}
+          pagination
+          responsive
+          highlightOnHover
+          noHeader
+        />
+      </div>
+
+      {(showPage || showResetPass || showUser || addUser) && (
+        <div className="overlay" onClick={handleCancel}></div>
+      )}
+      {addUser && <AddUser onCancel={handleCancel} />}
+      {showPage && <EditUser onCancel={handleCancel} />}
+      {showResetPass && <ResetPass onCancel={handleCancel} />}
+      {showUser && <User onCancel={handleCancel} />}
+    </div>
+  );
 };
 
-export default UserManagement;
+export default Usermanagement;

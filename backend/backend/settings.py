@@ -323,7 +323,7 @@ WELCOME_EMAIL=Template(
                     Welcome to the Attendance Management Portal!<br><br>
                     Your account has been successfully created, and you can start using the platform.<br><br><br>
                     <b>Login Credentials:</b><br><br>
-                    Username: $first_name $last_name<br>
+                    Username: $first_name <br>
                     Email: $email<br>
                   	Password: <a href='$password_reset_url'>Please click here to set your password<a><br><br><br>                
                     Please note that the password set link will expire in 3 days for your account’s security. After that, it will no longer be valid, and you’ll need to request a new link. If you did not request a password set, please ignore this email or contact our support team immediately at <a href="mailto:contact@jivass.com">contact@jivass.com</a>.<br><br><br>

@@ -1,6 +1,7 @@
 from ..authentication import SkipAuth, PermissionBasedAccess
 from ..services.user_service import UserService
 from api.api_models.users import UserSerializer, GroupSerializer, User
+from api.api_models.company import AdminUserSerializer
 from api.exception.app_exception import *
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Permission, Group
@@ -66,13 +67,29 @@ class RoleView(APIView):
 
 
 class AdminView(viewsets.ViewSet):
-    permission_classes = [SkipAuth]
-    # permission_config = {
-    #     "post":{
-    #                 "permissions": ["create_user"],
-    #                 "any": True
-    #             }
-    #     }
+    permission_classes = [PermissionBasedAccess]
+    permission_config = {
+        "get":{
+                    "permissions": ["view_company","view_user"],
+                    "any": True
+                },
+        "post":{
+                    "permissions": ["create_company"],
+                    "any": True
+                }
+        }
+
+    def get(self, request):
+        admin_users = User.objects.filter(groups__name='Admin').distinct()
+        
+        admin_user_data = []
+        for user in admin_users:
+            admin_user_data.append({   
+                'company': user.company.name,
+                'email': user.email
+            })
+        serializer = AdminUserSerializer(admin_user_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         service = UserService()
@@ -182,8 +199,7 @@ class UserView(viewsets.ViewSet):
             'first_name': request.data['first_name'],
             'last_name': request.data['last_name'],
             'phone_number': request.data['phone_number'],
-            'role_id': request.data['role_id'],
-            'password': request.data['password']
+            'role_id': request.data['role_id']
         }
  
         try:
