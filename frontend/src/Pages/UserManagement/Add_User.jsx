@@ -14,25 +14,13 @@ import Permission from "../../Shared modules/Context management/permissionCheck"
 function AddUser({ onCancel }) {
   const [clickedSave, setClickedSave] = useState(false);
   const [company, setcompany] = useState("");
+  const [companyError, setcompanyError] = useState("");
   const [mail, setMail] = useState("");
   const [mailError, setEmailError] = useState("");
 
   const [overallpassword, setoverallpassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axiosInstance.get("/role");
-        setRoles(response.data);
-      } catch (error) {
-        console.error("Error fetching roles:", error);
-        setRoles([]);
-      }
-    };
-    fetchRoles();
-  }, []);
 
   const formatPhoneNumber = (input) => {
     const value = input.replace(/\D/g, "");
@@ -45,19 +33,10 @@ function AddUser({ onCancel }) {
     )}-${value.substring(6, 10)}`;
   };
 
-  const handlePhoneChange = (event) => {
-    const inputValue = event.target.value;
-    const formattedValue = formatPhoneNumber(inputValue);
-    setPhoneNumber(formattedValue);
-    if (clickedSave) {
-      setPhoneNumberError(validatePhoneNumber(formattedValue));
-    }
-  };
-
   const handleCompanyChange = (value) => {
-    setFirstname(value);
+    setcompany(value);
     if (clickedSave) {
-      setcompany(validateName(value));
+      setcompanyError(validateName(value));
     }
   };
 
@@ -69,7 +48,7 @@ function AddUser({ onCancel }) {
   };
 
   const validateName = (name) => {
-    if (!name.trim()) return "First Name is required";
+    if (!name.trim()) return "Company Name is required";
     if (!NameValidator(name)) return "Invalid Name";
     return "";
   };
@@ -83,29 +62,17 @@ function AddUser({ onCancel }) {
   const handleSave = async () => {
     setClickedSave(true);
     setIsLoading(true);
-    const company = validateName(company);
+    const companyError = validateName(company);
     const mailError = validateMail(mail);
 
-    setcompany(company);
+    setcompanyError(companyError);
     setEmailError(mailError);
-
-    // Check if there are any validation errors
-    const hasValidationErrors =
-      company || company || mailError;
-
-    if (hasValidationErrors) {
-      setoverallpassword(true);
-      setIsLoading(false);
-      return;
-    } else {
-      setoverallpassword(false);
-    }
 
     setIsButtonDisabled(true);
 
     try {
       const userData = {
-        company: firstname.trim(),
+        company: company.trim(),
         email: mail.toLowerCase().trim()
       };
 
@@ -222,15 +189,13 @@ function AddUser({ onCancel }) {
             <input
               type="text"
               className={`form-control form-control-all ${
-                company ? "is-invalid" : ""
+                companyError ? "is-invalid" : ""
               }`}
               id="company"
               value={company}
               onChange={(e) => handleCompanyChange(e.target.value)}
             />
-            {company && (
-              <div className="text-danger">{company}</div>
-            )}
+            {companyError && <div className="text-danger">{companyError}</div>}
           </div>
           
           <div className="mb-2">
