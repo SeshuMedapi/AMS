@@ -9,7 +9,7 @@ const PrivateRoute = ({ requiredPermission }) => {
   if (!auth) {
     return <Navigate to="/" />;
   }
-
+  
   return (
     <Layout>
       <Outlet />
