@@ -43,6 +43,7 @@ const Usermanagement = () => {
   const handleCancel = () => {
     setShowPage(false);
     setAddUser(false);
+    setAddUsers(false);
   };
 
   const handleDelete = async (company_id) => {

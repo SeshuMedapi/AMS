@@ -62,6 +62,9 @@ class RoleView(APIView):
             elif role == 'Admin':
                 user_group = ['HR', 'Manager', 'User']
                 roles = Group.objects.filter(name__in=user_group)
+            elif role == 'Manager':
+                user_group = ['User']
+                roles = Group.objects.filter(name__in=user_group)
         serializer = GroupSerializer(roles, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 

@@ -274,7 +274,9 @@ ROLE_PERMISSION = [
         {
         "role": "Manager",
         "permissions": [
-            'view_user'
+            'view_user',
+            'create_user',
+            'edit_user',
         ]
     },
         {
