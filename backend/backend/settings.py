@@ -235,7 +235,7 @@ LOGGING = {
 }
 
 PERMISSIONS = (
-                ('create_company', ''), ('view_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
+                ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
             )
 
 ROLES = ['SuperAdmin', 
@@ -251,8 +251,8 @@ ROLE_PERMISSION = [
         "permissions": [
             'create_company',
             'view_company',
+            'delete_company',
             'activate_user', 
-            'view_user', 
         ]
     },
     {

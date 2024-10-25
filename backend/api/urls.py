@@ -4,7 +4,8 @@ from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPa
 urlpatterns = [
     path("login", LoginView.as_view()),
     path("logout", LogoutView.as_view()),
-    path("admin",AdminView.as_view({"post":"post"})),
+    path("admin",AdminView.as_view({"get":"get","post":"post"})),
+    path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post"})),
     path("role/<int:user_id>", RoleView.as_view()),
 

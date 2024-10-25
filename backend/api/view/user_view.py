@@ -1,7 +1,7 @@
 from ..authentication import SkipAuth, PermissionBasedAccess
 from ..services.user_service import UserService
 from api.api_models.users import UserSerializer, GroupSerializer, User
-from api.api_models.company import AdminUserSerializer
+from api.api_models.company import AdminUserSerializer, Company
 from api.exception.app_exception import *
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Permission, Group
@@ -76,7 +76,11 @@ class AdminView(viewsets.ViewSet):
         "post":{
                     "permissions": ["create_company"],
                     "any": True
-                }
+                },
+        "delete":{
+                    "permissions": ["delete_company"],
+                    "any": True
+        }
         }
 
     def get(self, request):
@@ -85,6 +89,7 @@ class AdminView(viewsets.ViewSet):
         admin_user_data = []
         for user in admin_users:
             admin_user_data.append({   
+                'company_id': user.company.id,
                 'company': user.company.name,
                 'email': user.email
             })
@@ -111,6 +116,17 @@ class AdminView(viewsets.ViewSet):
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except e:
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def delete(self, request, company_id=None):
+        try:
+            company = Company.objects.get(id=company_id)
+            company.delete()
+
+            return Response({"message": f"Company with ID {company_id} and its related data were successfully deleted."}, status=status.HTTP_200_OK)
+        except Company.DoesNotExist:
+            return Response({"message": f"Company with ID {company_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message": f"Failed to delete company: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class ResetPassword(viewsets.ViewSet):
     permission_classes = [SkipAuth] 

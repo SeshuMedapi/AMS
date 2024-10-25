@@ -1,12 +1,13 @@
 from api.api_models.users import User
 from django.db import transaction
 from api.api_models.reset_password import ResetPassword
-from api.api_models.company import Compnay
+from api.api_models.company import Company
 from api.services.email_service import EmailService
 from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
 from api.exception.app_exception import *
 from django.conf import settings
+from django.db.models import F
 from datetime import datetime
 import uuid, re
 
@@ -18,31 +19,31 @@ class UserService():
     def GetUsers(self, user_id):
         user_ = User.objects.get(id=user_id)
         role_id = user_.groups.values_list('id', flat=True).first()
-        superadmin = Group.objects.get(name="SuperAdmin")
+
         Admin = Group.objects.get(name="Admin")
         hr = Group.objects.get(name="HR")
         manager = Group.objects.get(name="Manager")
-        user = Group.objects.get(name="User")
-        admin_ids = Group.objects.filter(name__in=['HR','Manager','User']).values_list('id', flat=True)
-        hr_ids = Group.objects.filter(name__in=['Manager','User']).values_list('id', flat=True)
-        manager_ids = Group.objects.filter(name='User').values_list('id', flat=True)
-        user_ids = Group.objects.filter(name='User').values_list('id', flat=True)
 
-        if role_id == hr.id:
-            users = User.objects.filter(groups__id__in=hr_ids)
-            return users
+        admin_ids = Group.objects.filter(name__in=['HR', 'Manager', 'User']).values_list('id', flat=True)
+        hr_ids = Group.objects.filter(name__in=['Manager', 'User']).values_list('id', flat=True)
+        manager_ids = Group.objects.filter(name='User').values_list('id', flat=True)
+
+        if role_id == Admin.id:
+            users = User.objects.filter(groups__id__in=admin_ids).annotate(group_name=F('groups__name'))
+        elif role_id == hr.id:
+            users = User.objects.filter(groups__id__in=hr_ids).annotate(group_name=F('groups__name'))
         elif role_id == manager.id:
-            users = User.objects.filter(groups__id__in=manager_ids)
-            return users
-        elif role_id == user.id:
-            users = User.objects.filter(groups__id__in=manager_ids)
-            return users
+            users = User.objects.filter(groups__id__in=manager_ids).annotate(group_name=F('groups__name'))
+        else:
+            users = User.objects.none()
+
+        return users
 
     @transaction.atomic()
     def createAdmin(self, **kwargs):
-        if Compnay.objects.filter(name=kwargs.get('company')):
+        if Company.objects.filter(name=kwargs.get('company')):
             raise CompanyExistException
-        company = Compnay.objects.create(name=kwargs.get('company'))
+        company = Company.objects.create(name=kwargs.get('company'))
         company.save()
         user = User()
         user.email = kwargs.get('email')
@@ -50,6 +51,7 @@ class UserService():
         user.is_staff = True
         user.is_superuser = True
         user.company = company
+        user.password = make_password("Jivass@123")
         self._validateUserCreation(user.email)
         user.save()
         if user:
@@ -72,17 +74,20 @@ class UserService():
             return user
 
     def createUser(self, user_id, **kwargs):
+        print("ok")
         company = User.objects.get(id=user_id).company
         user = User()
+        print("ok")
         user.email = kwargs.get('email')
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
         user.is_active = True
+        print(company)
         user.company = company
         user.is_staff = True
         user.is_superuser = True
-        self._validateUserCreation(user)
+        self._validateUserCreation(user.email)
         with transaction.atomic():
             user.save()
             reset_token = uuid.uuid1().hex

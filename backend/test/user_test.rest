@@ -3,29 +3,39 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "arunsingh@jivass.com", 
+    "username": "aaa@gmail.com", 
     "password": "Jivass@123"
 }
 
 ### Request get Admin 
 GET http://localhost:8000/api/admin
 content-type: application/json 
-Authorization: Token 87f4c7d631393007f6eea48a830a74a842ed2566
+Authorization: Token 6a3e78bc93e58363f046b014b48d06dcd067edc9
+
+### Request delete Admin
+DELETE  http://localhost:8000/api/admin/30
+content-type: application/json 
+Authorization: Token ce2938f7e48c91d836c1862955c5b858dc1d460b
 
 ### Request Create Admin 
 POST http://localhost:8000/api/admin
 content-type: application/json 
-Authorization: Token 01ea462f6aa23932554f99511a1a4af262b50f6d
+Authorization: Token 36e6c900bd5e3a880a3ed584cebbf4748a7eede4
 
 {   
     "company": "Jivass111",
-    "email": "seshumedapil124@gmail.com"
+    "email": "aaa@gmail.com"
 }
 
-### Request Create user 
-POST http://localhost:8000/api/user?user_id=9
+### Request Get user 
+GET http://localhost:8000/api/user?user_id=39
 content-type: application/json 
-Authorization: Token 80ff28c7245a776e716dbc067acfd1d56af561bd
+Authorization: Token 1cc3a7e26997b68094191a42ee2d886706743e7d
+
+### Request Create user 
+POST http://localhost:8000/api/user?user_id=39
+content-type: application/json 
+Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
 
 {
     "email": "hr@gmail.com", 
@@ -36,7 +46,7 @@ Authorization: Token 80ff28c7245a776e716dbc067acfd1d56af561bd
 }
 
 ### Get All Roles
-GET  http://localhost:8000/api/role/10
+GET  http://localhost:8000/api/role/39
 content-type: application/json 
 
 ### Request Logout
