@@ -15,6 +15,7 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
   const [dropdownHovered, setDropdownHovered] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const navigate = useNavigate();
   const sidebarWidth = isSidebarOpen ? "8rem" : "4rem";
@@ -27,7 +28,8 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
       style={{
         display: "block",
         textAlign: "left",
-        backgroundColor: highlightedIndex === index ? "#e0e0e0" : "transparent",
+        backgroundColor:
+          highlightedIndex === index ? "#e0e0e0" : "transparent",
       }}
     >
       {item.name}
@@ -38,6 +40,11 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
     navigate("/AdminProfile");
   };
 
+  const handleHamburgerClick = () => {
+    setIsActive(!isActive); // Toggle active state
+    toggleSidebar(); // Call the toggleSidebar function
+  };
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-col"
@@ -45,11 +52,26 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
     >
       <div className="container-fluid tooltip-container">
         <div className="d-flex align-items-center">
-          <div className="burger-icon" onClick={toggleSidebar}>
-            <img src={hamburger} alt="hamburger" className="hamburger" />
+          <div className="burger-icon" onClick={handleHamburgerClick}>
+            <img
+              src={hamburger}
+              alt="hamburger"
+              className={`hamburger ${isActive ? "active" : ""}`}
+              style={{
+                transform: isActive ? "rotate(90deg)" : "rotate(0deg)",
+                transition: "transform 0.3s ease",
+              }}
+            />
           </div>
-          <a className="navbar-brand ms-5" href="#">
-            <img height={70} width={70} src={LogoMark} alt="logo" />
+          <a
+            className="navbar-brand ms-5 logo-link"
+            href="https://jivass.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
+          >
+            <img height={70} width={70} src={LogoMark} alt="Jivass Logo" />
+            <span className="company-name">JIVASS TECHNOLOGIES</span>
           </a>
         </div>
         <div className="d-flex align-items-center ms-auto">
@@ -59,7 +81,7 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
           >
             <div className="search ms-2 position-relative">
               <div className="input-container">
-                
+                {/* Search input goes here */}
               </div>
 
               {isDropdownOpen && items.length > 0 && (
@@ -89,7 +111,7 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
             <img
               src={ProfilePic}
               alt="Profile"
-              className="ms-2 me-2 mt-1"
+              className="navbar-profile-img ms-2 me-2 mt-1"
               onClick={NavAdmin}
             />
           </form>
