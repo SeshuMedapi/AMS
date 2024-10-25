@@ -18,6 +18,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 function Sidebar({ isOpen, onSidebarItemClick }) {
   const navigate = useNavigate();
   const [hoverIndex, setHoverIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(null); // Add state for active index
 
   const navItems = [
     {
@@ -34,7 +35,8 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
     }
   ];
 
-  const handleClick = (name) => {
+  const handleClick = (name, index) => {
+    setActiveIndex(index); // Set active icon to the clicked one
     onSidebarItemClick(name);
     navigate(`/${name.toLowerCase().replace(" ", "-")}`);
   };
@@ -61,16 +63,16 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
                         overlay={<Tooltip id={`tooltip-${item.name}`}>{item.name}</Tooltip>}
                       >
                         <button
-                          className={`nav-link btn-primary d-flex align-items-center justify-content-start mt-3 position-relative btn1 ${item.name
+                          className={`nav-link btn-primary d-flex align-items-center justify-content-start mt-3 position-relative btn1 ${index === activeIndex ? "active" : ""} ${item.name
                             .replace(" ", "-")
                             .toLowerCase()}`}
-                          onClick={() => handleClick(item.name)}
+                          onClick={() => handleClick(item.name, index)}
                           onMouseEnter={() => setHoverIndex(index)}
                           onMouseLeave={() => setHoverIndex(null)}
                         >
                           <img
                             src={
-                              hoverIndex === index ? item.hoverIcon : item.icon
+                              hoverIndex === index || activeIndex === index ? item.hoverIcon : item.icon
                             }
                             alt={item.name}
                             className="img-size"
@@ -99,17 +101,17 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
                         overlay={<Tooltip id={`tooltip-${item.name}`}>{item.name}</Tooltip>}
                       >
                         <button
-                          className={`nav-link btn-primary rounded-circle d-flex flex-column align-items-center justify-content-center mt-3 btn2 ${item.name
+                          className={`nav-link btn-primary rounded-circle d-flex flex-column align-items-center justify-content-center mt-3 btn2 ${index === activeIndex ? "active" : ""} ${item.name
                             .replace(" ", "-")
                             .toLowerCase()}`}
                           type="button"
-                          onClick={() => handleClick(item.name)}
+                          onClick={() => handleClick(item.name, index)}
                           onMouseEnter={() => setHoverIndex(index)}
                           onMouseLeave={() => setHoverIndex(null)}
                         >
                           <img
                             src={
-                              hoverIndex === index ? item.hoverIcon : item.icon
+                              hoverIndex === index || activeIndex === index ? item.hoverIcon : item.icon
                             }
                             alt={item.name}
                             className="img-con1"
