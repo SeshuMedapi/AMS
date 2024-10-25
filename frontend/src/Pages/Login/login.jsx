@@ -61,17 +61,13 @@ function LoginPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const logout = localStorage.getItem("logout"); // Adjust the key based on your token name
+    const logout = localStorage.getItem("logout");
     if (token && !logout) {
       const storedPermissions = localStorage.getItem("permissions");
       if (storedPermissions) {
         const permission = JSON.parse(storedPermissions);
-        if (permission.includes("create_company")) {
-          navigate("/dashboard");
-        } else {
-          navigate("/User");
-        }
-      } // Redirect to dashboard if token exists
+        navigate("/dashboard");   
+      }
     } else {
       localStorage.clear();
       sessionStorage.clear();
@@ -114,16 +110,9 @@ function LoginPage() {
             localStorage.setItem("userLoggedIn", "true");
             console.log(permissionvalue);
             login(token, permissionvalue, session_time); // Use the login function from the context
-            // navigate("/dashboard"); // Redirect to dashboard after successful login
-            //localStorage.setItem("token", token);
-
-            //navigate("/dashboard");
-            if (permissionvalue.includes("create_company")) {
-              navigate("/dashboard");
-            } else {
-              navigate("/User");
-            }
-          } else {
+            navigate("/dashboard");
+          } 
+          else {
             const blocked_message = response.data.blocked_message;
             const policy_message = response.data.policy_message;
             if (blocked_message) {

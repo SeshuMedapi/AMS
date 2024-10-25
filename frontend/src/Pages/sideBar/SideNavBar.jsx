@@ -24,13 +24,13 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       name: "Dashboard",
       icon: Dashboard,
       hoverIcon: DashboardHover,
-      permission: "view_user",
+      permission: ["view_user","view_company"],
     },
     {
       name: "User Management",
       icon: UserManagement,
       hoverIcon: UserManagementHover,
-      permission: "view_user",
+      permission: ["view_user","view_company"],
     }
   ];
 

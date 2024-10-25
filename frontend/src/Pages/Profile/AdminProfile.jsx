@@ -22,7 +22,7 @@ function AdminProfile() {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    document.title = "Subrogation Management";
+    document.title = "AMS";
     const fetchProfileData = async () => {
       try {
         const response = await axiosInstance.get("/myinfo");
