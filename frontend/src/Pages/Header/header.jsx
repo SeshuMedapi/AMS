@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import hamburger from "../../assets/SideBarNav/burger-menu-svgrepo-com.svg";
@@ -15,12 +15,14 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
   const [dropdownHovered, setDropdownHovered] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [activeElement, setActiveElement] = useState(null); // Track active element
 
   const navigate = useNavigate();
   const sidebarWidth = isSidebarOpen ? "8rem" : "4rem";
 
   const dropdownRef = useRef(null);
+  const profileRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
   const formatResult = (item, index) => (
     <span
@@ -37,13 +39,31 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
   );
 
   const NavAdmin = () => {
+    setActiveElement("profile");
     navigate("/AdminProfile");
   };
 
   const handleHamburgerClick = () => {
-    setIsActive(!isActive); // Toggle active state
-    toggleSidebar(); // Call the toggleSidebar function
+    setActiveElement("hamburger");
+    toggleSidebar();
   };
+
+  // Click outside to deactivate any active element
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target) &&
+        hamburgerRef.current &&
+        !hamburgerRef.current.contains(event.target)
+      ) {
+        setActiveElement(null); // Reset active element if clicked outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav
@@ -52,13 +72,17 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
     >
       <div className="container-fluid tooltip-container">
         <div className="d-flex align-items-center">
-          <div className="burger-icon" onClick={handleHamburgerClick}>
+          <div
+            className="burger-icon"
+            onClick={handleHamburgerClick}
+            ref={hamburgerRef}
+          >
             <img
               src={hamburger}
               alt="hamburger"
-              className={`hamburger ${isActive ? "active" : ""}`}
+              className={`hamburger ${activeElement === "hamburger" ? "active" : ""}`}
               style={{
-                transform: isActive ? "rotate(90deg)" : "rotate(0deg)",
+                transform: activeElement === "hamburger" ? "rotate(90deg)" : "rotate(0deg)",
                 transition: "transform 0.3s ease",
               }}
             />
@@ -111,8 +135,9 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
             <img
               src={ProfilePic}
               alt="Profile"
-              className="navbar-profile-img ms-2 me-2 mt-1"
+              className={`navbar-profile-img ms-2 me-2 mt-1 ${activeElement === "profile" ? "active" : ""}`}
               onClick={NavAdmin}
+              ref={profileRef}
             />
           </form>
         </div>
