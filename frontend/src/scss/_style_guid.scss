@@ -704,6 +704,7 @@
   width: 8.125rem;
   height: 2.75rem;
 }
+
 .logout-x-icon {
   font-size: 1.5rem;
   margin-left: 23.125rem;
@@ -2061,6 +2062,23 @@ reportGrid {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
   border-color: #007bff; /* Change the border color to blue (or any color you want) on hover */
 }
+
+// .navbar-profile-img.active {
+//   border: 2px solid #007bff; /* Example border color */
+//   border-radius: 50%; /* Round border */
+//   transform: scale(1.1);
+// }
+.hamburger.active {
+  transform: rotate(90deg); /* Rotate only when active */
+}
+
+.navbar-profile-img.active {
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  transform: scale(1.1);
+
+}
+
 
 //css for jivass-logo
 /* General navbar styles */
