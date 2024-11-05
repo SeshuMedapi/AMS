@@ -54,10 +54,10 @@ function ResetMail() {
                           For login or technical issues, contact
                         </p>
                         <a
-                          href="mailto:support.subrogation@dminc.com"
+                          href="mailto:support.jivass@jivass.com"
                           className="contct-link"
                         >
-                          support.subrogation@dminc.com
+                          support.jivass@jivass.com
                         </a>
                       </div>
                     </form>

@@ -6,6 +6,8 @@ import ResetPassword from "./Pages/Reset Password/Reset_password";
 import LoginPage from './Pages/Login/login'
 // import Register from './Pages/Login/AdminRegister'
 import Dashboard from "./Pages/Dashboard/dashboard";
+import Notification from "./Pages/Header/notification";
+import Header from "./Pages/Header/header";
 import Usermanagement from './Pages/UserManagement/UserManagement';
 import AdminProfile from "./Pages/Profile/AdminProfile";
 import PrivateRoute from "./Shared modules/Context management/privateRoutes";
@@ -103,6 +105,8 @@ function App() {
         <AuthProvider>
         <div className="app">
         <SessionExpiredModal />
+        {/* <Notification/> */}
+        {/* <Header/> */}
         <Router>
             <Routes>
                 {/* Public Routes */}
@@ -110,6 +114,7 @@ function App() {
                 <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route element={<PrivateRouteWithLayout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/notification" element={<Notification />} />
                   <Route path="/AdminProfile" element={<AdminProfile />} />
                   <Route path="/User-Management" element={<Usermanagement />} />
                   </Route>

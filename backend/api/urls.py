@@ -13,3 +13,4 @@ urlpatterns = [
     path("resetpassword", ResetPassword.as_view({'post': 'post_set_new_password'})),
     path("resetpassword/istokenvalid", ResetPassword.as_view({'post': 'post_is_reset_password_valid'})),
 ]
+

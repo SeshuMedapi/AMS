@@ -2269,3 +2269,46 @@ reportGrid {
   background-color: #f0f0f0;  // Grey background for even items
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 8px; /* Space between profile picture and text */
+}
+
+.user-name {
+  font-weight: 600; /* Bold font for the username */
+  color: #333; /* Dark color for the username */
+}
+
+.user-role {
+  font-size: 0.85rem; /* Slightly smaller font for the role */
+  color: #6c757d; /* Subtle gray color for the role text */
+}
+
+/* Adjust these classes in your CSS file */
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right; /* Align text to the right */
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 0.975rem;
+  color: #333;
+}
+
+.user-role {
+  font-size: 0.875rem;
+  color: #777;
+}
+
+.navbar-profile-img {
+  cursor: pointer;
+  /* Optional: Add margin or size adjustments as needed */
+}
+
+
