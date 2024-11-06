@@ -11,6 +11,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
+const countryCodes = [
+  { code: "+1", name: "United States" },
+  { code: "+91", name: "India" },
+  // You can add more country codes here
+];
+
 function AddUser({ onCancel, onUserAdded }) {
   const [clickedSave, setClickedSave] = useState(false);
   const [firstname, setFirstname] = useState("");
@@ -28,6 +34,7 @@ function AddUser({ onCancel, onUserAdded }) {
   const [overallpassword, setoverallpassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+1"); // Default country code
 
   const userId = localStorage.getItem("userId");
 
@@ -45,17 +52,23 @@ function AddUser({ onCancel, onUserAdded }) {
       fetchRoles();
     }
   }, [userId]);
-  
 
   const formatPhoneNumber = (input) => {
     const value = input.replace(/\D/g, "");
-    if (value.length <= 3) return value;
-    if (value.length <= 6)
-      return `(${value.substring(0, 3)}) ${value.substring(3)}`;
-    return `(${value.substring(0, 3)}) ${value.substring(
-      3,
-      6
-    )}-${value.substring(6, 10)}`;
+    let formattedNumber = "";
+
+    switch (selectedCountryCode) {
+      case "+1": // US
+        if (value.length <= 3) return value;
+        if (value.length <= 6)
+          return `(${value.substring(0, 3)}) ${value.substring(3)}`;
+        return `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6, 10)}`;
+      case "+91": // India
+        if (value.length <= 5) return value;
+        return `${value.substring(0, 5)} ${value.substring(5, 10)}`;
+      default:
+        return value; // Fallback to just digits
+    }
   };
 
   const handlePhoneChange = (event) => {
@@ -65,6 +78,31 @@ function AddUser({ onCancel, onUserAdded }) {
     if (clickedSave) {
       setPhoneNumberError(validatePhoneNumber(formattedValue));
     }
+  };
+
+  const handleCountryCodeChange = (event) => {
+    setSelectedCountryCode(event.target.value);
+    // Reformat the phone number when changing the country code
+    const rawPhoneNumber = phoneNumber.replace(/\D/g, "");
+    setPhoneNumber(formatPhoneNumber(rawPhoneNumber));
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    const numberOnly = phoneNumber.replace(/\D/g, "");
+    if (!numberOnly) {
+      return "Phone number is required";
+    }
+    switch (selectedCountryCode) {
+      case "+1": // US
+        if (numberOnly.length !== 10) return "Invalid US phone number";
+        break;
+      case "+91": // India
+        if (numberOnly.length !== 10) return "Invalid Indian phone number";
+        break;
+      default:
+        return "";
+    }
+    return "";
   };
 
   const handleFirstNameChange = (value) => {
@@ -100,8 +138,9 @@ function AddUser({ onCancel, onUserAdded }) {
     if (!NameValidator(name)) return "Invalid Name";
     return "";
   };
+  
   const validateLastName = (name) => {
-    if (!name.trim()) return " Last Name is required";
+    if (!name.trim()) return "Last Name is required";
     if (!NameValidator(name)) return "Invalid Name";
     return "";
   };
@@ -109,14 +148,6 @@ function AddUser({ onCancel, onUserAdded }) {
   const validateMail = (mail) => {
     if (!mail.trim()) return "Email is required";
     if (!emailvalidator(mail)) return "Invalid email format";
-    return "";
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    if (!phoneNumber) {
-      return "Phone number is required";
-    } else if (!UsPhoneNumberValidator(phoneNumber))
-      return "Invalid US phone number";
     return "";
   };
 
@@ -173,7 +204,7 @@ function AddUser({ onCancel, onUserAdded }) {
           toast.success("User created successfully!", {
             onClose: () => setIsButtonDisabled(false),
           });
-          fetchUserData();
+          // fetchUserData(); // Ensure this function is defined or implement if needed
           setTimeout(() => {
             onCancel();
           }, 3000);
@@ -245,15 +276,13 @@ function AddUser({ onCancel, onUserAdded }) {
           onClose: () => setIsButtonDisabled(false),
         });
       } else {
-        setApiError("Error setting up the request");
-        toast.error("Error setting up the request", {
+        setApiError("Error: " + error.message);
+        toast.error("Error: " + error.message, {
           onClose: () => setIsButtonDisabled(false),
         });
       }
-      console.error("Error saving user:", error);
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -274,7 +303,7 @@ function AddUser({ onCancel, onUserAdded }) {
       <div className="form-container">
         <form className="p-3">
           <div className="mb-2">
-            <label htmlFor="firstName" className="form-label fw-bold">
+            <label className="form-label fw-bold">
               First Name <span className="text-danger">*</span>
             </label>
             <input
@@ -282,7 +311,6 @@ function AddUser({ onCancel, onUserAdded }) {
               className={`form-control form-control-all ${
                 firstnameError ? "is-invalid" : ""
               }`}
-              id="firstName"
               value={firstname}
               onChange={(e) => handleFirstNameChange(e.target.value)}
             />
@@ -291,7 +319,7 @@ function AddUser({ onCancel, onUserAdded }) {
             )}
           </div>
           <div className="mb-2">
-            <label htmlFor="lastName" className="form-label fw-bold">
+            <label className="form-label fw-bold">
               Last Name <span className="text-danger">*</span>
             </label>
             <input
@@ -299,7 +327,6 @@ function AddUser({ onCancel, onUserAdded }) {
               className={`form-control form-control-all ${
                 lastnameError ? "is-invalid" : ""
               }`}
-              id="lastName"
               value={lastname}
               onChange={(e) => handleLastNameChange(e.target.value)}
             />
@@ -308,19 +335,35 @@ function AddUser({ onCancel, onUserAdded }) {
             )}
           </div>
           <div className="mb-2">
-            <label htmlFor="email" className="form-label fw-bold">
-              Email address <span className="text-danger">*</span>
+            <label className="form-label fw-bold">
+              Email <span className="text-danger">*</span>
             </label>
             <input
               type="email"
               className={`form-control form-control-all ${
                 mailError ? "is-invalid" : ""
               }`}
-              id="email"
               value={mail}
               onChange={(e) => handleEmailChange(e.target.value)}
             />
             {mailError && <div className="text-danger">{mailError}</div>}
+          </div>
+          <div className="mb-2">
+            <label htmlFor="countryCode" className="form-label fw-bold">
+              Country Code <span className="text-danger">*</span>
+            </label>
+            <select
+              className={`form-select form-control form-control-all`}
+              id="countryCode"
+              value={selectedCountryCode}
+              onChange={handleCountryCodeChange}
+            >
+              {countryCodes.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.code} - {country.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-2">
             <label className="form-label fw-bold">
@@ -342,18 +385,17 @@ function AddUser({ onCancel, onUserAdded }) {
             )}
           </div>
           <div className="mb-2">
-            <label htmlFor="role" className="form-label fw-bold">
+            <label className="form-label fw-bold">
               Role <span className="text-danger">*</span>
             </label>
             <select
               className={`form-select form-control form-control-all ${
                 roleError ? "is-invalid" : ""
               }`}
-              id="role"
               value={role}
               onChange={(e) => handleRoleChange(e.target.value)}
             >
-              <option value="">Select</option>
+              <option value="">Select Role</option>
               {roles.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
@@ -362,12 +404,6 @@ function AddUser({ onCancel, onUserAdded }) {
             </select>
             {roleError && <div className="text-danger">{roleError}</div>}
           </div>
-
-          {overallpassword && (
-            <div className="text-secondary">
-              Please check the form and correct all errors before submitting.
-            </div>
-          )}
         </form>
       </div>
       <div className="position-fixed bottom-0 end-0 popup-bottom-bar">
@@ -379,7 +415,7 @@ function AddUser({ onCancel, onUserAdded }) {
             <button
               className="me-2 fw-bold btnUserUpgdate"
               onClick={handleSave}
-              disabled={(isLoading || isButtonDisabled)}
+              disabled={isLoading || isButtonDisabled}
             >
               {isLoading ? (
                 <FontAwesomeIcon icon={faSpinner} spin />
