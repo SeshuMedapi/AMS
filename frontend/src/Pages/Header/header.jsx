@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import hamburger from "../../assets/SideBarNav/burger-menu-svgrepo-com.svg";
@@ -6,44 +6,40 @@ import LogoMark from "../../../src/assets/login/jivass-logo.png";
 import ProfilePic from "../../assets/Profile/Profile.svg";
 
 const Header = ({ isSidebarOpen, toggleSidebar }) => {
-  const [showPage, setShowPage] = useState(false);
-  const [hasNotifications, setHasNotifications] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [items, setItems] = useState([]);
-  const [readonly, setReadOnly] = useState("");
-  const [showNoResults, setShowNoResults] = useState(false);
-  const [dropdownHovered, setDropdownHovered] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [userName, setUserName] = useState("Name"); // Placeholder for name
+  const [userRole, setUserRole] = useState("Role"); // Placeholder for role
+  const [activeElement, setActiveElement] = useState(null);
 
   const navigate = useNavigate();
   const sidebarWidth = isSidebarOpen ? "8rem" : "4rem";
 
-  const dropdownRef = useRef(null);
-
-  const formatResult = (item, index) => (
-    <span
-      key={item.id}
-      style={{
-        display: "block",
-        textAlign: "left",
-        backgroundColor:
-          highlightedIndex === index ? "#e0e0e0" : "transparent",
-      }}
-    >
-      {item.name}
-    </span>
-  );
+  const profileRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
   const NavAdmin = () => {
+    setActiveElement("profile");
     navigate("/AdminProfile");
   };
 
   const handleHamburgerClick = () => {
-    setIsActive(!isActive); // Toggle active state
-    toggleSidebar(); // Call the toggleSidebar function
+    setActiveElement("hamburger");
+    toggleSidebar();
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target) &&
+        hamburgerRef.current &&
+        !hamburgerRef.current.contains(event.target)
+      ) {
+        setActiveElement(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav
@@ -52,13 +48,17 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
     >
       <div className="container-fluid tooltip-container">
         <div className="d-flex align-items-center">
-          <div className="burger-icon" onClick={handleHamburgerClick}>
+          <div
+            className="burger-icon"
+            onClick={handleHamburgerClick}
+            ref={hamburgerRef}
+          >
             <img
               src={hamburger}
               alt="hamburger"
-              className={`hamburger ${isActive ? "active" : ""}`}
+              className={`hamburger ${activeElement === "hamburger" ? "active" : ""}`}
               style={{
-                transform: isActive ? "rotate(90deg)" : "rotate(0deg)",
+                transform: activeElement === "hamburger" ? "rotate(90deg)" : "rotate(0deg)",
                 transition: "transform 0.3s ease",
               }}
             />
@@ -75,45 +75,21 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
           </a>
         </div>
         <div className="d-flex align-items-center ms-auto">
-          <form
-            className="d-flex position-relative"
-            onSubmit={(event) => event.preventDefault()}
-          >
-            <div className="search ms-2 position-relative">
-              <div className="input-container">
-                {/* Search input goes here */}
+          <form className="d-flex position-relative" onSubmit={(event) => event.preventDefault()}>
+            <div className="d-flex align-items-center ms-2 me-2 mt-1">
+              {/* Display User Name and Role as Text to the Left */}
+              <div className="user-info me-2">
+                <div className="user-name">{userName}</div>
+                <div className="user-role text-muted">{userRole}</div>
               </div>
-
-              {isDropdownOpen && items.length > 0 && (
-                <ul
-                  className="search-results list-unstyled position-absolute start-0"
-                  onMouseEnter={() => setDropdownHovered(true)}
-                  onMouseLeave={() => setDropdownHovered(false)}
-                  ref={dropdownRef}
-                  style={{ maxHeight: "200px", overflowY: "auto" }}
-                >
-                  {items.map((item, index) => (
-                    <li
-                      key={item.id}
-                      onClick={() => handleSearchSelect(item)}
-                      className="search-result-item"
-                    >
-                      {formatResult(item, index)}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {isDropdownOpen && showNoResults && searchQuery.trim() !== "" && (
-                <div className="no-results-item">No results found</div>
-              )}
+              <img
+                src={ProfilePic}
+                alt="Profile"
+                className={`navbar-profile-img ${activeElement === "profile" ? "active" : ""}`}
+                onClick={NavAdmin}
+                ref={profileRef}
+              />
             </div>
-            <img
-              src={ProfilePic}
-              alt="Profile"
-              className="navbar-profile-img ms-2 me-2 mt-1"
-              onClick={NavAdmin}
-            />
           </form>
         </div>
       </div>
