@@ -259,12 +259,17 @@ function LoginPage() {
                       alt="login form"
                       className="img-adg w-100 m-3"
                     />
+                    
                   </div>
                 </div>
                 <div className="col-md-7 col-lg-6 d-flex justify-content-center align-items-center">
                   <div className="card-body text-black">
                     <form onSubmit={handleSubmit}>
                       <div className="mb-4 ms-5 mt-5">
+                      <div className="mb-4 ms-5 mt-5">
+                          <h1 className="title">AttenDo</h1>
+                      </div>
+
                         <h1 className="h2 fw-bold">
                           {isLogin ? "Login" : "Forgot Password"}
                         </h1>
