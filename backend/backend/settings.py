@@ -106,7 +106,7 @@ DATABASES = {
         },
         'NAME': 'ams',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -236,6 +236,7 @@ LOGGING = {
 
 PERMISSIONS = (
                 ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
+                ('view_calendar', ''), ('edit_calendar', '')
             )
 
 ROLES = ['SuperAdmin', 
@@ -252,7 +253,7 @@ ROLE_PERMISSION = [
             'create_company',
             'view_company',
             'delete_company',
-            'activate_user', 
+            'activate_user'
         ]
     },
     {
@@ -269,6 +270,8 @@ ROLE_PERMISSION = [
             'view_user',
             'create_user',
             'edit_user',
+            'view_calendar',
+            'edit_calendar'
         ]
     },
         {
@@ -277,12 +280,14 @@ ROLE_PERMISSION = [
             'view_user',
             'create_user',
             'edit_user',
+            'view_calendar'
         ]
     },
         {
         "role": "User",
         "permissions": [
-            'view_user'
+            'view_user',
+            'view_calendar'
         ]
     }
 ]

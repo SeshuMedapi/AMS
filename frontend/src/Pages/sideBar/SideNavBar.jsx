@@ -5,6 +5,7 @@ import Dashboard from "../../assets/SideBarNav/HoverMenu/Dashboard.svg";
 import Report from "../../assets/SideBarNav/HoverMenu/Report.svg";
 import Invoices from "../../assets/SideBarNav/HoverMenu/Invoice.svg";
 import UserManagement from "../../assets/SideBarNav/HoverMenu/User Management.svg";
+import Calendar from "../../assets/calendar.svg";
 import OIC from "../../assets/SideBarNav/oicIcon.svg";
 
 import DashboardHover from "../../assets/SideBarNav/Menu/Dashboard.svg";
@@ -32,6 +33,12 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       icon: UserManagement,
       hoverIcon: UserManagementHover,
       permission: ["view_user","view_company"],
+    },
+    {
+      name: "Calendar",
+      icon: Calendar,
+      hoverIcon: Calendar,
+      permission: ["view_user"],
     }
   ];
 
