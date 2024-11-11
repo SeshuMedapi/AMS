@@ -38,7 +38,7 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       name: "Calendar",
       icon: Calendar,
       hoverIcon: Calendar,
-      permission: ["view_user"],
+      permission: ["view_calendar"],
     }
   ];
 
