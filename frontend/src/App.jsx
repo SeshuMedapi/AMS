@@ -7,10 +7,13 @@ import LoginPage from './Pages/Login/login'
 // import Register from './Pages/Login/AdminRegister'
 import Dashboard from "./Pages/Dashboard/dashboard";
 import Usermanagement from './Pages/UserManagement/UserManagement';
+import Calendar from "./Pages/Calendar/calendar";
 import AdminProfile from "./Pages/Profile/AdminProfile";
 import PrivateRoute from "./Shared modules/Context management/privateRoutes";
 import { AuthProvider } from "./Shared modules/Context management/authContext";
 import SessionExpiredModal from "./View Components/Session components/SessionTimeoutModal";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 function App() {
   // const [showModal, setShowModal] = useState(false);
 
@@ -112,7 +115,8 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/AdminProfile" element={<AdminProfile />} />
                   <Route path="/User-Management" element={<Usermanagement />} />
-                  </Route>
+                  <Route path="/calendar" element={<Calendar />} />
+                </Route>
             </Routes>
         </Router>
         </div>
