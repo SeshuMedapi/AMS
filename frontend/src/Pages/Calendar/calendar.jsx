@@ -4,6 +4,7 @@ import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css'; // Make sure the CSS is imported
+import Permission from "../../Shared modules/Context management/permissionCheck";  // Assuming this is where your Permission component is imported
 
 // Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
@@ -49,7 +50,7 @@ const Calendar = () => {
 
   const handleDeleteEvent = async (id) => {
     try {
-      await axiosInstance.delete(`/calendar/delete/${id}`);
+      await axiosInstance.delete(`/calendar/delete/${id}/`);
       setCalendarEvents(calendarEvents.filter(event => event.id !== id));
       handleCloseModal(); // Close the modal after deletion
     } catch (error) {
@@ -69,7 +70,10 @@ const Calendar = () => {
     <div className="container mt-5">
       <h2>HR Calendar</h2>
 
-      <Button variant="primary" onClick={() => handleShowModal()}>Add Event</Button>
+      {/* Add Event Button wrapped in Permission component */}
+      <Permission requiredPermission="edit_calendar" action="hide">
+        <Button variant="primary" onClick={() => handleShowModal()}>Add Event</Button>
+      </Permission>
 
       <BigCalendar
         localizer={localizer}  // Use the defined localizer here
