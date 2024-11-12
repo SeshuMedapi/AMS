@@ -1,0 +1,30 @@
+### Request Login 
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "hr1@gmail.com", 
+    "password": "Jivass@123"
+}
+
+###To Get a events under company
+GET http://localhost:8000/api/calendar/53
+content-type: application/json 
+Authorization: Token 711a82c7fab0cf94227237bc37fb71a945624b83
+
+###To Post a events under company
+POST http://localhost:8000/api/calendar/50
+content-type: application/json 
+Authorization: Token 64f80f90f331d41e9906b53523e26dec46213672
+
+{ 
+    "name" : "Holiday",
+    "date" : "2024-11-18", 
+    "description" : "test",
+    "is_editable" : true 
+}
+
+###To Delete a events under company
+DELETE http://localhost:8000/api/calendar/delete/1
+content-type: application/json 
+Authorization: Token 64f80f90f331d41e9906b53523e26dec46213672
