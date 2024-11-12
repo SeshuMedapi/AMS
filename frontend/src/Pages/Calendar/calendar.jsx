@@ -3,8 +3,8 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css'; // Make sure the CSS is imported
-import Permission from "../../Shared modules/Context management/permissionCheck";  // Assuming this is where your Permission component is imported
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import Permission from "../../Shared modules/Context management/permissionCheck";
 
 // Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
@@ -13,6 +13,12 @@ const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', description: '', is_editable: true });
+
+  // Fetch user group from localStorage
+  const group = localStorage.getItem("groupName");
+
+  // Dynamic calendar title based on user group
+  const calendarTitle = group === "HR" ? "HR Calendar" : "Manager Calendar";
 
   useEffect(() => {
     const fetchCalendarEvents = async () => {
@@ -52,7 +58,7 @@ const Calendar = () => {
     try {
       await axiosInstance.delete(`/calendar/delete/${id}/`);
       setCalendarEvents(calendarEvents.filter(event => event.id !== id));
-      handleCloseModal(); // Close the modal after deletion
+      handleCloseModal();
     } catch (error) {
       alert(error.response?.data || "Error deleting calendar event.");
     }
@@ -68,21 +74,25 @@ const Calendar = () => {
 
   return (
     <div className="container mt-5">
-      <h2>HR Calendar</h2>
+      <h2>{calendarTitle}</h2>
 
-      {/* Add Event Button wrapped in Permission component */}
-      <Permission requiredPermission="edit_calendar" action="hide">
-        <Button variant="primary" onClick={() => handleShowModal()}>Add Event</Button>
-      </Permission>
+      {/* Calendar and Add Event Button */}
+      <div className="calendar-container">
+        {group === "HR" && (
+          <Permission requiredPermission="edit_calendar" action="hide">
+            <Button className="add-event-btn" onClick={() => handleShowModal()}>Add Event</Button>
+          </Permission>
+        )}
 
-      <BigCalendar
-        localizer={localizer}  // Use the defined localizer here
-        events={formattedEvents}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500, marginTop: '20px' }}
-        onSelectEvent={event => handleShowModal(event)}
-      />
+        <BigCalendar
+          localizer={localizer}
+          events={formattedEvents}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500, marginTop: '20px' }}
+          onSelectEvent={event => handleShowModal(event)}
+        />
+      </div>
 
       {/* Modal for Adding/Editing Event */}
       <Modal show={showModal} onHide={handleCloseModal}>

@@ -106,8 +106,10 @@ function LoginPage() {
             const userdetail = response.data.user;
             const userdetailid = response.data.user.id;
             const session_time = response.data.session_time;
+            const group = response.data.user.group_name;
             localStorage.setItem("userId", userdetailid);
             localStorage.setItem("userLoggedIn", "true");
+            localStorage.setItem("groupName", group);
             console.log(permissionvalue);
             login(token, permissionvalue, session_time); // Use the login function from the context
             navigate("/dashboard");
