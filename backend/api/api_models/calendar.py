@@ -1,4 +1,5 @@
 from django.db import models
+from api.api_models.company import Company
 
 class CalendarEvent(models.Model):
     name = models.CharField(max_length=100)
@@ -6,6 +7,7 @@ class CalendarEvent(models.Model):
     description = models.TextField(blank=True)
     is_editable = models.BooleanField(default=True)
     is_holiday = models.BooleanField(default=False)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     
     def save(self, *args, **kwargs):
         if self.date.weekday() == 6:
@@ -16,13 +18,12 @@ class CalendarEvent(models.Model):
     def __str__(self):
         return f"{self.name} - {self.date} ({'Holiday' if self.is_holiday else 'Working Day'})"
     
-
 from rest_framework import serializers
 
 class CalendarEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalendarEvent
-        fields = ['id', 'name', 'date', 'description', 'is_editable', 'is_holiday']
+        fields = ['id', 'name', 'date', 'description', 'is_editable', 'is_holiday', 'company']
         read_only_fields = ['id', 'is_holiday', 'is_editable']
 
     def validate_date(self, value):

@@ -29,11 +29,11 @@ class UserService():
         manager_ids = Group.objects.filter(name='User').values_list('id', flat=True)
 
         if role_id == Admin.id:
-            users = User.objects.filter(groups__id__in=admin_ids).annotate(group_name=F('groups__name'))
+            users = User.objects.filter(groups__id__in=admin_ids,company=user_.company).annotate(group_name=F('groups__name'))
         elif role_id == hr.id:
-            users = User.objects.filter(groups__id__in=hr_ids).annotate(group_name=F('groups__name'))
+            users = User.objects.filter(groups__id__in=hr_ids,company=user_.company).annotate(group_name=F('groups__name'))
         elif role_id == manager.id:
-            users = User.objects.filter(groups__id__in=manager_ids).annotate(group_name=F('groups__name'))
+            users = User.objects.filter(groups__id__in=manager_ids,company=user_.company).annotate(group_name=F('groups__name'))
         else:
             users = User.objects.none()
 
