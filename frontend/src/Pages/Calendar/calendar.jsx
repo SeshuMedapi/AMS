@@ -13,11 +13,12 @@ const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', description: '', is_editable: true });
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchCalendarEvents = async () => {
       try {
-        const response = await axiosInstance.get('/calendar');
+        const response = await axiosInstance.get(`calendar/${userId}`);
         setCalendarEvents(response.data);
       } catch (error) {
         console.error("Error fetching calendar events:", error);
@@ -34,7 +35,7 @@ const Calendar = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleSaveEvent = async () => {
-    const url = currentEvent.id ? `/calendar/edit` : `/calendar/edit`;
+    const url = currentEvent.id ? `calendar/${userId}` : `calendar/${userId}`;
     try {
       const response = await axiosInstance.post(url, currentEvent);
       if (currentEvent.id) {
@@ -50,7 +51,7 @@ const Calendar = () => {
 
   const handleDeleteEvent = async (id) => {
     try {
-      await axiosInstance.delete(`/calendar/delete/${id}/`);
+      await axiosInstance.delete(`calendar/delete/${id}/`);
       setCalendarEvents(calendarEvents.filter(event => event.id !== id));
       handleCloseModal(); // Close the modal after deletion
     } catch (error) {
