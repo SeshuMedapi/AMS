@@ -7,24 +7,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import './Calendar.css';  // Import custom CSS file
 
-// Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
-
-// Function to generate consistent color for event types
-const getEventColor = (eventName) => {
-  const hashCode = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash << 5) - hash + str.charCodeAt(i);
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
-  };
-
-  const colorCode = hashCode(eventName);
-  const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#33FFF5'];
-  return colors[Math.abs(colorCode) % colors.length];  // Ensuring a consistent color from a set
-};
 
 const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
@@ -54,7 +37,7 @@ const Calendar = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleSaveEvent = async () => {
-    const url = currentEvent.id ? `/calendar/edit/${currentEvent.id}` : `/calendar/add`;
+    const url = currentEvent.id ? `/calendar/edit` : `/calendar/edit`;
     try {
       const response = await axiosInstance.post(url, currentEvent);
       if (currentEvent.id) {
@@ -68,71 +51,99 @@ const Calendar = () => {
     }
   };
 
-  // DELETE EVENT
+  // const handleDeleteEvent = async (id) => {
+  //   try {
+  //     const response = await axiosInstance.delete(`/calendar/delete/${id}/`);
+  //     if (response.status === 200) {
+  //       setCalendarEvents(calendarEvents.filter(event => event.id !== id));
+  //       handleCloseModal(); // Close modal after deletion
+  //     } else {
+  //       alert("Failed to delete the event.");
+  //     }
+  //   } catch (error) {
+  //     alert(error.response?.data || "Error deleting calendar event.");
+  //   }
+  // };
   const handleDeleteEvent = async (id) => {
     try {
-      await axiosInstance.delete(`/calendar/delete/${id}/`); // Correct API URL
-      setCalendarEvents(calendarEvents.filter(event => event.id !== id)); // Remove the event from state
-      handleCloseModal(); // Close modal after deletion
+      const response = await axiosInstance.delete(`/calendar/delete/${id}/`);
+      if (response.status === 200) {
+        setCalendarEvents(calendarEvents.filter(event => event.id !== id));
+        handleCloseModal(); // Close modal after deletion
+      } else {
+        alert("Failed to delete the event.");
+      }
     } catch (error) {
       alert(error.response?.data || "Error deleting calendar event.");
     }
   };
 
-  // Format events and apply color logic
-  const formattedEvents = calendarEvents.map(event => {
-    const eventColor = getEventColor(event.name);
-    const eventDate = new Date(event.date);
-    const isSunday = eventDate.getDay() === 0;  // Check if it's a Sunday
-
-    return {
-      id: event.id,
-      title: event.name,
-      start: eventDate,
-      end: eventDate,
-      description: event.description,
-      backgroundColor: isSunday ? '#B2B2B2' : eventColor,  // Set Sunday color to gray
-      isEditable: !isSunday,  // Make Sunday events uneditable
-    };
-  });
-
-  // Render today's date with a dot
-  const renderDay = (date, dayWrapper) => {
-    if (moment().isSame(date, 'day')) {
-      return (
-        <div className="today-day">
-          <span className="dot-mark"></span>
-          {dayWrapper}
-        </div>
-      );
+  const generateColor = (event) => {
+    // Color for Sundays (same color for all Sundays)
+    const sundayColor = "#FFD700"; // You can choose any color for Sundays
+    
+    // If the event is on a Sunday, return the Sunday color
+    if (new Date(event.date).getDay() === 0) {
+      return sundayColor;
     }
-    return dayWrapper;
+
+    // Color based on event type (name, category, or other property)
+    const eventType = event.name; // You can replace this with any other property, like event.type
+    const hash = eventType.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return `#${(hash % 16777215).toString(16).padStart(6, '0')}`; // Generate a color based on the hash of the event type
   };
 
+  const dayPropGetter = (date) => {
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+      return {
+        style: {
+          backgroundColor: '#f0f8ff', // Light color (AliceBlue)
+          borderRadius: '5px',
+        },
+      };
+    }
+    return {};
+  };
+
+  const formattedEvents = calendarEvents.map(event => ({
+    id: event.id,
+    title: event.name,
+    start: new Date(event.date),
+    end: new Date(event.date),
+    description: event.description,
+    backgroundColor: generateColor(event),
+  }));
+
   return (
-    <div className="container mt-5">
-      <h2>{calendarTitle}</h2>
+    <div className="calendar-container">
+      <h2 className="calendar-title">{calendarTitle}</h2>
 
-      {/* Calendar and Add Event Button */}
-      <div className="calendar-container">
-        {group === "HR" && (
-          <Permission requiredPermission="edit_calendar" action="hide">
-            <Button className="add-event-btn" onClick={() => handleShowModal()}>Add Event</Button>
-          </Permission>
-        )}
+      {group === "HR" && (
+        <Permission requiredPermission="edit_calendar" action="hide">
+          <Button className="add-event-btn" onClick={() => handleShowModal()}>Add Event</Button>
+        </Permission>
+      )}
 
-        <BigCalendar
-          localizer={localizer}
-          events={formattedEvents}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500, marginTop: '20px' }}
-          onSelectEvent={event => handleShowModal(event)}
-          dayPropGetter={renderDay}  // Custom render for today’s dot
-        />
-      </div>
+      <BigCalendar
+        localizer={localizer}
+        events={formattedEvents}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500, marginTop: '20px', borderRadius: '8px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)' }}
+        eventPropGetter={(event) => ({
+          style: {
+            backgroundColor: event.backgroundColor,
+            borderRadius: '5px',
+            color: 'white',
+            border: 'none',
+            padding: '5px'
+          }
+        })}
+        onSelectEvent={event => handleShowModal(event)}
+        dayPropGetter={dayPropGetter}  // Apply light color for today
+      />
 
-      {/* Modal for Adding/Editing Event */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{currentEvent.id ? "Edit Event" : "Add Event"}</Modal.Title>
@@ -145,7 +156,6 @@ const Calendar = () => {
                 type="text"
                 value={currentEvent.name}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, name: e.target.value })}
-                disabled={!currentEvent.isEditable}  // Disable for Sundays
               />
             </Form.Group>
             <Form.Group>
@@ -154,7 +164,6 @@ const Calendar = () => {
                 type="date"
                 value={currentEvent.date}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, date: e.target.value })}
-                disabled={!currentEvent.isEditable}  // Disable for Sundays
               />
             </Form.Group>
             <Form.Group>
@@ -164,7 +173,6 @@ const Calendar = () => {
                 rows={3}
                 value={currentEvent.description}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, description: e.target.value })}
-                disabled={!currentEvent.isEditable}  // Disable for Sundays
               />
             </Form.Group>
           </Form>
@@ -176,7 +184,7 @@ const Calendar = () => {
             </Button>
           )}
           <Button variant="secondary" onClick={handleCloseModal}>Cancel</Button>
-          <Button variant="primary" onClick={handleSaveEvent} disabled={!currentEvent.isEditable}>
+          <Button variant="primary" onClick={handleSaveEvent}>
             {currentEvent.id ? "Update" : "Save"}
           </Button>
         </Modal.Footer>

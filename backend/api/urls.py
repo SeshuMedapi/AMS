@@ -1,6 +1,8 @@
 from django.urls import path
 from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView
 from api.view.calendar_view import CreateOrUpdateCalendarEventView, DeleteCalendarEventView, ListCalendarEventsView
+from .views import delete_event
+
 
 urlpatterns = [
     path("login", LoginView.as_view()),
@@ -16,5 +18,6 @@ urlpatterns = [
 
     path('calendar', ListCalendarEventsView.as_view(), name='list_calendar_events'),     
     path('calendar/edit', CreateOrUpdateCalendarEventView.as_view(), name='create_or_update_calendar_event'),
-    path('calendar/delete/<int:event_id>', DeleteCalendarEventView.as_view(), name='delete_calendar_event'),  
+    path('calendar/delete/<int:event_id>', DeleteCalendarEventView.as_view(), name='delete_calendar_event'), 
+     
 ]

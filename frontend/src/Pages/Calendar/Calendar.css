@@ -53,3 +53,7 @@
   color: #0056b3;
   text-decoration: underline;
 }
+.today-day {
+    background-color: #f0f8ff;  /* Light blue color */
+    border-radius: 5px;
+  }
