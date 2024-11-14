@@ -2320,50 +2320,53 @@ reportGrid {
   /* Optional: Add margin or size adjustments as needed */
 }
 
-// Add event button
-
-
-
+//add event
+/* Custom Add Event Button Style */
 .add-event-btn {
-  background-color: #6C63FF; /* Beautiful purple background */
-  color: white; /* White text */
-  padding: 12px 25px;; /* Adjusted padding for better fit */
-  font-size: 16px; /* Text size */
-  font-weight: bold; /* Bold text for emphasis */
-  border-radius: 8px; /* Rounded corners */
-  border: none; /* Removes default border */
-  cursor: pointer; /* Shows pointer cursor on hover */
-  transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
-  
-  position: fixed; /* Absolute positioning for the button */
-  top: 100px;
-  right: 50px;
-  white-space: nowrap; /* Prevents text from wrapping into multiple lines */
-  min-width: 100px; /* Ensures the button has a minimum width, adjust as needed */
-  text-align: center; /* Centers the text horizontally */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px; /* Adjust the height as needed */
-  position: fixed;
+  background-color: #4CAF50; /* Custom green background */
+  color: white; /* White text color */
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  transform: scale(1); /* Ensuring no scale transform unless on hover */
+  // display: flex;
+  // display: flex;
+  justify-content: center; /* Horizontally center the text */
+  align-items: center; /* Vertically center the text */
+  text-align: center; /* Ensures the text is centered */
+  width: auto; /* Ensures width adapts to text size */
 }
 
-.add-event-btn:active {
-  transform: translateY(0); /* Button stays in place on click */
-  background-color: #4F43E6; /* Darker shade of purple on click */
-}   
-
+/* Custom Add Event Button on Hover */
 .add-event-btn:hover {
-  background-color: #4F43E6; /* Darker shade of purple on hover */
-  transform: translateY(-3px); /* Button lifts up slightly on hover */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Adds subtle shadow effect */
+  background-color: #45a049; /* Slightly darker green for hover */
+  transform: scale(1.05); /* Slight zoom effect */
 }
 
-// .add-event-btn:focus {
-//   outline: none; /* Removes the default focus outline */
-//   box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.6); /* Adds a focus ring for accessibility */
-// }
-.calendar-container {
-  position: relative; /* Ensures the button can be positioned absolutely within it */
-  padding-top: 20px; /* Adds some space above the calendar */
+/* Remove default Bootstrap active/focus effects from Add Event Button */
+.add-event-btn:focus,
+.add-event-btn:active {
+  background-color: #4CAF50 !important; /* Keep original background color on active/focus */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* Keep the shadow */
+  border-color: transparent !important; /* Remove any border styling */
 }
+
+.today-day {
+  position: relative;
+}
+
+.dot-mark {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: red; /* Color for today's dot */
+}
+
