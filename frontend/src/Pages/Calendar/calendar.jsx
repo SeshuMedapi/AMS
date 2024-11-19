@@ -4,7 +4,7 @@ import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css'; // Make sure the CSS is imported
-import Permission from "../../Shared modules/Context management/permissionCheck";  // Assuming this is where your Permission component is imported
+import Permission from "../../Shared modules/Context management/permissionCheck"; // Assuming this is where your Permission component is imported
 
 // Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
@@ -25,7 +25,7 @@ const Calendar = () => {
       }
     };
     fetchCalendarEvents();
-  }, []);
+  }, [userId]);
 
   const handleShowModal = (event = { name: '', date: '', description: '', is_editable: true }) => {
     setCurrentEvent(event);
@@ -50,12 +50,15 @@ const Calendar = () => {
   };
 
   const handleDeleteEvent = async (id) => {
-    try {
-      await axiosInstance.delete(`calendar/delete/${id}/`);
-      setCalendarEvents(calendarEvents.filter(event => event.id !== id));
-      handleCloseModal(); // Close the modal after deletion
-    } catch (error) {
-      alert(error.response?.data || "Error deleting calendar event.");
+    if (window.confirm("Are you sure you want to delete this event?")) { // Add confirmation
+      try {
+        await axiosInstance.delete(`calendar/delete/${id}`);
+        // Update state to remove the deleted event
+        setCalendarEvents(calendarEvents.filter(event => event.id !== id));
+        setShowModal(false); // Close the modal after deletion
+      } catch (error) {
+        alert(error.response?.data || "Error deleting calendar event.");
+      }
     }
   };
 
