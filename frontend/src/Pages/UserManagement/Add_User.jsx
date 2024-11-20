@@ -317,11 +317,25 @@ function AddUser({ onCancel, onUserAdded }) {
     return "";
   };
 
+  // const validateMail = (mail) => {
+  //   if (!mail.trim()) return "Email is required";
+  //   if (!emailvalidator(mail)) return "Invalid email format";
+  //   return "";
+  // };
   const validateMail = (mail) => {
-    if (!mail.trim()) return "Email is required";
-    if (!emailvalidator(mail)) return "Invalid email format";
+    if (!mail.trim()) {
+      return "Email is required";
+    }
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(mail)) {
+      return "Invalid email format";
+    }
+  
     return "";
   };
+  
 
   const validateRole = (role) => {
     if (!role) {
@@ -508,7 +522,7 @@ function AddUser({ onCancel, onUserAdded }) {
               <div className="text-danger">{lastnameError}</div>
             )}
           </div>
-          <div className="mb-2">
+          {/* <div className="mb-2">
             <label className="form-label fw-bold">
               Email <span className="text-danger">*</span>
             </label>
@@ -522,7 +536,23 @@ function AddUser({ onCancel, onUserAdded }) {
               onChange={(e) => handleEmailChange(e.target.value)}
             />
             {mailError && <div className="text-danger">{mailError}</div>}
-          </div>
+          </div> */}
+          <div className="mb-2">
+  <label className="form-label fw-bold">
+    Email <span className="text-danger">*</span>
+  </label>
+  <input
+    type="email"
+    placeholder="Enter Email"
+    className={`form-control form-control-all ${
+      mailError ? "is-invalid" : ""
+    }`}
+    value={mail}
+    onChange={(e) => handleEmailChange(e.target.value)}  // Handles email validation
+  />
+  {mailError && <div className="text-danger">{mailError}</div>}  {/* Display error if validation fails */}
+</div>
+
           <div className="mb-2">
             <label htmlFor="countryCode" className="form-label fw-bold">
               Country Code <span className="text-danger">*</span>
