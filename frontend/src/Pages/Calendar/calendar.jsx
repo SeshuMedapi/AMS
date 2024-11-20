@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css'; // Make sure the CSS is imported
-import Permission from "../../Shared modules/Context management/permissionCheck"; // Assuming this is where your Permission component is imported
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import Permission from "../../Shared modules/Context management/permissionCheck";
+import './calendar.css';
 
-// Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
 
 const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', description: '', is_editable: true });
+  const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', time: '', description: '', type: '', is_editable: true });
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Calendar = () => {
     fetchCalendarEvents();
   }, [userId]);
 
-  const handleShowModal = (event = { name: '', date: '', description: '', is_editable: true }) => {
+  const handleShowModal = (event = { name: '', date: '', time: '', description: '', type: '', is_editable: true }) => {
     setCurrentEvent(event);
     setShowModal(true);
   };
@@ -50,12 +50,11 @@ const Calendar = () => {
   };
 
   const handleDeleteEvent = async (id) => {
-    if (window.confirm("Are you sure you want to delete this event?")) { // Add confirmation
+    if (window.confirm("Are you sure you want to delete this event?")) {
       try {
         await axiosInstance.delete(`calendar/delete/${id}`);
-        // Update state to remove the deleted event
         setCalendarEvents(calendarEvents.filter(event => event.id !== id));
-        setShowModal(false); // Close the modal after deletion
+        setShowModal(false);
       } catch (error) {
         alert(error.response?.data || "Error deleting calendar event.");
       }
@@ -68,27 +67,50 @@ const Calendar = () => {
     start: new Date(event.date),
     end: new Date(event.date),
     description: event.description,
+    type: event.type,
   }));
+
+  const eventPropGetter = (event) => {
+    const eventStyles = {
+      week_off: {
+        className: "week-off-event",
+        style: { backgroundColor: "#18b53d", color: "#fff", borderRadius: "4px" },
+      },
+      public_holiday: {
+        className: "public-holiday-event",
+        style: { backgroundColor: "#fff3cd", color: "#856404", borderRadius: "4px" },
+      },
+      meeting: {
+        className: "meeting-event",
+        style: { backgroundColor: "#d1ecf1", color: "#0c5460", borderRadius: "4px" },
+      },
+      training: {
+        className: "training-event",
+        style: { backgroundColor: "#d4edda", color: "#155724", borderRadius: "4px" },
+      },
+    };
+
+    return eventStyles[event.type] || { className: "default-event" };
+  };
 
   return (
     <div className="container mt-5">
       <h2>HR Calendar</h2>
 
-      {/* Add Event Button wrapped in Permission component */}
       <Permission requiredPermission="edit_calendar" action="hide">
-        <Button variant="primary" onClick={() => handleShowModal()}>Add Event</Button>
+        <a href="#" className="btn-1" onClick={() => handleShowModal()}>Add Event</a>
       </Permission>
 
       <BigCalendar
-        localizer={localizer}  // Use the defined localizer here
+        localizer={localizer}
         events={formattedEvents}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500, marginTop: '20px' }}
-        onSelectEvent={event => handleShowModal(event)}
+        onSelectEvent={(event) => handleShowModal(event)}
+        eventPropGetter={eventPropGetter}
       />
 
-      {/* Modal for Adding/Editing Event */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{currentEvent.id ? "Edit Event" : "Add Event"}</Modal.Title>
@@ -112,6 +134,28 @@ const Calendar = () => {
               />
             </Form.Group>
             <Form.Group>
+              <Form.Label>Time</Form.Label>
+              <Form.Control
+                type="time"
+                value={currentEvent.time || ''}
+                onChange={(e) => setCurrentEvent({ ...currentEvent, time: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Event Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={currentEvent.type || ''}
+                onChange={(e) => setCurrentEvent({ ...currentEvent, type: e.target.value })}
+              >
+                <option value="">Select Type</option>
+                <option value="week_off">Week Off</option>
+                <option value="public_holiday">Public Holiday</option>
+                <option value="meeting">Meeting</option>
+                <option value="training">Training</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group>
               <Form.Label>Description</Form.Label>
               <Form.Control
                 as="textarea"
@@ -124,14 +168,10 @@ const Calendar = () => {
         </Modal.Body>
         <Modal.Footer>
           {currentEvent.id && (
-            <Button variant="danger" onClick={() => handleDeleteEvent(currentEvent.id)}>
-              Delete
-            </Button>
+            <a href="#" className="btn-3" onClick={() => handleDeleteEvent(currentEvent.id)}>Delete</a>
           )}
-          <Button variant="secondary" onClick={handleCloseModal}>Cancel</Button>
-          <Button variant="primary" onClick={handleSaveEvent}>
-            {currentEvent.id ? "Update" : "Save"}
-          </Button>
+          <a href="#" className="btn-2" onClick={handleCloseModal}>Cancel</a>
+          <a href="#" className="btn-1" onClick={handleSaveEvent}>{currentEvent.id ? "Update" : "Save"}</a>
         </Modal.Footer>
       </Modal>
     </div>
