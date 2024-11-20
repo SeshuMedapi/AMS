@@ -2320,3 +2320,57 @@ reportGrid {
   /* Optional: Add margin or size adjustments as needed */
 }
 
+// ------add task button------
+.calendar-container {
+  position: relative;
+}
+
+.header-section {
+  text-align: center; /* Center the heading */
+  margin-bottom: 10px; /* Space between heading and other content */
+}
+
+.calendar-heading {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.button-section {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  margin-bottom: 20px; /* Add some space below the button */
+}
+
+.btn-1,.btn-2, .btn-3{
+  display: block;
+  text-align: center;
+  margin: 50px auto;
+  width: fit-content;
+  border: 1px solid #094798;
+  padding: 14px 50px;
+  border-radius: 6px;
+  text-decoration: none;
+  color:black;
+  transition: background 0.5s ease;
+}
+.btn-1:hover{
+  background: #8E7AB5;
+}
+.btn-2{
+  background: #8E7AB5;
+  transition: background 0.5s ease;
+}
+.btn-2:hover{
+  background:transparent;
+}
+.btn-3{
+  background: red;
+}
+
+// -----------------------------------
+/* Ensure the entire grid is styled */
+
+
+
+
+
