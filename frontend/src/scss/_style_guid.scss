@@ -2367,88 +2367,9 @@ reportGrid {
   background: red;
 }
 
-// ----------------------------------
-.modal-content {
-  background-color: #DED5EC; /* White background */
-  border-radius: 10px; /* Rounded corners for a modern look */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  padding: 20px;
-  font-family: 'Arial', sans-serif; /* Clean font */
-}
+// -----------------------------------
 
-.modal-header {
-  border-bottom: 1px solid #e5e5e5; /* Soft divider line */
-  padding-bottom: 10px;
-}
 
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-}
 
-.modal-body {
-  padding: 20px;
-}
 
-.modal-footer {
-  border-top: 1px solid #e5e5e5; /* Soft divider line */
-  padding-top: 10px;
-}
 
-form {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #C4BBDB;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
-}
-
-form .form-group {
-  margin-bottom: 20px;
-}
-
-form .form-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-  display: block;
-}
-
-form .form-control {
-  width: 100%;
-  padding: 10px 15px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-form .form-control:focus {
-  border-color: #6200ea;
-  box-shadow: 0 0 8px rgba(98, 0, 234, 0.2);
-  outline: none;
-}
-
-form .form-control[type="date"],
-form .form-control[type="time"],
-form .form-control[type="text"],
-form .form-control[as="select"],
-form .form-control[as="textarea"] {
-  background-color: #fff;
-}
-
-form .form-control[as="select"] {
-  padding: 10px;
-}
-
-form .form-control[as="textarea"] {
-  resize: vertical;
-}
-
-form .form-group:last-child {
-  margin-bottom: 0;
-}
