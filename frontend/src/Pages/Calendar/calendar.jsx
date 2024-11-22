@@ -12,7 +12,7 @@ const localizer = momentLocalizer(moment);
 const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', time: '', description: '', type: '', is_editable: true });
+  const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', description: '', type: '', is_editable: true });
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Calendar = () => {
     fetchCalendarEvents();
   }, [userId]);
 
-  const handleShowModal = (event = { name: '', date: '', time: '', description: '', type: '', is_editable: true }) => {
+  const handleShowModal = (event = { name: '', date: '', description: '', type: '', is_editable: true }) => {
     setCurrentEvent(event);
     setShowModal(true);
   };
@@ -93,9 +93,11 @@ const Calendar = () => {
     return eventStyles[event.type] || { className: "default-event" };
   };
 
+  const Role = localStorage.getItem("role")
+
   return (
     <div className="container mt-5">
-      <h2>HR Calendar</h2>
+      <h2>{Role} Calendar</h2>
 
       <Permission requiredPermission="edit_calendar" action="hide">
         <a href="#" className="btn-1" onClick={() => handleShowModal()}>Add Event</a>
@@ -128,19 +130,19 @@ const Calendar = () => {
             <Form.Group>
               <Form.Label>Date</Form.Label>
               <Form.Control
-                type="date"
-                value={currentEvent.date}
-                onChange={(e) => setCurrentEvent({ ...currentEvent, date: e.target.value })}
+                type="datetime-local"
+                value={moment(currentEvent.date).format("YYYY-MM-DDTHH:mm")}
+                onChange={(e) => setCurrentEvent({ ...currentEvent, date: moment(e.target.value).format("YYYY-MM-DD HH:mm:ss") })}
               />
             </Form.Group>
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Time</Form.Label>
               <Form.Control
                 type="time"
                 value={currentEvent.time || ''}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, time: e.target.value })}
               />
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group>
               <Form.Label>Event Type</Form.Label>
               <Form.Control

@@ -1,6 +1,9 @@
 from django.urls import path
-from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView
+from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView
 from api.view.calendar_view import CalendarEventsView
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path("login", LoginView.as_view()),
@@ -16,4 +19,8 @@ urlpatterns = [
 
     path('calendar/<int:user_id>', CalendarEventsView.as_view({'get': 'get','post':'post'})),
     path('calendar/delete/<int:event_id>', CalendarEventsView.as_view({'delete':'delete'})),     
+
+    path("profile_picture", ProfilePictureView.as_view()),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

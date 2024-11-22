@@ -9,6 +9,8 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=100, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    profile_picture_filepath = models.CharField(max_length=300,  null=True, blank=True)
+    profile_picture_filetype = models.CharField(max_length=100,  null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

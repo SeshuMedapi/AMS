@@ -13,13 +13,14 @@ content-type: application/json
 Authorization: Token 711a82c7fab0cf94227237bc37fb71a945624b83
 
 ###To Post a events under company
-POST http://localhost:8000/api/calendar/50
+POST http://localhost:8000/api/calendar/53
 content-type: application/json 
-Authorization: Token 64f80f90f331d41e9906b53523e26dec46213672
+Authorization: Token 183aa77b2caac863ab01cc7f7ec67edea6f23487
 
 { 
     "name" : "Holiday",
-    "date" : "2024-11-18", 
+    "date" : "2024-11-24 16:00:00", 
+    "type" : "test",
     "description" : "test",
     "is_editable" : true 
 }
