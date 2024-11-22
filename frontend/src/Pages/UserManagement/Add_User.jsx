@@ -52,6 +52,8 @@ function AddUser({ onCancel, onUserAdded }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedCountryCode, setSelectedCountryCode] = useState("+91"); // Set India as the default country code
+  const [employeeId, setEmployeeId] = useState("");
+  const [employeeIdError, setEmployeeIdError] = useState("");
 
   const userId = localStorage.getItem("userId");
 
@@ -290,6 +292,12 @@ function AddUser({ onCancel, onUserAdded }) {
       setLastnameError(validateLastName(value));
     }
   };
+  const handleEmployeeIdChange = (value) => {
+    setEmployeeId(value);
+    if (clickedSave) {
+      setEmployeeIdError(validateEmployeeId(value));
+    }
+  }
 
   const handleEmailChange = (value) => {
     setMail(value);
@@ -316,6 +324,13 @@ function AddUser({ onCancel, onUserAdded }) {
     if (!NameValidator(name)) return "Invalid Name";
     return "";
   };
+  const validateEmployeeId = (name) => {
+    if (!employeeId.trim()) return "Employee Id is required";
+    // if (!NameValidator(name)) return "Invalid Employee Id";
+    return "";
+  };
+
+  
 
   // const validateMail = (mail) => {
   //   if (!mail.trim()) return "Email is required";
@@ -349,15 +364,18 @@ function AddUser({ onCancel, onUserAdded }) {
     setIsLoading(true);
     const nameError = validateName(firstname);
     const lnameError = validateLastName(lastname);
+    const employeeIdError = validateEmployeeId(employeeId);
     const mailError = validateMail(mail);
     const numberError = validatePhoneNumber(phoneNumber);
     const roleError = validateRole(role);
+    
 
     setFirstnameError(nameError);
     setLastnameError(lnameError);
     setEmailError(mailError);
     setPhoneNumberError(numberError);
     setRoleError(roleError);
+    setEmployeeIdError(employeeIdError);
 
     // Check if there are any validation errors
     const hasValidationErrors =
@@ -377,6 +395,7 @@ function AddUser({ onCancel, onUserAdded }) {
       const userData = {
         first_name: firstname.trim(),
         last_name: lastname.trim(),
+        employee_id: employeeId.trim(),
         email: mail.toLowerCase().trim(),
         phone_number: String(phoneNumber.trim()),
         role_id: role,
@@ -522,21 +541,25 @@ function AddUser({ onCancel, onUserAdded }) {
               <div className="text-danger">{lastnameError}</div>
             )}
           </div>
-          {/* <div className="mb-2">
+          <div className="mb-2">
             <label className="form-label fw-bold">
-              Email <span className="text-danger">*</span>
+              Employee ID <span className="text-danger">*</span>
             </label>
             <input
-              type="email"
-              placeholder="Enter Email"
+              type="text"
+              placeholder="Enter Employee ID"
               className={`form-control form-control-all ${
-                mailError ? "is-invalid" : ""
+                employeeIdError ? "is-invalid" : ""
               }`}
-              value={mail}
-              onChange={(e) => handleEmailChange(e.target.value)}
+              value={employeeId}
+              onChange={(e) => handleEmployeeIdChange(e.target.value)}
             />
-            {mailError && <div className="text-danger">{mailError}</div>}
-          </div> */}
+            {employeeIdError && <div className="text-danger">{employeeIdError}</div>}
+          </div>
+          <div className="mb-2">
+          </div>
+ 
+
           <div className="mb-2">
   <label className="form-label fw-bold">
     Email <span className="text-danger">*</span>
