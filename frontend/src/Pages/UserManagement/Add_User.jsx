@@ -615,9 +615,9 @@ function AddUser({ onCancel, onUserAdded }) {
               onChange={(e) => handleRoleChange(e.target.value)}
             >
               <option value="">Select Role</option>
-              <option value="">S</option>
-              <option value="">Select Role</option>
-              <option value="">Select Role</option>
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+              <option value="user">User</option>
               {roles.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
