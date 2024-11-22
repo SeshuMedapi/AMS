@@ -52,10 +52,8 @@ function AddUser({ onCancel, onUserAdded }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedCountryCode, setSelectedCountryCode] = useState("+91"); // Set India as the default country code
-  const [userId, setUserId] = useState("");
-  const [userIdError, setUserIdError] = useState(null);
 
-  // const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (userId) {
@@ -292,12 +290,6 @@ function AddUser({ onCancel, onUserAdded }) {
       setLastnameError(validateLastName(value));
     }
   };
-  const handleUserIdChange =(value) => {
-    setUserId(value);
-    if (clickedSave) {
-      setUserIdError(validateUserId(value));
-    }
-  }
 
   const handleEmailChange = (value) => {
     setMail(value);
@@ -324,11 +316,6 @@ function AddUser({ onCancel, onUserAdded }) {
     if (!NameValidator(name)) return "Invalid Name";
     return "";
   };
-  const validateUserId = (name) => {
-    if (!name.trim()) return "Employee ID is required";
-    if (!NameValidator(name)) return "Invalid Employee ID";
-    return "";
-  }
 
   // const validateMail = (mail) => {
   //   if (!mail.trim()) return "Email is required";
@@ -535,22 +522,21 @@ function AddUser({ onCancel, onUserAdded }) {
               <div className="text-danger">{lastnameError}</div>
             )}
           </div>
-          <div className="mb-2">
-      <label className="form-label fw-bold">
-        Employee ID <span className="text-danger">*</span>
-      </label>
-      <input
-        type="text"
-        placeholder="Enter Employee ID"
-        className={`form-control form-control-all ${
-          userIdError ? "is-invalid" : ""
-        }`}
-        value={userId}
-        onChange={(e) => handleUserIdChange(e.target.value)}
-      />
-      {userIdError && <div className="text-danger">{userIdError}</div>}
-    </div>
-
+          {/* <div className="mb-2">
+            <label className="form-label fw-bold">
+              Email <span className="text-danger">*</span>
+            </label>
+            <input
+              type="email"
+              placeholder="Enter Email"
+              className={`form-control form-control-all ${
+                mailError ? "is-invalid" : ""
+              }`}
+              value={mail}
+              onChange={(e) => handleEmailChange(e.target.value)}
+            />
+            {mailError && <div className="text-danger">{mailError}</div>}
+          </div> */}
           <div className="mb-2">
   <label className="form-label fw-bold">
     Email <span className="text-danger">*</span>
@@ -615,9 +601,6 @@ function AddUser({ onCancel, onUserAdded }) {
               onChange={(e) => handleRoleChange(e.target.value)}
             >
               <option value="">Select Role</option>
-              <option value="hr">HR</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
               {roles.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
