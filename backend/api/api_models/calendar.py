@@ -3,7 +3,8 @@ from api.api_models.company import Company
 
 class CalendarEvent(models.Model):
     name = models.CharField(max_length=100)
-    date = models.DateField(unique=True)
+    date = models.DateTimeField()
+    type = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     is_editable = models.BooleanField(default=True)
     is_holiday = models.BooleanField(default=False)
@@ -19,17 +20,17 @@ class CalendarEvent(models.Model):
         return f"{self.name} - {self.date} ({'Holiday' if self.is_holiday else 'Working Day'})"
     
 from rest_framework import serializers
+from django.utils.timezone import now
 
 class CalendarEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalendarEvent
-        fields = ['id', 'name', 'date', 'description', 'is_editable', 'is_holiday', 'company']
+        fields = ['id', 'name', 'date', 'type', 'description', 'is_editable', 'is_holiday', 'company']
         read_only_fields = ['id', 'is_holiday', 'is_editable']
 
     def validate_date(self, value):
-        from datetime import date
-        if self.instance is None and value < date.today():
-            raise serializers.ValidationError("The date cannot be in the past.")
+        if value < now():
+            raise serializers.ValidationError("The date cannot be earlier than the current date and time.")
         return value
 
     def validate(self, data):

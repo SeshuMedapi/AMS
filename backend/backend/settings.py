@@ -106,7 +106,7 @@ DATABASES = {
         },
         'NAME': 'ams',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -127,6 +127,9 @@ SMTP_EMAIL_USE_TLS = True
 SMTP_EMAIL_USERNAME = 'arunsingh@jivass.com'
 SMTP_EMAIL_PASSWORD = 'TXxtbLkR0XkV'
 DEFAULT_FROM_EMAIL = SMTP_EMAIL_USERNAME
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
 # Password validation
@@ -261,7 +264,8 @@ ROLE_PERMISSION = [
         "permissions": [
             'view_user',
             'create_user',
-            'edit_user',            
+            'edit_user',    
+            'view_calendar'        
         ]
     },
         {

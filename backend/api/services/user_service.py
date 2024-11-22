@@ -3,13 +3,18 @@ from django.db import transaction
 from api.api_models.reset_password import ResetPassword
 from api.api_models.company import Company
 from api.services.email_service import EmailService
+from django.http import JsonResponse
 from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
+from django.http import Http404
 from api.exception.app_exception import *
 from django.conf import settings
 from django.db.models import F
+from mimetypes import guess_type
 from datetime import datetime
-import uuid, re
+import uuid, re, os
 
 class UserService():
 
@@ -164,3 +169,71 @@ class UserService():
                              f"At least one capital letter <br/>"
                              f"At least one number <br/>"
                              f"At least one special character from (@,#,$)")
+
+    def get_profile_picture(self, user):
+        try:
+            user_obj = User.objects.get(id=user.id)
+            
+            if user_obj:
+                relative_filepath = user_obj.profile_picture_filepath
+                absolute_filepath = os.path.join(settings.MEDIA_ROOT, relative_filepath)
+                
+                if not os.path.exists(absolute_filepath):
+                    raise Http404("Profile picture not found.")
+                
+                file_type = guess_type(absolute_filepath)[0] or "application/octet-stream"
+                
+                response = {
+                    'content_type': file_type,
+                    'url': f"{settings.MEDIA_URL}{relative_filepath}",
+                    'file_type': relative_filepath.split('.')[-1],
+                }
+                return JsonResponse(response)
+            else:
+                raise Http404("The requested user does not exist.")
+        except User.DoesNotExist:
+            raise Http404("The requested user does not exist.")
+        except Exception as e:
+            self.logger.warning(f"Error occurred while retrieving profile picture: {e}")
+            raise Exception(e)
+
+    def update_profile_picture(self, upload_file, user):
+        response = None
+        file_type = None
+        field_name = "profile_pictures"
+        try:
+            filename = upload_file.name
+            file_type = filename.split(".")[-1]
+
+            upload_folder = os.path.join(settings.MEDIA_ROOT, field_name)
+            os.makedirs(upload_folder, exist_ok=True)
+
+            blob_name = f"{user.id}.{file_type}"
+
+            file_path = os.path.join(upload_folder, blob_name)
+
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+            file_system = FileSystemStorage(location=upload_folder)
+            file_system.save(blob_name, upload_file)
+            response = True
+        except Exception as e:
+            return False
+
+        try:
+            if response:
+                with transaction.atomic():
+                    user_obj = User.objects.get(id=user.id)
+
+                    # Update the user's profile picture fields
+                    user_obj.profile_picture_filepath = f"{field_name}/{blob_name}" 
+                    user_obj.profile_picture_filetype = file_type
+                    user_obj.save()
+                return True
+            else:
+                return False
+        except ObjectDoesNotExist:
+            raise Http404("The requested user does not exist.")
+        except Exception as e:
+            raise Exception(e)

@@ -39,7 +39,9 @@ function AdminProfile() {
   const fetchProfileImage = async () => {
     try {
       const response = await axiosInstance.get("/profile_picture");
+      console.log(response)
       if (response.status == 200) {
+        console.log('backend'+response.data.url)
         setProfileImage(response.data.url);
         console.log(response.data);
       } else {

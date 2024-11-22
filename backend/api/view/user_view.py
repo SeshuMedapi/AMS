@@ -3,9 +3,12 @@ from ..services.user_service import UserService
 from api.api_models.users import UserSerializer, GroupSerializer, User
 from api.api_models.company import AdminUserSerializer, Company
 from api.exception.app_exception import *
+from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Permission, Group
+from django.core.files.uploadedfile import UploadedFile
 
+from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
@@ -14,6 +17,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 import logging
+ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
 
 class LoginView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -232,4 +236,85 @@ class UserView(viewsets.ViewSet):
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except e:
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def validate_image_file(upload_file):
+    """
+    Validate that the uploaded file is an image file.
+    """
+    if not isinstance(upload_file, UploadedFile):
+        raise ValidationError("File type is not valid.")
+
+    if not upload_file.name.lower().endswith(tuple(ALLOWED_IMAGE_EXTENSIONS)):
+        raise ValidationError("Only image files (jpg, jpeg, png, gif) are allowed.")
+
+class ProfilePictureView(APIView):
+    logger = logging.getLogger("app_log")
+
+    permission_classes = [PermissionBasedAccess]
+    permission_config = {
+        "get": {
+                    "permissions": ["view_user"],
+                    "any": True
+                },
+        "post":{
+                    "permissions": ["view_user"],
+                    "any": True
+                }
+    }
+
+    def get(self, request):
+        try:
+            user_service = UserService()
+            response = user_service.get_profile_picture(request.user)
+            if response:
+                return response
+            else:
+                raise NotFound("File not found")
+
+        except PermissionException as e:
+            self.logger.warning(f"{e}")
+            return Response({"message":"Access denied, permission not found"}, status=status.HTTP_403_FORBIDDEN)
+        except NotFound as e:
+            self.logger.warning(f"{e}")
+            return Response({"message": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except ValidationException as e:
+            self.logger.warning(f"{e}")
+            return Response({"message":"Invalid get data"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            self.logger.warning(f"{e}")
+            return Response({"message": "Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request):
+        try:
+            user_service = UserService()
+            upload_file = request.FILES.get('profile_picture') or None
+
+            if upload_file:
+                validate_image_file(upload_file)
+                response = user_service.update_profile_picture(upload_file, request.user)
+                if response:
+                    return Response({"message": "File uploaded successfully"},status=status.HTTP_200_OK)
+                else:
+                    raise Exception("File upload failed")
+            else:
+                raise ValidationException("Required fields to api is missing")
+        except PermissionException as e:
+            self.logger.warning(f"{e}")
+            return Response({"message":"Access denied, permission not found"}, status=status.HTTP_403_FORBIDDEN)
+        except NotFound as e:
+            self.logger.warning(f"{e}")
+            return Response({"message": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except ValidationError as e:
+            self.logger.warning(f"{e}")
+            error_message = "Validation Error: "
+            errors = e
+            for error in errors:
+                error_message += f"{error}. "
+            return Response({"message": error_message}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationException as e:
+            self.logger.warning(f"{e}")
+            return Response({"message":"Invalid get data"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            self.logger.warning(f"{e}")
+            return Response({"message": "Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

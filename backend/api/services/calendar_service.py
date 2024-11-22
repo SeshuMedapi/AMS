@@ -1,4 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.timezone import make_aware
+from datetime import datetime
 from api.api_models.users import User
 from api.api_models.calendar import CalendarEvent, CalendarEventSerializer
 import logging
@@ -18,6 +20,11 @@ def get_all_calendar_events(user_id):
 def create_calendar_event(data, user_id):
     user_company = User.objects.get(id=user_id).company
     data['company'] = user_company.id
+
+    if isinstance(data['date'], str):
+        naive_date = datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S')
+        data['date'] = make_aware(naive_date)
+
     serializer = CalendarEventSerializer(data=data)
     if serializer.is_valid():
         event = serializer.save()

@@ -26,3 +26,6 @@ class PasswordPolicyViolation(Exception):
 class EmailException(Exception):
     '''Email not connected'''
     pass
+
+class PermissionException(Exception):
+    pass

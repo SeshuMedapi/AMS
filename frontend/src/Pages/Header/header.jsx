@@ -41,6 +41,10 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const firstname = localStorage.getItem("firstname")
+  const lastname = localStorage.getItem("lastname")
+  const role = localStorage.getItem("role")
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-col"
@@ -79,8 +83,8 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
             <div className="d-flex align-items-center ms-2 me-2 mt-1">
               {/* Display User Name and Role as Text to the Left */}
               <div className="user-info me-2">
-                <div className="user-name">{userName}</div>
-                <div className="user-role text-muted">{userRole}</div>
+                <div className="user-name">{firstname} {lastname}</div>
+                <div className="user-role text-muted">{role}</div>
               </div>
               <img
                 src={ProfilePic}
