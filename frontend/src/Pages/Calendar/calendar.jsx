@@ -11,6 +11,7 @@ const localizer = momentLocalizer(moment);
 
 const Calendar = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({ name: '', date: '', description: '', type: '', is_editable: true });
   const userId = localStorage.getItem("userId");
@@ -35,6 +36,7 @@ const Calendar = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleSaveEvent = async () => {
+    setLoading(true);
     const url = currentEvent.id ? `calendar/${userId}` : `calendar/${userId}`;
     try {
       const response = await axiosInstance.post(url, currentEvent);
@@ -46,17 +48,23 @@ const Calendar = () => {
       handleCloseModal();
     } catch (error) {
       alert(error.response?.data || "Error saving calendar event.");
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   const handleDeleteEvent = async (id) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
+      setLoading(true);
       try {
         await axiosInstance.delete(`calendar/delete/${id}`);
         setCalendarEvents(calendarEvents.filter(event => event.id !== id));
         setShowModal(false);
       } catch (error) {
         alert(error.response?.data || "Error deleting calendar event.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -97,7 +105,8 @@ const Calendar = () => {
 
   return (
     <div className="container mt-5">
-      <h2>{Role} Calendar</h2>
+      <div className={loading ? "blurred" : ""}>
+        <h2>{Role} Calendar</h2>
 
       <Permission requiredPermission="edit_calendar" action="hide">
         <a href="#" className="btn-1" onClick={() => handleShowModal()}>Add Event</a>
@@ -114,6 +123,18 @@ const Calendar = () => {
       />
 
       <Modal show={showModal} onHide={handleCloseModal}>
+      {loading && (
+        <div className="loader-overlay">
+          <div className="spinner-border text-light" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <div className="loading-message">
+            <i className="bi bi-bell-fill"></i> {/* Icon */}
+            <p>Sending notifications to the user, please wait...</p>
+          </div>
+        </div>
+      )}
+      <div className={loading ? "blurred" : ""}>
         <Modal.Header closeButton>
           <Modal.Title>{currentEvent.id ? "Edit Event" : "Add Event"}</Modal.Title>
         </Modal.Header>
@@ -175,7 +196,9 @@ const Calendar = () => {
           <a href="#" className="btn-2" onClick={handleCloseModal}>Cancel</a>
           <a href="#" className="btn-1" onClick={handleSaveEvent}>{currentEvent.id ? "Update" : "Save"}</a>
         </Modal.Footer>
+      </div>
       </Modal>
+      </div>
     </div>
   );
 };

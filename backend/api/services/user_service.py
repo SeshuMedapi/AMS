@@ -6,6 +6,7 @@ from api.services.email_service import EmailService
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.http import Http404
@@ -194,7 +195,6 @@ class UserService():
         except User.DoesNotExist:
             raise Http404("The requested user does not exist.")
         except Exception as e:
-            self.logger.warning(f"Error occurred while retrieving profile picture: {e}")
             raise Exception(e)
 
     def update_profile_picture(self, upload_file, user):
@@ -225,8 +225,6 @@ class UserService():
             if response:
                 with transaction.atomic():
                     user_obj = User.objects.get(id=user.id)
-
-                    # Update the user's profile picture fields
                     user_obj.profile_picture_filepath = f"{field_name}/{blob_name}" 
                     user_obj.profile_picture_filetype = file_type
                     user_obj.save()
@@ -237,3 +235,46 @@ class UserService():
             raise Http404("The requested user does not exist.")
         except Exception as e:
             raise Exception(e)
+
+    def getUser(self, id):
+        user = User.objects.filter(id=id).first()
+        if not user:
+            raise UserNotFound
+        
+        groups = []
+        for group in user.groups.all():
+                groups.append({"id": group.id ,"name":group.name})
+        user_res = {
+                "id": user.id,
+                "email": user.email,
+                "first_name":  user.first_name,
+                "last_name":  user.last_name,
+                "phone_number": user.phone_number,
+                "date_joined": user.date_joined,
+                "is_active": user.is_active,
+                "roles":groups
+            }
+        return user_res
+    
+    def updateMyinfo(self, **kwargs):
+        user_id = kwargs.get('id')
+        user = User.objects.filter(id=user_id).first()
+        if user:
+            user.first_name = kwargs.get('first_name')
+            user.last_name = kwargs.get('last_name')
+            user.phone_number = kwargs.get('phone_number')
+            # Email cannot be updated here
+            with transaction.atomic():
+                user.save()
+            return user
+        else:
+            raise UserNotFound
+    
+    def change_password(self, user, old_password, new_password):
+        auth_user = authenticate(username=user.email , password=old_password)
+        if auth_user:
+            self._check_password_policy(new_password)
+            auth_user.password = make_password(new_password)
+            auth_user.save()
+        else:
+            raise UserNotFound

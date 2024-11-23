@@ -1,6 +1,8 @@
 from django.urls import path
 from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView
 from api.view.calendar_view import CalendarEventsView
+from api.view.notification_view import NotificationView
+from .view.myinfo_view import MyinfoView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -21,6 +23,13 @@ urlpatterns = [
     path('calendar/delete/<int:event_id>', CalendarEventsView.as_view({'delete':'delete'})),     
 
     path("profile_picture", ProfilePictureView.as_view()),
-]
+    path("myinfo", MyinfoView.as_view({"get":"get", "put":"put"})),
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("notification", NotificationView.as_view({"get": "get_notification"})),
+    path("notification/read/<int:notification_id>", NotificationView.as_view({"put": "read_notification"})),
+    path("notification/read/all", NotificationView.as_view({"put": "read_all_notification"})),
+    path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
+    path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

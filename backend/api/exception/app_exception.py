@@ -29,3 +29,7 @@ class EmailException(Exception):
 
 class PermissionException(Exception):
     pass
+
+class UserNotFound(Exception):
+    """User not in the DB"""
+    pass
