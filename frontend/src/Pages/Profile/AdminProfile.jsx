@@ -41,9 +41,7 @@ function AdminProfile() {
       const response = await axiosInstance.get("/profile_picture");
       console.log(response)
       if (response.status == 200) {
-        console.log('backend'+response.data.url)
-        setProfileImage(response.data.url);
-        console.log(response.data);
+        setProfileImage('http://127.0.0.1:8080' + response.data.url);
       } else {
         setProfileImage(ProfileImage);
       }
@@ -58,8 +56,6 @@ function AdminProfile() {
     formData.append("profile_picture", file);
     console.log(formData);
     try {
-      console.log("Uploading to /api/profile_picture");
-
       const response = await axiosInstance.post("/profile_picture", formData);
 
       if (response.data.profile_picture) {
@@ -101,6 +97,7 @@ function AdminProfile() {
     setUser(updatedUser);
     setEditMode(false);
   };
+  console.log("Profile Image URL:", profileImage);
 
   return (
     <div className="outer-container d-flex">
@@ -114,7 +111,7 @@ function AdminProfile() {
                     <img
                       className="usercircleimgupload"
                       src={profileImage}
-                      // alt="user Icon"
+                      alt="user Icon"
                     />
 
                     <label htmlFor="upload-image" className="imagecam">

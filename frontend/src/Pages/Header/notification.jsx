@@ -15,10 +15,14 @@ const Notification = ({ onCancel, refresh }) => {
     try {
       const response = await axiosInstance.get(`/notification?page=${pageNum}`);
       if (response.data.length > 0) {
-        setNotifications((prevNotifications) => [
-          ...prevNotifications,
-          ...response.data,
-        ]);
+        setNotifications((prevNotifications) => {
+          const combinedNotifications = [...prevNotifications, ...response.data];
+          const uniqueNotifications = combinedNotifications.filter(
+              (notif, index, self) =>
+                  index === self.findIndex((n) => n.id === notif.id)
+          );
+          return uniqueNotifications;
+      });
       } else {
         setHasMore(false);
       }
@@ -31,7 +35,12 @@ const Notification = ({ onCancel, refresh }) => {
     fetchNotifications(page);
   }, [page, fetchNotifications]);
 
-  const markAsRead = async (id) => {
+  let isProcessing = false;
+
+  const markAsRead = async (id, shouldDelete = false) => {
+    if (isProcessing) return;
+    isProcessing = true;
+
     try {
       await axiosInstance.put(`/notification/read/${id}`);
       setNotifications((prevNotifications) =>
@@ -39,39 +48,54 @@ const Notification = ({ onCancel, refresh }) => {
           notif.id === id ? { ...notif, read: true } : notif
         )
       );
-      toast.success("Message read successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+
+      if (!shouldDelete) {
+        toast.success("Message read successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+
+      if (shouldDelete) {
+        await deactivateNotification(id, true);
+      }
+
       refresh();
     } catch (error) {
       console.error("Error marking notification as read:", error);
+    } finally {
+      isProcessing = false;
     }
   };
 
-  const deactivateNotification = async (id) => {
+  const deactivateNotification = async (id, skipToast = false) => {
     try {
       await axiosInstance.put(`/notification/deactive/${id}`);
       setNotifications((prevNotifications) =>
         prevNotifications.filter((notif) => notif.id !== id)
       );
-      toast.success("Message deleted!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+  
+      if (!skipToast) {
+        toast.success("Message deleted!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+  
       refresh();
     } catch (error) {
       console.error("Error deactivating notification:", error);
     }
   };
+
 
   const readAll = async () => {
     try {
@@ -162,7 +186,7 @@ const Notification = ({ onCancel, refresh }) => {
       <div className="p-3">
         {notifications.map((notification, index) => (
           <div
-            key={notification.id}
+          key={`${notification.id}-${index}`}
             ref={
               index === notifications.length - 1
                 ? lastNotificationElementRef

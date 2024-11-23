@@ -369,3 +369,102 @@ RESET_PASSWORD=Template(
                 </html>
                 '''
                )
+
+EVENT_NOTIFICATION = Template(
+                '''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Event Notification</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            background-color: #f9f9f9;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .container {
+                            width: 90%;
+                            max-width: 600px;
+                            margin: 20px auto;
+                            background: #fff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            font-size: 0.9em;
+                            color: #777;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2>Event Notification</h2>
+                        <p>Hi $first_name,</p>
+                        <p>We are notifying you about an upcoming event. Please find the details below:</p>
+                        <ul>
+                            <li><strong>Event Name:</strong> $event_name</li>
+                            <li><strong>Event Date & Time:</strong> $event_datetime</li>
+                            <li><strong>Event Type:</strong> $event_type</li>
+                            <li><strong>Description:</strong> $description</li>
+                        </ul>
+                        <p>If you have any questions or need further assistance, please contact us at 
+                            <a href="mailto:contact@jivass.com">contact@jivass.com</a>.
+                        </p>
+                        <p>Best Regards,</p>
+                        <p>Jivass Technologies</p>
+                        <div class="footer">
+                            -------------------------------------------------------<br>
+                            1st Floor Ashwamedha Velachery Main Rd<br> 
+                            Guindy, Chennai 600032<br>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                '''
+            )
+
+EVENT_UPDATE_NOTIFICATION = Template(
+    '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Event Updated</title>
+    </head>
+    <body>
+        Hi $first_name,<br><br>
+        The event "<strong>$event_name</strong>" has been updated.<br><br>
+        <strong>Updated Details:</strong><br>
+        - Event Date & Time: $event_datetime<br>
+        - Event Type: $event_type<br>
+        - Description: $description<br><br>
+        If you have any questions, feel free to contact our support team at <a href="mailto:support@jivass.com">support@jivass.com</a>.<br><br>
+        Best Regards,<br>
+        Jivass Technologies
+    </body>
+    </html>
+    '''
+)
+
+
+EVENT_DELETE_NOTIFICATION = Template(
+    '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Event Deleted</title>
+    </head>
+    <body>
+        Hi $first_name,<br><br>
+        We wanted to inform you that the event "<strong>$event_name</strong>" has been deleted from the calendar.<br><br>
+        If this was done in error or if you have any concerns, please reach out to our support team at <a href="mailto:support@jivass.com">support@jivass.com</a>.<br><br>
+        Best Regards,<br>
+        Jivass Technologies
+    </body>
+    </html>
+    '''
+)
