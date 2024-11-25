@@ -1,0 +1,8 @@
+For Backend -
+source ../env/bin/activate
+cd backend/
+python manage.py runserver
+
+For Frontend - npm run dev
+
+For http-server - python3 -m http.server 8080
