@@ -9,37 +9,42 @@ const Notification = ({ onCancel, refresh }) => {
   const [notifications, setNotifications] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
+  const observer = useRef(null);
+  const [isProcessing, setIsProcessing] = useState(false); // Ensures actions are not repeated
 
-  const fetchNotifications = useCallback(async (pageNum) => {
-    try {
-      const response = await axiosInstance.get(`/notification?page=${pageNum}`);
-      if (response.data.length > 0) {
-        setNotifications((prevNotifications) => {
-          const combinedNotifications = [...prevNotifications, ...response.data];
-          const uniqueNotifications = combinedNotifications.filter(
+  // Fetch notifications from the server
+  const fetchNotifications = useCallback(
+    async (pageNum) => {
+      try {
+        const response = await axiosInstance.get(`/notification?page=${pageNum}`);
+        if (response.data.length > 0) {
+          setNotifications((prevNotifications) => {
+            const combinedNotifications = [...prevNotifications, ...response.data];
+            return combinedNotifications.filter(
               (notif, index, self) =>
-                  index === self.findIndex((n) => n.id === notif.id)
-          );
-          return uniqueNotifications;
-      });
-      } else {
-        setHasMore(false);
+                index === self.findIndex((n) => n.id === notif.id) // Ensure uniqueness
+            );
+          });
+        } else {
+          setHasMore(false); // No more notifications to load
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+        toast.error("Failed to load notifications. Please try again.");
       }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    }
-  }, []);
+    },
+    []
+  );
 
+  // Fetch notifications on component mount and page change
   useEffect(() => {
     fetchNotifications(page);
   }, [page, fetchNotifications]);
 
-  let isProcessing = false;
-
+  // Mark a notification as read
   const markAsRead = async (id, shouldDelete = false) => {
     if (isProcessing) return;
-    isProcessing = true;
+    setIsProcessing(true);
 
     try {
       await axiosInstance.put(`/notification/read/${id}`);
@@ -48,93 +53,76 @@ const Notification = ({ onCancel, refresh }) => {
           notif.id === id ? { ...notif, read: true } : notif
         )
       );
-
-      if (!shouldDelete) {
-        toast.success("Message read successfully!", {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }
-
       if (shouldDelete) {
-        await deactivateNotification(id, true);
+        deactivateNotification(id, true);
+      } else {
+        toast.success("Message marked as read!");
       }
-
       refresh();
     } catch (error) {
       console.error("Error marking notification as read:", error);
+      toast.error("Failed to mark the message as read.");
     } finally {
-      isProcessing = false;
+      setIsProcessing(false);
     }
   };
 
+  // Delete a single notification
   const deactivateNotification = async (id, skipToast = false) => {
     try {
       await axiosInstance.put(`/notification/deactive/${id}`);
       setNotifications((prevNotifications) =>
         prevNotifications.filter((notif) => notif.id !== id)
       );
-  
       if (!skipToast) {
-        toast.success("Message deleted!", {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.success("Message deleted!");
       }
-  
       refresh();
     } catch (error) {
-      console.error("Error deactivating notification:", error);
+      console.error("Error deleting notification:", error);
+      toast.error("Failed to delete the message.");
     }
   };
 
-
+  // Mark all notifications as read
   const readAll = async () => {
+    if (notifications.length === 0) {
+      toast.info("No messages to mark as read.");
+      return;
+    }
+
     try {
       await axiosInstance.put(`/notification/read/all`);
       setNotifications((prevNotifications) =>
         prevNotifications.map((notif) => ({ ...notif, read: true }))
       );
-      toast.success("All messages read successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.success("All messages marked as read!");
       refresh();
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
+      toast.error("Failed to mark all messages as read.");
     }
   };
 
+  // Delete all notifications
   const deactivateAll = async () => {
+    if (notifications.length === 0) {
+      toast.info("No messages to delete.");
+      return;
+    }
+
     try {
       await axiosInstance.put(`/notification/deactive/all`);
       setNotifications([]);
-      toast.success("All messages deleted!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.success("All messages deleted!");
       refresh();
     } catch (error) {
-      console.error("Error deactivating all notifications:", error);
+      console.error("Error deleting all notifications:", error);
+      toast.error("Failed to delete all messages.");
     }
   };
 
+  // Format date for display
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -142,10 +130,10 @@ const Notification = ({ onCancel, refresh }) => {
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-
     return `${month}-${day}-${year} ${hours}:${minutes}`;
   };
 
+  // Infinite scrolling logic
   const lastNotificationElementRef = useCallback(
     (node) => {
       if (observer.current) observer.current.disconnect();
@@ -163,30 +151,25 @@ const Notification = ({ onCancel, refresh }) => {
     <div className="position-fixed top-0 end-0 bg-white Side-popup">
       <ToastContainer />
       <div className="d-flex align-items-center border-0 border-bottom Popup-Header">
-        <div className="d-flex align-items-center OIC-Edit-Head">
-          <h3 className="d-inline ms-4">Notifications</h3>
-        </div>
-        <div className="justify-content-end">
-          <FontAwesomeIcon
-            icon={faTimes}
-            className="Restpass-x-icon"
-            onClick={onCancel}
-          />
-        </div>
+        <h3 className="d-inline ms-4">Notifications</h3>
+        <FontAwesomeIcon
+          icon={faTimes}
+          className="Restpass-x-icon"
+          onClick={onCancel}
+        />
       </div>
       <div className="d-flex justify-content-end mt-3 me-3">
         <button className="btn btn-dl me-2" onClick={readAll}>
-          Read all
+          Read All
         </button>
         <button className="btn btn-dl" onClick={deactivateAll}>
-          Delete all
+          Delete All
         </button>
       </div>
-
       <div className="p-3">
         {notifications.map((notification, index) => (
           <div
-          key={`${notification.id}-${index}`}
+            key={notification.id}
             ref={
               index === notifications.length - 1
                 ? lastNotificationElementRef
@@ -206,23 +189,20 @@ const Notification = ({ onCancel, refresh }) => {
                   <p className="card-subtitle mb-2 text-muted font-weight-light">
                     {formatDateTime(notification.datetime)}
                   </p>
-
-                  <div className="col-11 justify-content-start">
-                    <h6 className="card-text">{notification.message}</h6>
-                  </div>
+                  <h6 className="card-text">{notification.message}</h6>
                 </div>
-                <div className="col-1 justify-content-end align-center-x me-2">
-                  <div
+                <div className="col-1 text-end">
+                  <FontAwesomeIcon
+                    icon={faTimes}
                     className="xicon"
                     onClick={() => deactivateNotification(notification.id)}
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
-                  </div>
+                  />
                 </div>
               </div>
             </div>
           </div>
         ))}
+        {notifications.length === 0 && <p>No notifications available.</p>}
       </div>
     </div>
   );

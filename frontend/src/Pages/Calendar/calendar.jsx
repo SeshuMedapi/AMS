@@ -215,7 +215,7 @@ const Calendar = () => {
               />
             </Form.Group>
             <Form.Group className="date-picker-group">
-                  <Form.Label>Date</Form.Label>
+                  <Form.Label>Date & Time</Form.Label>
                   <DatePicker
                     selected={currentEvent.date ? new Date(currentEvent.date) : null}
                     onChange={(date) => {

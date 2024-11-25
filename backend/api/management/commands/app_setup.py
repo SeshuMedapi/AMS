@@ -27,9 +27,9 @@ class Command(BaseCommand):
         if not users or len(users) == 0:
             print("SuperAdmin creation")
             user = User()
-            user.email = "arunsingh@jivass.com"
+            user.email = "seshu@jivass.com"
             user.password = make_password("Jivass@123")
-            user.first_name = "arunsingh"
+            user.first_name = "Seshu"
             user.last_name = "G"
             user.phone_number = "99009900"
             user.is_active = True

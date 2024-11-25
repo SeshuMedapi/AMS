@@ -362,12 +362,12 @@
   height: 2.75rem;
   width: 13.8125rem;
   font-weight: $font-weight-bold;
-  border: 0.125rem solid $blue-500;
+  border: 0.125rem solid #E493B3;
   border-radius: 3.125rem;
 }
 
 .border-btn:hover {
-  background-color: $blue-500;
+  background-color: #E493B3;
   color: $Neutral-Background;
   background-image: linear-gradient(#8E7AB5, #B784B7, #E493B3, #EEA5A6);
 }
@@ -1260,17 +1260,17 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
 }
 
 .btn-dl {
-  background-color: $blue-500;
+  background-color: #E493B3;
   border-radius: 3.125rem;
   color: $white;
   font-weight: bold;
-  border: 0.125rem solid $blue-500;
+  border: 0.125rem solid #E493B3;
 }
 
 .btn-dl:hover {
   background-color: $white;
   color: $blue-500;
-  border: 0.125rem solid $blue-500;
+  border: 0.125rem solid #E493B3;
 }
 .demandLetterText {
   color: $blue-500;
