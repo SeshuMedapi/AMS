@@ -1,0 +1,195 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  body {
+    /* background-image: linear-gradient(45deg, #8E7AB5, #B784B7, #E493B3, #EEA5A6); */
+    background-image: linear-gradient(to bottom right, #8E7AB5, #B784B7, #E493B3, #EEA5A6);
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+  }
+  
+  /* Navigation Bar Styles */
+  .lp_logo {
+    width: 100px;
+  }
+  
+  #lp_navbar {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7); 
+  }
+  .lp_container {
+    padding: 10px 70px;
+  }
+  
+  #lp_navav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #lp_nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+  
+  #lp_nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease;
+    -webkit-transition: color 0.3s ease;
+    -moz-transition: color 0.3s ease;
+    -ms-transition: color 0.3s ease;
+    -o-transition: color 0.3s ease;
+  }
+  .lp_button{
+    color: rgb(224, 208, 208);
+    border: 1px solid #EEA5A6;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .lp_button:hover{
+    background-color:#B784B7;
+    color: #000;
+  }
+  
+  #lp_nav ul li a:hover {
+    color: #B784B7;
+  }
+  
+  #lp_nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    left: 0;
+    bottom: -6px;
+    background: #8E7AB5;
+    transition: width 0.5s ease;
+  }
+  
+  #lp_nav ul li a:hover::after {
+    width: 100%;
+  }
+  #lp_nav > div {
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+  }
+  .lp_logo {
+    height: 40px; 
+    width: auto; 
+  }
+  
+  .lp_nav-text {
+    font-size: 1.7rem;
+    color: #eddddd; 
+    font-weight: bold; 
+  }
+  
+  /* Header Section Styles */
+  #lp_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 0 70px;
+    gap: 40px; /* Adds spacing between image and text */
+  }
+  
+  .lp_header-left {
+    flex-basis: 65%; /* Adjusts the width of the image container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .lp_header-image {
+    width: 100%;
+    height: 80vh;
+    border-radius: 10px; /* Optional for rounded corners */
+    object-fit: cover; /* Ensures the image maintains aspect ratio */
+  }
+  
+  .lp_header-right {
+    flex-basis: 35%;
+    text-align: left;
+    padding-left: 40px; /* Adds space between the text and image */
+  }
+  
+  .lp_header-right h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+  
+  .lp_header-right p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+  
+  .lp_btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #8E7AB5;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
+  
+  .lp_btn:hover {
+    background: #B784B7;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #lp_nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+  
+    #lp_header {
+        flex-direction: column; /* Stack image and text vertically */
+        padding: 20px;
+        text-align: center;
+    }
+  
+    .lp_header-left, .lp_header-right {
+        flex-basis: 100%;
+    }
+  
+    .lp_header-image {
+        height: 50vh;
+    }
+  
+    .lp_header-right {
+        padding-left: 0;
+    }
+  
+    .lp_header-right h1 {
+        font-size: 2rem;
+    }
+  
+    .lp_header-right p {
+        font-size: 1rem;
+    }
+  }
+  
+  

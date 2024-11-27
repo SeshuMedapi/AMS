@@ -9,6 +9,7 @@ import Dashboard from "./Pages/Dashboard/dashboard";
 import Usermanagement from './Pages/UserManagement/UserManagement';
 import Calendar from "./Pages/Calendar/calendar";
 import AdminProfile from "./Pages/Profile/AdminProfile";
+import LandingPage from "./Pages/Dashboard/landingpage";
 import PrivateRoute from "./Shared modules/Context management/privateRoutes";
 import { AuthProvider } from "./Shared modules/Context management/authContext";
 import SessionExpiredModal from "./View Components/Session components/SessionTimeoutModal";
@@ -109,7 +110,8 @@ function App() {
         <Router>
             <Routes>
                 {/* Public Routes */}
-                <Route path="/" element={<LoginPage />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/ResetPassword" element={<ResetPassword />} />
                 <Route element={<PrivateRouteWithLayout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
