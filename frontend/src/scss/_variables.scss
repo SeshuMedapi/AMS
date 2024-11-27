@@ -275,7 +275,7 @@ p {
   width: $width;
   height: $height;
   border-radius: 3.125rem; //50px
-  background-color: $bgColor;
+   background-color: #E493B3;
   color: $txtcolor;
   font-size: $Fontsize;
   font-weight: $Fontweight;
@@ -507,11 +507,12 @@ p {
   line-height: 1.575rem; /* 25.2px / 16px */
   text-align: center;
   color: $blue-500; /* Assuming $blue-500 is a valid variable */
+  transition: color 0.5s ease;
 
-  border: 0.125rem solid; /* 2px / 16px */
+  border: 0.125rem solid #E493B3; /* 2px / 16px */
   &:hover {
-    border-color: #29476e; // Change border color on hover
-    background-color: #29476e;
+   // Change border color on hover
+    background-color: #E493B3;
     color: $White;
   }
 }
@@ -530,21 +531,22 @@ p {
   border-radius: 0.3125rem; /* 5px / 16px */
   border: 1px 0px 0px 0px;
   border-color: #b7b7b7;
+  
 }
 
 @mixin EditProfile_btn() {
-  width: 9rem; /* 144px / 16px */
-  height: 2.75rem; /* 44px / 16px */
-  text-align: center; /* No conversion needed */
-  border-radius: 3.125rem; /* 50px / 16px */
-  color: #29476e;
-  border: 3px solid #29476e;
+  width: 9rem;
+  /*144px/16px*/height: 2.75rem;
+  /*44px/16px*/text-align: center;
+  /*Noconversionneeded*/border-radius: 3.125rem;
+  /*50px/16px*/color: #29476e;
+  border: 3px solid #8E7AB5;
   background: transparent;
-  transition: color 0.3s ease;
-
-  &:hover {
-    border-color: #29476e; // Change border color on hover
-    background-color: #29476e;
+  transition: color 0.5s ease;
+  &:hover 
+{
+    border-color: #8E7AB5; // Change border color on hover
+    background-color: #8E7AB5;
     color: $White;
   }
 }
@@ -637,7 +639,7 @@ $font-family-poppins: "Poppins", sans-serif;
 
 .loader {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border-top: 4px solid #E493B3;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -686,3 +688,4 @@ $font-family-poppins: "Poppins", sans-serif;
 .date-picker-group .form-control {
   width: 100%; /* Ensure the date picker takes full width */
 }
+
