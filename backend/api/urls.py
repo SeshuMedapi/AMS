@@ -2,6 +2,7 @@ from django.urls import path
 from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
+from api.view.role_view import AddRoleView, PermissionView
 from .view.myinfo_view import MyinfoView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -30,6 +31,10 @@ urlpatterns = [
     path("notification/read/all", NotificationView.as_view({"put": "read_all_notification"})),
     path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
     path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
+
+    path("newrole", AddRoleView.as_view(), name='newrole'),
+    path("newrole/<int:role_id>", AddRoleView.as_view(), name='edit_role'),
+    path("permission_list", PermissionView.as_view(), name='permissionlists'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

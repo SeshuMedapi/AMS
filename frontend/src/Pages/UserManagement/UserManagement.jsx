@@ -2,22 +2,29 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import AddUser from "./Add_User";
 import AddAdmin from "./Add_Admin";
+import AddRole from "./Add_Role";
 import useAxios from "../../Shared modules/Web Service/axiosConfig";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import Switch from "react-switch";
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const Usermanagement = () => {
-  const [data, setData] = useState([]); // For companies
-  const [data1, setData1] = useState([]); // For users
+  const [data, setData] = useState([]); 
+  const [data1, setData1] = useState([]); 
+  const [roles, setRoles] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [addUser, setAddUser] = useState(false);
+  const [addRole, setRole] = useState(false);
   const [addUsers, setAddUsers] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
+  const [showDeleteModal, setShowDeleteModal] = useState(false); 
+  const [roleToDelete, setRoleToDelete] = useState(null);
 
   useEffect(() => {
     fetchData();
     fetchUserData();
+    fetchRoles()
   }, []);
 
   // Fetch data for companies
@@ -40,25 +47,49 @@ const Usermanagement = () => {
     }
   };
 
+  const fetchRoles = async () => {
+    try {
+      const response = await useAxios.get("newrole");
+      setRoles(response.data);
+    } catch (error) {
+      console.error("Error fetching roles data:", error);
+    }
+  };
+
+  const handleDeleteRole = async (roleId) => {
+    try {
+      await useAxios.delete(`newrole/${roleId}`);
+      fetchRoles(); 
+      setShowDeleteModal(false); 
+    } catch (error) {
+      console.error("Error deleting role:", error);
+    }
+  };
+
   const handleResetPassword = () => setShowResetPass(true);
   const handleAddUser = () => setAddUser(true);
+  const handleRole = () => setRole(true);
   const handleAddUsers = () => setAddUsers(true);
   const handleCancel = () => {
     setShowPage(false);
     setAddUser(false);
+    setRole(false);
     setAddUsers(false);
+  };
+
+  const handleClick = (button) => {
+    setActiveButton(button);
   };
 
   const handleDelete = async (company_id) => {
     try {
       await useAxios.delete(`admin/${company_id}`);
-      fetchData(); // Refresh data after deletion
+      fetchData();
     } catch (error) {
       console.error("Error deleting data:", error);
     }
   };
 
-  // Toggle status for users (frontend-only or API call logic)
   const handleStatusToggle = async (id) => {
     setData1((prevData) =>
       prevData.map((user) =>
@@ -73,6 +104,13 @@ const Usermanagement = () => {
     } catch (error) {
       console.error("Error toggling user status:", error);
     }
+  };
+
+  const handleEditRole = (role) => {
+    // Your logic to handle the role editing
+    // For example, show a modal with the role details
+    console.log("Editing role:", role);
+    // You can use a state to toggle visibility of an edit form/modal and pass the `role` object to pre-fill the form.
   };
 
   const columns = [
@@ -170,52 +208,141 @@ const Usermanagement = () => {
     },
   ];
 
+  const columnRole = [
+    {
+      name: "Role Name",
+      selector: (row) => row.name,
+      sortable: true
+    },
+    {
+      name: "Permissions",
+      selector: (row) => (
+        <div
+          style={{
+            whiteSpace: 'normal', 
+            wordWrap: 'break-word',
+            maxWidth: '300px', 
+            overflowWrap: 'break-word', 
+          }}
+        >
+          {row.permissions.map((perm, index) => (
+            <div key={index} style={{ marginBottom: '10px' }}>{perm[1]}</div>
+          ))}
+        </div>
+      ),
+      sortable: false,
+    },
+    {
+      name: "Edit",
+      selector: (row) => (
+        <div style={{ textAlign: "center" }}>
+          <FaEdit
+            style={{ cursor: "pointer", color: "#3498db" }}
+            onClick={() => handleEdit(row)}
+          />
+        </div>
+      ),
+    },
+    {
+      name: "Delete",
+      selector: (row) => (
+        <div style={{ textAlign: "center" }}>
+          <FaTrash
+            style={{
+              cursor: "pointer",
+              color: "#d63031",
+              marginLeft: "15px",
+            }}
+            onClick={() => {
+              setRoleToDelete(row.id);
+              setShowDeleteModal(true);
+            }}
+          />
+        </div>
+      ),
+      sortable: false,
+    },
+  ];
+  
+
   return (
     <div>
       <div className="container">
         <div className="row">
-          <Permission requiredPermission="create_company" action="hide">
-            <div className="col-9 d-flex">
-              <div className="btn-group" role="group">
-                <button
-                  className={`btn btn-non ${
+          <div className="col-9 d-flex">
+            <div className="btn-group" role="group">
+            <Permission requiredPermission="view_company" action="hide">
+              <div className="">
+                <a
+                  href="#"
+                  className={`btn btn-non  ${
                     activeButton === "all" ? "active" : ""
                   }`}
-                  onClick={() => setActiveButton("all")}
+                  role="group"
+                  onClick={() => handleClick("all")}
                 >
-                  Registered Company
-                </button>
+                  Companies
+                </a>
               </div>
+            </Permission>
+            <Permission requiredPermission="view_user" action="hide">
+              <div className="">
+                <a
+                  href="#"
+                  className={`btn btn-non  ${
+                    activeButton === "all" ? "active" : ""
+                  }`}
+                  role="group"
+                  onClick={() => handleClick("all")}
+                >
+                  Users
+                </a>
+              </div>
+            </Permission>
+            <Permission requiredPermission="add_role" action="hide">
+              <div className="">
+                <a
+                  href="#"
+                  className={`btn btn-non ${
+                    activeButton === "role" ? "active" : ""
+                  }`}
+                  role="group"
+                  onClick={() => handleClick("role")}
+                >
+                  Roles
+                </a>
+              </div>
+              </Permission>
             </div>
+          </div>
+          {activeButton === "all" && <Permission requiredPermission="create_company" action="hide">
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddUser}>
                 + Register Company
               </button>
             </div>
-          </Permission>
-          <Permission requiredPermission="create_user" action="hide">
-            <div className="col-9 d-flex">
-              <div className="btn-group" role="group">
-                <button
-                  className={`btn btn-non ${
-                    activeButton === "all" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveButton("all")}
-                >
-                  Users
-                </button>
-              </div>
-            </div>
+          </Permission>}
+          
+          {activeButton === "all" && <Permission requiredPermission="create_user" action="hide">
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddUsers}>
                 + Add User
               </button>
             </div>
-          </Permission>
+          </Permission>}
+
+          {activeButton === "role" && <Permission requiredPermission="add_role" action="hide">
+            <div className="col-3 d-flex justify-content-end">
+              <button className="border-btn" onClick={handleRole}>
+                + Add Role
+              </button>
+            </div>
+          </Permission>}
         </div>
       </div>
+        
       <div className="container mt-3">
-        <Permission requiredPermission="view_company" action="hide">
+        {activeButton === "all" && <Permission requiredPermission="view_company" action="hide">
           <DataTable
             columns={columns}
             data={data}
@@ -246,8 +373,8 @@ const Usermanagement = () => {
               },
             }}
           />
-        </Permission>
-        <Permission requiredPermission="view_user" action="hide">
+        </Permission>}
+        {activeButton === "all" && <Permission requiredPermission="view_user" action="hide">
           <DataTable
             columns={columns1}
             data={data1}
@@ -278,13 +405,92 @@ const Usermanagement = () => {
               },
             }}
           />
-        </Permission>
+        </Permission>}
+        {activeButton === "role" && <Permission requiredPermission="add_role" action="hide">
+          <DataTable
+            columns={columnRole}
+            data={roles}
+            pagination
+            responsive
+            highlightOnHover
+            noHeader
+            customStyles={{
+              headRow: {
+                style: {
+                  borderBottom: "1px solid black",
+                  fontWeight: "bold",
+                  borderTopLeftRadius: "20px",
+                  borderTopRightRadius: "20px",
+                },
+              },
+              rows: {
+                style: {
+                  borderBottom: "1px solid #ECEFF3",
+                },
+              },
+              pagination: {
+                style: {
+                  backgroundColor: "#EAEDF1",
+                  boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "0 0 20px 20px",
+                },
+              },
+            }}
+          />
+        </Permission>}
+      </div>
+
+      <div
+        className={`modal fade ${showDeleteModal ? 'show' : ''}`}
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="deleteRoleModalLabel"
+        aria-hidden={showDeleteModal ? 'false' : 'true'}
+        style={{ display: showDeleteModal ? 'block' : 'none' }}
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="deleteRoleModalLabel">Confirm Deletion</h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              Are you sure you want to delete this role?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => handleDeleteRole(roleToDelete)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>
       )}
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
+      {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
     </div>
   );

@@ -30,7 +30,7 @@ Authorization: Token 36e6c900bd5e3a880a3ed584cebbf4748a7eede4
 ### Request Get user 
 GET http://localhost:8000/api/user?user_id=52
 content-type: application/json 
-Authorization: Token 1aabd52f4ff511ec9122543438450405e8c6b5be
+Authorization: Token 1fce04ae853db966b593f495534b881dbdc207c0
 
 ### Request Create user 
 POST http://localhost:8000/api/user?user_id=39

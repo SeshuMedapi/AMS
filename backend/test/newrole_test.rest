@@ -1,0 +1,44 @@
+### Request Login 
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "admin1@jivass.com", 
+    "password": "Jivass@123"
+}
+
+###list permission
+GET http://localhost:8000/api/permission_list
+content-type: application/json 
+Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+
+###Get Roles
+GET http://localhost:8000/api/newrole
+content-type: application/json 
+Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+
+
+###Add Roles
+POST http://localhost:8000/api/newrole
+content-type: application/json 
+Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+
+{
+    "role_name" : "test1",
+    "permissions" : [36, 37, 38]
+}
+
+###Update Roles
+PUT http://localhost:8000/api/newrole/4
+content-type: application/json 
+Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+
+{
+    "role_name" : "Manager",
+    "permissions" : [52, 37, 38, 36]
+}
+
+###Delete Roles
+DELETE http://localhost:8000/api/newrole/5
+content-type: application/json 
+Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
