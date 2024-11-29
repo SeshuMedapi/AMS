@@ -60,10 +60,10 @@
     transition: all 0.3s ease;
   }
   
-  .lp_button:hover{
+  /* .lp_button:hover{
     background-color:#B784B7;
     color: #000;
-  }
+  } */
   
   #lp_nav ul li a:hover {
     color: #B784B7;

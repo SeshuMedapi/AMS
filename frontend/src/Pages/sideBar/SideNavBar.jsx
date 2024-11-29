@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import Dashboard from "../../assets/SideBarNav/HoverMenu/Dashboard.svg";
 import Report from "../../assets/SideBarNav/HoverMenu/Report.svg";
@@ -14,38 +14,49 @@ import InvoicesHover from "../../assets/SideBarNav/Menu/Invoice.svg";
 import UserManagementHover from "../../assets/SideBarNav/Menu/User Management.svg";
 import OICHover from "../../assets/SideBarNav/oicIconHover.svg";
 
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 function Sidebar({ isOpen, onSidebarItemClick }) {
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null); // Add state for active index
+  const [activeIndex, setActiveIndex] = useState(null);
 
   const navItems = [
     {
       name: "Dashboard",
       icon: Dashboard,
       hoverIcon: DashboardHover,
-      permission: ["view_user","view_company"],
+      permission: ["view_user", "view_company"],
+      path: "/dashboard",
     },
     {
       name: "User Management",
       icon: UserManagement,
       hoverIcon: UserManagementHover,
-      permission: ["view_user","view_company"],
+      permission: ["view_user", "view_company"],
+      path: "/user-management",
     },
     {
       name: "Calendar",
       icon: Calendar,
       hoverIcon: Calendar,
       permission: ["view_calendar"],
-    }
+      path: "/calendar",
+    },
   ];
 
+  // Automatically set the active button based on the current URL
+  useEffect(() => {
+    const activePath = location.pathname;
+    const activeIndex = navItems.findIndex((item) => item.path === activePath);
+    setActiveIndex(activeIndex);
+  }, [location.pathname]);
+
   const handleClick = (name, index) => {
-    setActiveIndex(index); // Set active icon to the clicked one
+    setActiveIndex(index); // Set active index for clicked button
     onSidebarItemClick(name);
-    navigate(`/${name.toLowerCase().replace(" ", "-")}`);
+    navigate(navItems[index].path);
   };
 
   const menuItemStyle = {
