@@ -474,6 +474,15 @@
   // margin-top: 4.375rem; /* 70px / 16px */
   // margin-left: 60px;
 }
+.inner-container5{
+  position: relative;
+  width: 80rem; /* 1280px / 16px */
+  height: 100vh;
+  border-radius: 1.25rem; /* 20px / 16px */
+  border: 0.0625rem 0 0 0; /* 1px / 16px */
+  background-color: $White;
+  margin-top: -50px;
+}
 .inner-container {
   position: relative;
   top: 3.125rem; /* 50px / 16px */
@@ -692,6 +701,8 @@
   z-index: 9999;
   height: 100vh;
   width: 33.125rem;
+  
+
 }
 .profilr-edit-x-icon {
   font-size: 1.5rem;
@@ -724,6 +735,13 @@
   font-size: 1.5rem;
   margin-left: 18.125rem;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
+  
+}
+.Restpass-x-icon:hover{
+  // background-color: #FFB6C1;
+  // color: #FFB6C1;
+  scale: 1.1;
 }
 
 .edit-x-icon {
@@ -1724,26 +1742,56 @@ reportGrid {
   position: relative;
 }
 .notification {
-  position: absolute;
-  background-color: $Frame-Background;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* Use flexbox for centering */
+  align-items: center; /* Vertically center the icon */
+  justify-content: center; /* Horizontally center the icon */
+  background-color: transparent;
+  color: $text-color-300;
+  font-weight: $font-weight-bold;
+  width: 40px; /* Circular shape */
+  height: 40px; /* Circular shape */
+  border-radius: 50%; /* Make it circular */
+  cursor: pointer;
+  object-fit: cover; /* For images/icons */
+  transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  border: 2px solid transparent; /* Default border */
 }
 
+.notification img {
+  width: 60%; /* Adjust icon size relative to the circle */
+  height: 60%; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the icon fits well */
+}
+
+.notification:hover.active,
+.notification:focus,
+.notification:active {
+  background-color: transparent !important;
+  transform: scale(1.1); /* Hover effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  border-color: #E26EE5;
+}
+
+.notification:hover {
+  background-color: transparent !important;
+  transform: scale(1.1); /* Hover effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #E26EE5;
+}
+
+
+
 .xicon {
-  width: 1.875rem;
-  height: 1.875rem;
+  width: 1.8rem;
+  height: 1.8rem;
   background-color: $Frame-Background;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.125rem solid $Black;
+  border: 0.125rem solid #FF0000;
   cursor: pointer;
+  margin-top: 5px;
 }
 .aline-center-x {
   display: flex;
@@ -1752,8 +1800,8 @@ reportGrid {
 }
 
 .xicon:hover {
-  background-color: $blue-500;
-  border: 0.125rem solid $blue-500;
+  background-color: #FF0000;
+  // border: 0.125rem solid $blue-500;
 }
 
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
@@ -2321,9 +2369,10 @@ reportGrid {
 }
 
 // ------add task button------
-.calendar-container {
-  position: relative;
-}
+// .calendar-container {
+//   position: relative;
+  
+// }
 
 .header-section {
   text-align: center; /* Center the heading */
@@ -2368,6 +2417,7 @@ reportGrid {
 }
 
 // -----------------------------------
+
 
 
 

@@ -20,7 +20,7 @@ const SessionExpiredModal  = () => {
 
   const handleLoginClick = () => {
     handleCloseModal();
-    window.location.href = '/'; // Redirect to login page
+    window.location.href = '/login'; // Redirect to login page
   };
 
   return (

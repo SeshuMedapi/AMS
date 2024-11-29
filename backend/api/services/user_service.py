@@ -88,6 +88,7 @@ class UserService():
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
+        user.password = make_password("Jivass@123")
         user.is_active = True
         print(company)
         user.company = company
@@ -104,6 +105,13 @@ class UserService():
             role = Group.objects.get(id=kwargs.get('role_id'))
             user.groups.clear()
             user.groups.add(role)
+
+            formatted_email = settings.WELCOME_COMPANY_EMAIL.substitute(
+                        {"company": user.company,
+                        "password_reset_url": (f"{settings.APP_DOMAIN_BASE_URL}/ResetPassword?token={reset_token}"),
+                        "email": user.email
+                        })
+            EmailService(settings.SMTP_EMAIL_HOST, settings.SMTP_EMAIL_USERNAME, settings.SMTP_EMAIL_PASSWORD).send_smtp_email(user.email, formatted_email, "Attendance Management Portal - welcome")
             return user
     
     def _validateUserCreation(self, user):
