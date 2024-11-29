@@ -34,3 +34,18 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('id', 'name')
+
+class PermissionSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    permission = serializers.CharField(max_length=255)
+
+class RoleSerializer(serializers.ModelSerializer):
+    permissions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Group
+        fields = ['id', 'name', 'permissions']
+
+    def get_permissions(self, obj):
+        return obj.permissions.values_list('id', 'codename')
+

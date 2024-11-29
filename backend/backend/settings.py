@@ -71,7 +71,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
 }
 
 TOKEN_EXPIRED_AFTER_SECONDS = 15 * 60
@@ -239,7 +239,7 @@ LOGGING = {
 
 PERMISSIONS = (
                 ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
-                ('view_calendar', ''), ('edit_calendar', '')
+                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''),
             )
 
 ROLES = ['SuperAdmin', 
@@ -265,7 +265,9 @@ ROLE_PERMISSION = [
             'view_user',
             'create_user',
             'edit_user',    
-            'view_calendar'        
+            'view_calendar',
+            'add_role',
+            'edit_role',        
         ]
     },
         {
