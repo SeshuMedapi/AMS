@@ -3,14 +3,14 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "admin1@jivass.com", 
+    "username": "test@gmail.com", 
     "password": "Jivass@123"
 }
 
 ###list permission
 GET http://localhost:8000/api/permission_list
 content-type: application/json 
-Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+Authorization: Token f4d64b4ff74fb1af9db2640d95f5935f7b49f4aa
 
 ###Get Roles
 GET http://localhost:8000/api/newrole

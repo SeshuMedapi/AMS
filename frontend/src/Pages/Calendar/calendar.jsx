@@ -129,7 +129,7 @@ const Calendar = () => {
             <h2>{Role} Calendar</h2>
 
             <Permission requiredPermission="edit_calendar" action="hide">
-              <a href="#" className="btn-1" onClick={() => handleShowModal()}>Add Event</a>
+              <a href="#" className="btn-1 add-event-btn" onClick={() => handleShowModal()}>Add Event</a>
             </Permission>
 
             <BigCalendar
@@ -279,6 +279,22 @@ const Calendar = () => {
               </div>
             </Modal>
           </div>
+                {/* Calendar Summary Section */}
+            <div className="calendar-summary">
+              <div className="summary-item">
+                <strong>Working Days:</strong> <span className="placeholder">Loading...</span>
+              </div>
+              <div className="summary-item">
+                <strong>Public Holidays:</strong> <span className="placeholder">Loading...</span>
+              </div>
+              <div className="summary-item">
+                <strong>Week Offs:</strong> <span className="placeholder">Loading...</span>
+              </div>
+              <div className="summary-item">
+                <strong>Sundays:</strong> <span className="placeholder">Loading...</span>
+              </div>
+            </div>
+
         </div>
       </div>
     </div>

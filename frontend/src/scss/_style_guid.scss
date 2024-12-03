@@ -471,18 +471,26 @@
   border-radius: 1.25rem; /* 20px / 16px */
   border: 0.0625rem 0 0 0; /* 1px / 16px */
   background-color: $White; /* Assuming $White is a valid variable */
-  // margin-top: 4.375rem; /* 70px / 16px */
-  // margin-left: 60px;
+  margin-top: 4.375rem; /* 70px / 16px */
+  margin-left: 60px;
 }
 .inner-container5{
   position: relative;
-  width: 80rem; /* 1280px / 16px */
-  height: 100vh;
-  border-radius: 1.25rem; /* 20px / 16px */
-  border: 0.0625rem 0 0 0; /* 1px / 16px */
+  width: 80rem; 
+  border-radius: 1.25rem; 
+  border: 0.0625rem 0 0 0; 
   background-color: $White;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   margin-top: -50px;
+  gap: 2.5rem;
+  padding: 0 20px 20px 20px;
 }
+.inner-container5 h2{
+  font-size: 1.7rem;
+  padding-top: 20px;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
 .inner-container {
   position: relative;
   top: 3.125rem; /* 50px / 16px */
@@ -491,6 +499,9 @@
   left: 3.125rem; /* 50px / 16px */
   gap: 2.5rem; /* 40px / 16px */
   background-color: $White; /* Assuming $White is a valid variable */
+  margin-top: -20px;
+
+
 }
 .inner-container2 {
   position: relative;
@@ -701,8 +712,6 @@
   z-index: 9999;
   height: 100vh;
   width: 33.125rem;
-  
-
 }
 .profilr-edit-x-icon {
   font-size: 1.5rem;
@@ -2369,10 +2378,10 @@ reportGrid {
 }
 
 // ------add task button------
-// .calendar-container {
-//   position: relative;
+.calendar-container {
+  position: relative;
   
-// }
+}
 
 .header-section {
   text-align: center; /* Center the heading */
@@ -2413,10 +2422,88 @@ reportGrid {
   background:transparent;
 }
 .btn-3{
-  background: red;
+  border: 1px solid red;
+  background:transparent;
+}
+.btn-3:hover{
+  background:red;
+}
+.add-event-btn{
+  margin-top: -45px;
+}
+.calendar-summary {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.summary-item {
+  flex: 1; /* Ensures all items have equal space */
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.summary-item strong {
+  color: #007bff;
+}
+
+.summary-item .placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Optional: Add some hover or transition effects */
+.summary-item:hover {
+  background-color: #f1f1f1;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+.permission-list {
+  max-height: 200px; /* Limit height for scrolling */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+.form-check {
+  margin-bottom: 8px;
+}
+
+
+
+
 // -----------------------------------
+
+@media (max-width: 768px) {
+  .calendar-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .summary-item {
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  .Side-popup {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .Popup-Header h3 {
+    font-size: 16px;
+  }
+}
+
 
 
 
