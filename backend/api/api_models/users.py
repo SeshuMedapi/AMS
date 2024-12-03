@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Group
 from api.api_models.company import Company
+from api.api_models.custom_group import CustomGroup
 
 class User(AbstractUser):
     username = None
@@ -31,6 +32,9 @@ class UserSerializer(serializers.ModelSerializer):
         return group.name if group else None
 
 class GroupSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=150, allow_null=False)
+
     class Meta:
         model = Group
         fields = ('id', 'name')

@@ -32,7 +32,7 @@ urlpatterns = [
     path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
     path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
 
-    path("newrole", AddRoleView.as_view(), name='newrole'),
+    path("newrole/<int:user_id>", AddRoleView.as_view(), name='newrole'),
     path("newrole/<int:role_id>", AddRoleView.as_view(), name='edit_role'),
     path("permission_list", PermissionView.as_view(), name='permissionlists'),
 

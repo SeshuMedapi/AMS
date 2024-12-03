@@ -49,7 +49,7 @@ const Usermanagement = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await useAxios.get("newrole");
+      const response = await useAxios.get(`newrole/${userId}`);
       setRoles(response.data);
     } catch (error) {
       console.error("Error fetching roles data:", error);

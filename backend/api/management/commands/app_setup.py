@@ -8,6 +8,10 @@ import uuid
 from api.api_models.users import User
 from api.api_models.reset_password import ResetPassword
 
+
+from api.api_models.custom_group import CustomGroup
+from django.db.models import F
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         with transaction.atomic():

@@ -9,22 +9,22 @@ content-type: application/json
 
 ###list permission
 GET http://localhost:8000/api/permission_list
-content-type: application/json 
-Authorization: Token f4d64b4ff74fb1af9db2640d95f5935f7b49f4aa
+content-type: application/json
+Authorization: Token 2ddd01b9bfba7c8623f9a395203a0c8a55d2f180
 
 ###Get Roles
-GET http://localhost:8000/api/newrole
+GET http://localhost:8000/api/newrole/52
 content-type: application/json 
-Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+Authorization: Token 2ddd01b9bfba7c8623f9a395203a0c8a55d2f180
 
 
 ###Add Roles
-POST http://localhost:8000/api/newrole
+POST http://localhost:8000/api/newrole/52
 content-type: application/json 
-Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+Authorization: Token 03ef62bc3607ff50e6de22f5996d34180a4def93
 
 {
-    "role_name" : "test1",
+    "role_name" : "testm",
     "permissions" : [36, 37, 38]
 }
 

@@ -164,6 +164,8 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'api.User'
 
+AUTH_GROUP_MODEL = 'api.CustomGroup'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -289,13 +291,13 @@ ROLE_PERMISSION = [
             'view_calendar'
         ]
     },
-        {
-        "role": "User",
-        "permissions": [
-            'view_user',
-            'view_calendar'
-        ]
-    }
+    #     {
+    #     "role": "User",
+    #     "permissions": [
+    #         'view_user',
+    #         'view_calendar'
+    #     ]
+    # }
 ]
 
 
