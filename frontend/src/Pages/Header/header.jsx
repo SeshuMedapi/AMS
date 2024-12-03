@@ -78,10 +78,10 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
       <div className="container-fluid tooltip-container">
         <div className="d-flex align-items-center">
           <div
-            className={`burger-icon ${isActive("/") ? "active" : ""}`} // Highlight based on route
+            className={`burger-icon ${isActive("dashboard") ? "active" : ""}`} // Highlight based on route
             onClick={() => {
               toggleSidebar();
-              handleNavigation("/");
+              handleNavigation("dashboard");
             }}
             ref={hamburgerRef}
           >

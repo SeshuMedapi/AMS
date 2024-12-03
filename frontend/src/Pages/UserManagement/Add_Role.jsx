@@ -14,21 +14,34 @@ function AddRole({ onCancel, onUserAdded }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [apiError, setApiError] = useState(null);
-  const userId = localStorage.getItem("userId");
+  const [isPermissionsLoading, setIsPermissionsLoading] = useState(true);
 
   // Fetch the list of permissions
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const response = await axiosInstance.get('permission_list');
-        setPermissions(response.data);
+        const response = await axiosInstance.get("permission_list");
+        const permissionsList = response.data;
+
+        // Deduplicate and sort permissions by name
+        const deduplicatedPermissions = permissionsList.reduce((acc, current) => {
+          if (!acc.find((item) => item.permission === current.permission)) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+        deduplicatedPermissions.sort((a, b) => a.permission.localeCompare(b.permission));
+
+        setPermissions(deduplicatedPermissions);
       } catch (error) {
         console.error("Error fetching permissions:", error);
-        setPermissions([]);
+        toast.error("Failed to load permissions. Please try again later.");
+      } finally {
+        setIsPermissionsLoading(false);
       }
     };
     fetchPermissions();
-  }, [userId]);
+  }, []);
 
   // Handle role name input change
   const handleRoleNameChange = (value) => {
@@ -40,10 +53,13 @@ function AddRole({ onCancel, onUserAdded }) {
     }
   };
 
-  // Handle permissions selection
-  const handlePermissionsChange = (event) => {
-    const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
-    setSelectedPermissions(selectedOptions);
+  // Handle permission checkbox changes
+  const handlePermissionChange = (permissionId) => {
+    setSelectedPermissions((prev) =>
+      prev.includes(permissionId)
+        ? prev.filter((id) => id !== permissionId)
+        : [...prev, permissionId]
+    );
   };
 
   // Handle Save action
@@ -64,10 +80,10 @@ function AddRole({ onCancel, onUserAdded }) {
     try {
       const roleData = {
         role_name: roleName.trim(),
-        permissions: selectedPermissions.map((id) => parseInt(id)), 
+        permissions: selectedPermissions,
       };
 
-      const response = await axiosInstance.post('newrole', roleData);
+      const response = await axiosInstance.post("newrole", roleData);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Role added successfully!");
@@ -77,43 +93,18 @@ function AddRole({ onCancel, onUserAdded }) {
         }, 3000);
       }
     } catch (error) {
-      if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            setApiError("Bad Request");
-            toast.error("Bad Request");
-            break;
-          case 401:
-            setApiError("Unauthorized");
-            toast.error("Unauthorized");
-            break;
-          case 403:
-            setApiError("Forbidden");
-            toast.error("Forbidden");
-            break;
-          case 404:
-            setApiError("Not Found");
-            toast.error("Not Found");
-            break;
-          case 500:
-            setApiError("Internal Server Error");
-            toast.error("Internal Server Error");
-            break;
-          default:
-            setApiError(`Error: ${error.response.status}`);
-            toast.error(`Error: ${error.response.status}`);
-        }
-      } else if (error.request) {
-        setApiError("No response received from server");
-        toast.error("No response received from server");
+      if (error.response?.data?.message) {
+        setApiError(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else if (error.response) {
+        toast.error(`Error: ${error.response.status}`);
       } else {
-        setApiError("Error: " + error.message);
         toast.error("Error: " + error.message);
       }
+    } finally {
+      setIsLoading(false);
+      setIsButtonDisabled(false);
     }
-
-    setIsLoading(false);
-    setIsButtonDisabled(false);
   };
 
   return (
@@ -147,23 +138,28 @@ function AddRole({ onCancel, onUserAdded }) {
             <label className="form-label fw-bold">
               Permissions <span className="text-danger">*</span>
             </label>
-            <select
-              multiple
-              className={`form-control form-control-all`}
-              value={selectedPermissions}
-              onChange={handlePermissionsChange}
-            >
-              {permissions && permissions.length > 0 ? (
-                permissions.map((permission) => (
-                  <option key={permission.id} value={permission.id}>
-                    {permission.permission_name}
-                  </option>
-                ))
-              ) : (
-                <option value="">No permissions available</option>
-              )}
-            </select>
-            {selectedPermissions.length === 0 && (
+            {isPermissionsLoading ? (
+              <div>Loading permissions...</div>
+            ) : (
+              <div className="permission-list">
+                {permissions.map((permission) => (
+                  <div key={permission.id} className="form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id={`permission-${permission.id}`}
+                      value={permission.id}
+                      checked={selectedPermissions.includes(permission.id)}
+                      onChange={() => handlePermissionChange(permission.id)}
+                    />
+                    <label className="form-check-label" htmlFor={`permission-${permission.id}`}>
+                      {permission.permission}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
+            {selectedPermissions.length === 0 && !isPermissionsLoading && (
               <div className="text-danger">At least one permission is required.</div>
             )}
           </div>
@@ -180,11 +176,7 @@ function AddRole({ onCancel, onUserAdded }) {
               onClick={handleSave}
               disabled={isLoading || isButtonDisabled}
             >
-              {isLoading ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
-              ) : (
-                "Add Role"
-              )}
+              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Add Role"}
             </button>
           </Permission>
         </div>
