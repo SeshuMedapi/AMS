@@ -39,9 +39,8 @@ function AdminProfile() {
   const fetchProfileImage = async () => {
     try {
       const response = await axiosInstance.get("/profile_picture");
-      console.log(response)
-      if (response.status == 200) {
-        setProfileImage('http://127.0.0.1:8080' + response.data.url);
+      if (response.status === 200) {
+        setProfileImage("http://127.0.0.1:8080" + response.data.url);
       } else {
         setProfileImage(ProfileImage);
       }
@@ -54,7 +53,6 @@ function AdminProfile() {
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append("profile_picture", file);
-    console.log(formData);
     try {
       const response = await axiosInstance.post("/profile_picture", formData);
 
@@ -69,14 +67,43 @@ function AdminProfile() {
       setApiError("Failed to upload image: " + error.message);
     }
   };
+
+  const handleSaveProfile = async (updatedUser) => {
+    const confirmUpdate = window.confirm(
+      "Are you sure you want to save the changes to your profile?"
+    );
+    if (!confirmUpdate) return;
+  
+    try {
+      console.log("Sending updated user data:", updatedUser); // Debug payload
+      const response = await axiosInstance.put("/update_profile", updatedUser);
+  
+      if (response.status === 200) {
+        console.log("API response:", response.data); // Debug server response
+        setUser(response.data); // Update user data in the state
+        setEditMode(false);
+        setShowSuccess(true);
+        setApiError(null);
+        setTimeout(() => {
+          setShowSuccess(false); // Auto-hide success alert after 3 seconds
+        }, 3000);
+      } else {
+        throw new Error(`Unexpected response: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error); // Log the error
+      setApiError(
+        error.response?.data?.message || "An unknown error occurred. Please try again."
+      );
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false); // Auto-hide error alert after 3 seconds
+      }, 3000);
+    }
+  };
+  
   const handleEditProfile = () => {
     setEditMode(true);
-  };
-  const handlesaved = () => {
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 2000);
   };
 
   const handleCancel = () => {
@@ -93,10 +120,6 @@ function AdminProfile() {
     setShowLogout(true);
   };
 
-  const handSave = (updatedUser) => {
-    setUser(updatedUser);
-    setEditMode(false);
-  };
   console.log("Profile Image URL:", profileImage);
 
   return (
@@ -198,15 +221,10 @@ function AdminProfile() {
           </div>
           <div className="">
             <div className="outer-container2">
-              {/* {apiError && (
-                <div className="alert alert-danger mt-3">{apiError}</div>
-              )} */}
               {showChangePswd && <div className="overlay"></div>}
               {showLogout && <div className="overlay"></div>}
 
-              {editMode && (
-                <div className="overlay" onClick={handleCancel}></div>
-              )}
+              {editMode && <div className="overlay" onClick={handleCancel}></div>}
               {!editMode && (
                 <button
                   type="button"
@@ -223,13 +241,22 @@ function AdminProfile() {
                 onClose={() => setShowSuccess(false)}
                 dismissible
               >
-                Password Changed successfully!
+                Profile updated successfully!
+              </Alert>
+              <Alert
+                className="mt-3"
+                show={showError}
+                variant="danger"
+                onClose={() => setShowError(false)}
+                dismissible
+              >
+                {apiError}
               </Alert>
               {editMode && (
                 <ProfileEditor
                   user={user}
                   handleCancel={handleCancel}
-                  handSave={handSave}
+                  handSave={handleSaveProfile}
                 />
               )}
             </div>
@@ -237,7 +264,7 @@ function AdminProfile() {
         </div>
       </div>
       {showChangePswd && (
-        <ChangePassword handleCancel={handleCancel} handlesaved={handlesaved} />
+        <ChangePassword handleCancel={handleCancel} />
       )}
       {showLogout && <LogoutProfile handleCancel={handleCancel} />}
     </div>

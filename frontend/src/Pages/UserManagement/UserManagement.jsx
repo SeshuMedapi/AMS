@@ -212,32 +212,63 @@ const Usermanagement = () => {
     {
       name: "Role Name",
       selector: (row) => row.name,
-      sortable: true
+      sortable: true,
+      style: {
+        fontWeight: "600",
+        color: "#34495e",
+        fontSize: "15px",
+        padding: "8px 12px",
+      },
     },
     {
       name: "Permissions",
       selector: (row) => (
         <div
           style={{
-            whiteSpace: 'normal', 
-            wordWrap: 'break-word',
-            maxWidth: '300px', 
-            overflowWrap: 'break-word', 
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "5px",
+            padding: "8px 10px",
           }}
         >
           {row.permissions.map((perm, index) => (
-            <div key={index} style={{ marginBottom: '10px' }}>{perm[1]}</div>
+            <span
+              key={index}
+              style={{
+                backgroundColor: "#e8f6f3",
+                color: "#2c3e50",
+                fontSize: "13px",
+                padding: "4px 8px",
+                borderRadius: "12px",
+                border: "1px solid #a4d3c2",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {perm[1]}
+            </span>
           ))}
         </div>
       ),
       sortable: false,
+      style: {
+        maxWidth: "350px",
+        overflow: "hidden",
+      },
     },
     {
       name: "Edit",
       selector: (row) => (
         <div style={{ textAlign: "center" }}>
           <FaEdit
-            style={{ cursor: "pointer", color: "#3498db" }}
+            style={{
+              cursor: "pointer",
+              color: "#1e90ff",
+              fontSize: "18px",
+              margin: "5px",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
             onClick={() => handleEdit(row)}
           />
         </div>
@@ -250,9 +281,13 @@ const Usermanagement = () => {
           <FaTrash
             style={{
               cursor: "pointer",
-              color: "#d63031",
-              marginLeft: "15px",
+              color: "#e74c3c",
+              fontSize: "18px",
+              margin: "5px",
+              transition: "transform 0.2s",
             }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
             onClick={() => {
               setRoleToDelete(row.id);
               setShowDeleteModal(true);
@@ -263,6 +298,7 @@ const Usermanagement = () => {
       sortable: false,
     },
   ];
+  
   
 
   return (
@@ -468,7 +504,7 @@ const Usermanagement = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className=" btn-secondary"
                 data-dismiss="modal"
                 onClick={() => setShowDeleteModal(false)}
               >

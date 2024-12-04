@@ -157,6 +157,7 @@
   height: 2rem;
 }
 
+
 .btn2 {
   width: 3rem;
   height: 3rem;
@@ -2247,75 +2248,75 @@ reportGrid {
 
 
 
-// // Enhancements for a more attractive UI
+// Enhancements for a more attractive UI
 
-// // 1. Apply smooth transitions to all elements
-// * {
-//   transition: all 0.3s ease-in-out;
-// }
+// 1. Apply smooth transitions to all elements
+* {
+  transition: all 0.3s ease-in-out;
+}
 
-// // 2. Add a subtle glowing effect to buttons on hover
-// .btn-primary:hover {
-//   box-shadow: 0 8px 16px rgba(226, 110, 229, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
-//   transform: scale(1.1);
-// }
+// 2. Add a subtle glowing effect to buttons on hover
+.btn-primary:hover {
+  box-shadow: 0 8px 16px rgba(226, 110, 229, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
 
-// // 3. Dark mode support (toggleable)
-// body.dark-mode {
-//   background-color: #2d2d2d;
-//   color: #ffffff;
-// }
+// 3. Dark mode support (toggleable)
+body.dark-mode {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
 
-// body.dark-mode .bg-color {
-//   background-image: linear-gradient(#3d3d3d, #5a5a5a);
-// }
+body.dark-mode .bg-color {
+  background-image: linear-gradient(#3d3d3d, #5a5a5a);
+}
 
-// body.dark-mode .btn-primary {
-//   background-color: #444;
-//   color: #fff;
-// }
+body.dark-mode .btn-primary {
+  background-color: #444;
+  color: #fff;
+}
 
-// // 4. Add card styles with shadows and rounded corners
-// .card {
-//   border-radius: 1rem;
-//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//   padding: 1rem;
-//   background-color: $White;
-// }
+// 4. Add card styles with shadows and rounded corners
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  background-color: $White;
+}
 
-// .card:hover {
-//   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-// }
+.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
 
-// // 5. Add modern font styles for headings
-// h1, h2, h3, h4, h5, h6 {
-//   font-family: 'Poppins', sans-serif;
-//   letter-spacing: 0.05em;
-// }
+// 5. Add modern font styles for headings
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.05em;
+}
 
-// // 6. Soft shadows on images
-// .img-size {
-//   width: 1.25rem;
-//   height: 1.25rem;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//   border-radius: 0.25rem;
-// }
+// 6. Soft shadows on images
+.img-size {
+  width: 1.25rem;
+  height: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+}
 
-// .img-con1 {
-//   width: 1.5rem;
-//   height: 1.5rem;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//   border-radius: 0.25rem;
-// }
+.img-con1 {
+  width: 1.5rem;
+  height: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+}
 
-// // 7. Improve navbar with a deeper shadow effect
-// .bg-color {
-//   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-// }
+// 7. Improve navbar with a deeper shadow effect
+.bg-color {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-// // 8. New button style with gradient and shadow
+// 8. New button style with gradient and shadow
 // .btn-secondary {
-//   background-image: linear-gradient(to right, #6a11cb, #2575fc);
+//   background-image: linear-gradient(to right, #8E7AB5, #EEA5A6);
 //   color: white;
 //   border-radius: 50px;
 //   padding: 10px 20px;
@@ -2323,6 +2324,19 @@ reportGrid {
 // }
 
 // .btn-secondary:hover {
+//   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+//   transform: translateY(-2px);
+//   background-color: transparent;
+// }
+// .btn-danger{
+//   background-color: #dc3545;
+//   color: white;
+//   border-radius: 50px;
+//   padding: 10px 20px;
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+// }
+
+// .btn-danger:hover {
 //   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 //   transform: translateY(-2px);
 // }
@@ -2503,6 +2517,121 @@ reportGrid {
     font-size: 16px;
   }
 }
+
+//confirmation form
+/* Modal Dialog Styling */
+.modal-dialog {
+  max-width: 500px;
+  margin: 30px auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Content */
+.modal-content {
+  background: linear-gradient(145deg, #ffffff, #f7f7f7);
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Header */
+.modal-header {
+  border-bottom: 1px solid #eaeaea;
+  // display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #781717;
+}
+
+.close {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #888888;
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: #ff5a5a;
+  scale: 1.2;
+}
+
+/* Modal Body */
+.modal-body {
+  font-size: 1rem;
+  color: #555555;
+  // text-align: center;
+  padding: 15px 20px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #eaeaea;
+  padding: 15px;
+}
+
+/* Buttons */
+.btn-secondary {
+  background-image: linear-gradient(to right, #EEA5A6, #8E7AB5);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  // background-color: #bbbbbb;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+
+
+}
+
+.btn-danger {
+  background-color: #ff4d4d;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.btn-danger:hover {
+  background-color: #e60000;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+
+}
+
+/* Small Animation */
+.modal-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 
 
 
