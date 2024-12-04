@@ -77,29 +77,43 @@ const Usermanagement = () => {
   const handleStatusToggle = async () => {
     if (selectedUserId !== null) {
       try {
-        const user = data1.find((u) => u.id === selectedUserId);
+        let user = null;
+
+        if (perm && perm.includes("view_company")) {
+          user = data.find((u) => u.id === selectedUserId);
+        }
+        if (perm && perm.includes("view_user")) {
+          user = data1.find((u) => u.id === selectedUserId);
+        }
         const newStatus = !user.is_active;
+
+        console.log("Payload being sent:", {
+          user_id: selectedUserId,
+          activate: newStatus,
+        });
   
-        // Make the API request to toggle the status
         await useAxios.post('/user/activate', {
           user_id: selectedUserId,
-          activate: newStatus,  // 'true' for activation, 'false' for deactivation
+          activate: newStatus,
         });
-        
-        fetchData();
-        fetchUserData();
+
+
+        if (perm && perm.includes("view_company")) {
+          fetchData();
+        }
+        if (perm && perm.includes("view_user")) {
+          fetchUserData();
+        }
 
         setData1((prevData) =>
           prevData.map((u) =>
-            u.id === selectedUserId ? { ...u, is_active: newStatus } : u
+            u.id === selectedUserId ? { ...u, isActive: newStatus } : u
           )
         );
-  
-        console.log(`Toggled status for user ID: ${selectedUserId}`);
+
       } catch (error) {
         console.error("Error toggling user status:", error);
       } finally {
-        // Close modal and clear selectedUserId
         setShowConfirmModal(false);
         setSelectedUserId(null);
       }
@@ -530,28 +544,27 @@ const Usermanagement = () => {
       </div>
 
       <Modal
-  isOpen={showConfirmModal}
-  onRequestClose={() => setShowConfirmModal(false)}
-  contentLabel="Confirm Toggle Status"
-  ariaHideApp={false}
-  style={{
-    content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
-  }}
->
-  <h4>Are you sure?</h4>
-  <Permission requiredPermission="view_user" action="hide">
-    <p>
-      Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
-    </p>
-  </Permission>
-  <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
-    Yes
-  </button>
-  <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>
-    No
-  </button>
-</Modal>
-
+        isOpen={showConfirmModal}
+        onRequestClose={() => setShowConfirmModal(false)}
+        contentLabel="Confirm Toggle Status"
+        ariaHideApp={false}
+        style={{
+          content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
+        }}
+      >
+        <h4>Are you sure?</h4>
+        <Permission requiredPermission="view_user" action="hide">
+          <p>
+            Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
+          </p>
+        </Permission>
+        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
+          Yes
+        </button>
+        <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>
+          No
+        </button>
+      </Modal>
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>

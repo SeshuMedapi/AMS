@@ -96,6 +96,7 @@ class AdminView(viewsets.ViewSet):
         admin_user_data = []
         for user in admin_users:
             admin_user_data.append({   
+                'id':user.id,
                 'company_id': user.company.id,
                 'company': user.company.name,
                 'email': user.email,
