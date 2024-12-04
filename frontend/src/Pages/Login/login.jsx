@@ -399,7 +399,7 @@ function LoginPage() {
                           padding: "0 20px" /* Optional padding */,
                         }}
                       />
-                      {showModal &&
+                      {/* {showModal &&
                         ReactDOM.createPortal(
                           <Modal
                             message={Message}
@@ -407,7 +407,7 @@ function LoginPage() {
                             onLogin={handleContinue} // Pass the login handler
                           />,
                           document.body
-                        )}
+                        )} */}
                     </form>
                     {showBlockModal &&
                       ReactDOM.createPortal(

@@ -106,7 +106,7 @@ DATABASES = {
         },
         'NAME': 'ams',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -163,6 +163,8 @@ USE_I18N = True
 USE_TZ = True
 
 AUTH_USER_MODEL = 'api.User'
+
+AUTH_GROUP_MODEL = 'api.CustomGroup'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -245,8 +247,7 @@ PERMISSIONS = (
 ROLES = ['SuperAdmin', 
          'Admin',
          'HR',
-         'Manager',
-         'User'
+         'Manager'
          ]
 
 ROLE_PERMISSION = [
@@ -267,7 +268,8 @@ ROLE_PERMISSION = [
             'edit_user',    
             'view_calendar',
             'add_role',
-            'edit_role',        
+            'edit_role', 
+            'activate_user'      
         ]
     },
         {
@@ -277,7 +279,8 @@ ROLE_PERMISSION = [
             'create_user',
             'edit_user',
             'view_calendar',
-            'edit_calendar'
+            'edit_calendar',
+            'activate_user'  
         ]
     },
         {
@@ -286,16 +289,17 @@ ROLE_PERMISSION = [
             'view_user',
             'create_user',
             'edit_user',
-            'view_calendar'
+            'view_calendar',
+            'activate_user'  
         ]
     },
-        {
-        "role": "User",
-        "permissions": [
-            'view_user',
-            'view_calendar'
-        ]
-    }
+    #     {
+    #     "role": "User",
+    #     "permissions": [
+    #         'view_user',
+    #         'view_calendar'
+    #     ]
+    # }
 ]
 
 

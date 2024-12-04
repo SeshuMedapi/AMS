@@ -4,9 +4,10 @@ import AddUser from "./Add_User";
 import AddAdmin from "./Add_Admin";
 import AddRole from "./Add_Role";
 import useAxios from "../../Shared modules/Web Service/axiosConfig";
+import Modal from "react-modal";
 import Permission from "../../Shared modules/Context management/permissionCheck";
-import Switch from "react-switch";
-import { FaEdit, FaTrash } from 'react-icons/fa';
+
+import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
 
 const Usermanagement = () => {
   const [data, setData] = useState([]); 
@@ -20,11 +21,16 @@ const Usermanagement = () => {
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
   const [roleToDelete, setRoleToDelete] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
     fetchData();
     fetchUserData();
-    fetchRoles()
+    if (perm && perm.includes("add_role")) {
+      fetchRoles();
+    }
   }, []);
 
   // Fetch data for companies
@@ -49,7 +55,7 @@ const Usermanagement = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await useAxios.get("newrole");
+      const response = await useAxios.get(`newrole/${userId}`);
       setRoles(response.data);
     } catch (error) {
       console.error("Error fetching roles data:", error);
@@ -63,6 +69,36 @@ const Usermanagement = () => {
       setShowDeleteModal(false); 
     } catch (error) {
       console.error("Error deleting role:", error);
+    }
+  };
+
+  const handleStatusToggle = async () => {
+    if (selectedUserId !== null) {
+      try {
+        const user = data1.find((u) => u.id === selectedUserId);
+        const newStatus = !user.is_active;
+  
+        await useAxios.post('/user/activate', {
+          user_id: selectedUserId,
+          activate: newStatus,
+        });
+        
+        fetchData();
+        fetchUserData();
+
+        setData1((prevData) =>
+          prevData.map((u) =>
+            u.id === selectedUserId ? { ...u, isActive: newStatus } : u
+          )
+        );
+  
+        console.log(`Toggled status for user ID: ${selectedUserId}`);
+      } catch (error) {
+        console.error("Error toggling user status:", error);
+      } finally {
+        setShowConfirmModal(false);
+        setSelectedUserId(null);
+      }
     }
   };
 
@@ -90,22 +126,6 @@ const Usermanagement = () => {
     }
   };
 
-  const handleStatusToggle = async (id) => {
-    setData1((prevData) =>
-      prevData.map((user) =>
-        user.id === id ? { ...user, isActive: !user.isActive } : user
-      )
-    );
-
-    try {
-      // Uncomment and customize the API call if this is connected to the backend
-      // await useAxios.patch(`/user/${id}/toggle-status`, { isActive: !currentStatus });
-      console.log(`Toggled status for user with ID ${id}`);
-    } catch (error) {
-      console.error("Error toggling user status:", error);
-    }
-  };
-
   const handleEditRole = (role) => {
     // Your logic to handle the role editing
     // For example, show a modal with the role details
@@ -125,42 +145,23 @@ const Usermanagement = () => {
       sortable: true,
     },
     {
-      name: "Action",
+      name: "Status",
       cell: (row) => (
-        <div className="d-flex">
-          <Permission requiredPermission="view_user" action="hide">
-            <button
-              className="Action-icon"
-              onClick={() => {
-                handleResetPassword();
-              }}
-            >
-              <img
-                src="src/assets/Setting/details.png"
-                alt="Setting Icon"
-                className="icon"
-              />
-            </button>
-          </Permission>
-
-          <Permission requiredPermission="delete_company" action="hide">
-            <button
-              className="Action-icon"
-              onClick={() => {
-                handleDelete(row.company_id);
-              }}
-            >
-              <img
-                src="src/assets/Edit/delete.png"
-                alt="Edit Icon"
-                className="icon"
-              />
-            </button>
-          </Permission>
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setSelectedUserId(row.id);
+            setShowConfirmModal(true);
+          }}
+        >
+          {row.is_active ? (
+            <FaToggleOn size={24} color="#00b894" />
+          ) : (
+            <FaToggleOff size={24} color="#d63031" />
+          )}
         </div>
       ),
-      ignoreRowClick: true,
-      width: "150px",
+      sortable: false,
     },
   ];
 
@@ -192,17 +193,20 @@ const Usermanagement = () => {
     },
     {
       name: "Status",
-      selector: (row) => (
-        <Switch
-          onChange={() => handleStatusToggle(row.id)}
-          checked={row.isActive}
-          onColor="#00b894"
-          offColor="#d63031"
-          checkedIcon={<div style={{ color: "white", fontSize: 12 }}></div>}
-          uncheckedIcon={
-            <div style={{ color: "white", fontSize: 12 }}></div>
-          }
-        />
+      cell: (row) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setSelectedUserId(row.id);
+            setShowConfirmModal(true);
+          }}
+        >
+          {row.is_active ? (
+            <FaToggleOn size={24} color="#00b894" />
+          ) : (
+            <FaToggleOff size={24} color="#d63031" />
+          )}
+        </div>
       ),
       sortable: false,
     },
@@ -521,6 +525,25 @@ const Usermanagement = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={showConfirmModal}
+        onRequestClose={() => setShowConfirmModal(false)}
+        contentLabel="Confirm Toggle Status"
+        ariaHideApp={false}
+        style={{
+          content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
+        }}
+      >
+        <h4>Are you sure?</h4>
+        <p>
+          Do you want to {data1.find((user) => user.id === selectedUserId)?.isActive ? "deactivate" : "activate"} this user?
+        </p>
+        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
+          Yes
+        </button>
+        <button onClick={() => setShowConfirmModal(false)}>No</button>
+      </Modal>
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>

@@ -14,6 +14,7 @@ urlpatterns = [
     path("admin",AdminView.as_view({"get":"get","post":"post"})),
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post"})),
+    path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/<int:user_id>", RoleView.as_view()),
 
     path("resetpassword/request", ResetPassword.as_view({'post': 'post_reset_password_request'})),
@@ -32,7 +33,7 @@ urlpatterns = [
     path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
     path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
 
-    path("newrole", AddRoleView.as_view(), name='newrole'),
+    path("newrole/<int:user_id>", AddRoleView.as_view(), name='newrole'),
     path("newrole/<int:role_id>", AddRoleView.as_view(), name='edit_role'),
     path("permission_list", PermissionView.as_view(), name='permissionlists'),
 

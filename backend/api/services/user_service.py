@@ -30,9 +30,9 @@ class UserService():
         hr = Group.objects.get(name="HR")
         manager = Group.objects.get(name="Manager")
 
-        admin_ids = Group.objects.filter(name__in=['HR', 'Manager', 'User']).values_list('id', flat=True)
-        hr_ids = Group.objects.filter(name__in=['Manager', 'User']).values_list('id', flat=True)
-        manager_ids = Group.objects.filter(name='User').values_list('id', flat=True)
+        admin_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin']).values_list('id', flat=True)
+        hr_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin', 'HR']).values_list('id', flat=True)
+        manager_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin', 'HR', 'Manager']).values_list('id', flat=True)
 
         if role_id == Admin.id:
             users = User.objects.filter(groups__id__in=admin_ids,company=user_.company).annotate(group_name=F('groups__name'))
@@ -42,8 +42,16 @@ class UserService():
             users = User.objects.filter(groups__id__in=manager_ids,company=user_.company).annotate(group_name=F('groups__name'))
         else:
             users = User.objects.none()
-
+        print(users)
         return users
+    
+    def activateUserOrDeactivateUser(self, id, isActivate):
+        user = User.objects.filter(id=id).first()
+        if user:
+            user.is_active = isActivate
+            user.save()
+        else:
+            raise UserNotFound
 
     @transaction.atomic()
     def createAdmin(self, **kwargs):
@@ -80,17 +88,14 @@ class UserService():
             return user
 
     def createUser(self, user_id, **kwargs):
-        print("ok")
         company = User.objects.get(id=user_id).company
         user = User()
-        print("ok")
         user.email = kwargs.get('email')
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
         user.password = make_password("Jivass@123")
         user.is_active = True
-        print(company)
         user.company = company
         user.is_staff = True
         user.is_superuser = True

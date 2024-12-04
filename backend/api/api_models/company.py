@@ -8,3 +8,4 @@ class AdminUserSerializer(serializers.Serializer):
     company_id = serializers.IntegerField()
     company = serializers.CharField()
     email = serializers.EmailField()
+    is_active = serializers.BooleanField()

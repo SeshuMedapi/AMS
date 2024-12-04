@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Group
 from api.api_models.company import Company
+from api.api_models.custom_group import CustomGroup
 
 class User(AbstractUser):
     username = None
@@ -24,13 +25,16 @@ class UserSerializer(serializers.ModelSerializer):
     group_name = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number','group_name')
+        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number','group_name', 'is_active')
     
     def get_group_name(self, obj):
         group = obj.groups.first()
         return group.name if group else None
 
 class GroupSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=150, allow_null=False)
+
     class Meta:
         model = Group
         fields = ('id', 'name')

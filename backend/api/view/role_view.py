@@ -30,17 +30,17 @@ class AddRoleView(APIView):
         }
         }
     
-    def get(self, request):
+    def get(self, request, user_id):
         try:
             service = RoleService()
-            roles = service.list_roles()
+            roles = service.list_roles(user_id)
             serializer = RoleSerializer(roles, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             self.logger.error(f"Error fetching roles: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def post(self, request):
+    def post(self, request, user_id):
         role_name = request.data.get('role_name')
         permissions = request.data.get('permissions')
         
@@ -49,8 +49,9 @@ class AddRoleView(APIView):
         
         try:
             service = RoleService()
-            role = service.add_role(role_name, permissions)
+            role = service.add_role(role_name, permissions, user_id)
             serializer = GroupSerializer(role)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except ValueError as ve:

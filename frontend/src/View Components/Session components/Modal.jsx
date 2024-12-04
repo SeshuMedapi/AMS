@@ -50,7 +50,7 @@ const Modal = ({ onLogin }) => {
         <h2 id="modal-title">Session Timeout</h2>
         <p>
           For your security, your session has been timed out due to inactivity.
-          To continue using DIS platform, please log in again.
+          To continue using AMS platform, please log in again.
         </p>
         <button style={styles.loginButton} onClick={onLogin}>Login</button>
       </div>

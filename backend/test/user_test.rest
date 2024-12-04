@@ -28,9 +28,9 @@ Authorization: Token 36e6c900bd5e3a880a3ed584cebbf4748a7eede4
 }
 
 ### Request Get user 
-GET http://localhost:8000/api/user?user_id=52
+GET http://localhost:8000/api/user?user_id=53
 content-type: application/json 
-Authorization: Token 1fce04ae853db966b593f495534b881dbdc207c0
+Authorization: Token 5ca98a14f8adb09cb2c10d67761716ce1c0f55c8
 
 ### Request Create user 
 POST http://localhost:8000/api/user?user_id=39
@@ -46,7 +46,7 @@ Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
 }
 
 ### Get All Roles
-GET  http://localhost:8000/api/role/39
+GET  http://localhost:8000/api/role/53
 content-type: application/json 
 
 ### Request Logout
@@ -81,5 +81,12 @@ content-type: application/json
     "token": "09b0f3388d2d11ef91d133633c138b67"
 }
 
+### Request activatevate or deactivate
+POST http://localhost:8001/api/user/activate
+content-type: application/json
+Authorization: Token 6bd43b1fe7fb9889d72f9e563560f84b7896bc94
 
-###test
+{
+    "user_id": 2,
+    "activate": true
+}
