@@ -26,14 +26,17 @@ const Usermanagement = () => {
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
-    fetchData();
-    fetchUserData();
+    if (perm && perm.includes("view_company")) {
+      fetchData();
+    }
+    if (perm && perm.includes("view_user")) {
+      fetchUserData();
+    }
     if (perm && perm.includes("add_role")) {
       fetchRoles();
     }
   }, []);
 
-  // Fetch data for companies
   const fetchData = async () => {
     try {
       const response = await useAxios.get("admin");
@@ -43,7 +46,6 @@ const Usermanagement = () => {
     }
   };
 
-  // Fetch data for users
   const fetchUserData = async () => {
     try {
       const response = await useAxios.get(`user?user_id=${userId}`);
@@ -76,23 +78,17 @@ const Usermanagement = () => {
     if (selectedUserId !== null) {
       try {
         const user = data1.find((u) => u.id === selectedUserId);
-        
-        // Ensure the user exists
-        if (!user) {
-          console.error("User not found");
-          return;
-        }
-  
-        // Determine the new status based on current status
-        const newStatus = !user.is_active; // Assuming backend uses is_active and you keep that consistent
+        const newStatus = !user.is_active;
   
         // Make the API request to toggle the status
         await useAxios.post('/user/activate', {
           user_id: selectedUserId,
           activate: newStatus,  // 'true' for activation, 'false' for deactivation
         });
-  
-        // Update the local state with the new status (optimize UI)
+        
+        fetchData();
+        fetchUserData();
+
         setData1((prevData) =>
           prevData.map((u) =>
             u.id === selectedUserId ? { ...u, is_active: newStatus } : u
@@ -311,8 +307,6 @@ const Usermanagement = () => {
       sortable: false,
     },
   ];
-  
-  
 
   return (
     <div>
@@ -545,11 +539,11 @@ const Usermanagement = () => {
         }}
       >
         <h4>Are you sure?</h4>
+        <Permission requiredPermission="view_user" action="hide">
         <p>
-        Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
-      </p>
-
-        <button className="btn-secondary" onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
+          Do you want to {data1.find((user) => user.id === selectedUserId)?.isActive ? "deactivate" : "activate"} this user?
+        </p>
+        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
           Yes
         </button>
         <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>No</button>
