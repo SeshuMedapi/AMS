@@ -16,7 +16,8 @@ function AddRole({ onCancel, onUserAdded }) {
   const [apiError, setApiError] = useState(null);
   const [isPermissionsLoading, setIsPermissionsLoading] = useState(true);
 
-  // Fetch the list of permissions
+  const userId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
@@ -83,12 +84,7 @@ function AddRole({ onCancel, onUserAdded }) {
         permissions: selectedPermissions,
       };
 
-<<<<<<< HEAD
-      const response = await axiosInstance.post("newrole", roleData);
-=======
       const response = await axiosInstance.post(`newrole/${userId}`, roleData);
->>>>>>> d7e45d3 (changes in add role and get users)
-
       if (response.status === 200 || response.status === 201) {
         toast.success("Role added successfully!");
         onUserAdded();

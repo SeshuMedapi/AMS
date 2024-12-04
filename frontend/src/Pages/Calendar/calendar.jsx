@@ -5,6 +5,7 @@ import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import './calendar.css';
@@ -123,8 +124,8 @@ const Calendar = () => {
 
   return (
     <div>
-      <div className="inner-container5">
         <div className="container mt-5">
+        <div className="row card-body">
           <div className={loading ? "blurred" : ""}>
             <h2>{Role} Calendar</h2>
 

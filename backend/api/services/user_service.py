@@ -32,7 +32,7 @@ class UserService():
 
         admin_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin']).values_list('id', flat=True)
         hr_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin', 'HR']).values_list('id', flat=True)
-        manager_ids = Group.objects.exclude(name=['SuperAdmin', 'Admin', 'HR', 'Manager']).values_list('id', flat=True)
+        manager_ids = Group.objects.exclude(name__in=['SuperAdmin', 'Admin', 'HR', 'Manager']).values_list('id', flat=True)
 
         if role_id == Admin.id:
             users = User.objects.filter(groups__id__in=admin_ids,company=user_.company).annotate(group_name=F('groups__name'))
@@ -44,6 +44,14 @@ class UserService():
             users = User.objects.none()
         print(users)
         return users
+    
+    def activateUserOrDeactivateUser(self, id, isActivate):
+        user = User.objects.filter(id=id).first()
+        if user:
+            user.is_active = isActivate
+            user.save()
+        else:
+            raise UserNotFound
 
     @transaction.atomic()
     def createAdmin(self, **kwargs):

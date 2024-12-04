@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
     group_name = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number','group_name')
+        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number','group_name', 'is_active')
     
     def get_group_name(self, obj):
         group = obj.groups.first()

@@ -14,6 +14,7 @@ urlpatterns = [
     path("admin",AdminView.as_view({"get":"get","post":"post"})),
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post"})),
+    path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/<int:user_id>", RoleView.as_view()),
 
     path("resetpassword/request", ResetPassword.as_view({'post': 'post_reset_password_request'})),

@@ -98,7 +98,8 @@ class AdminView(viewsets.ViewSet):
             admin_user_data.append({   
                 'company_id': user.company.id,
                 'company': user.company.name,
-                'email': user.email
+                'email': user.email,
+                'is_active': user.is_active
             })
         serializer = AdminUserSerializer(admin_user_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -192,6 +193,7 @@ class ResetPassword(viewsets.ViewSet):
         
 
 class UserView(viewsets.ViewSet):
+    logger = logging.getLogger("app_log")
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get":{
@@ -201,7 +203,11 @@ class UserView(viewsets.ViewSet):
         "post":{
                     "permissions": ["create_user"],
                     "any": True
-                }
+                },
+        "activateUser_or_deactivateUser" :{
+            "permissions": ["activate_user"],
+            "any": True
+        }
         }
     
     def get(self, request):
@@ -235,6 +241,27 @@ class UserView(viewsets.ViewSet):
         except Exception as e:
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except e:
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def activateUser_or_deactivateUser(self, request):
+        try:
+            self.logger.info("User Activate or Deactivate")
+            service = UserService()
+            user_id = request.data['user_id']
+            activate = request.data['activate']
+            service.activateUserOrDeactivateUser(user_id, activate)
+            return Response({"status":"success"}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            self.logger.warning(f"User activate or deactivate exception {e}")
+            return Response({"message": f"Invalid post data {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        except UserNotFound as e:
+            self.logger.warning(f"User not found for activate or deactivate {e}")
+            return Response({"message":"User not found for activate or deactivate"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            self.logger.exception(f"User activate or deactivate Exception {e}")
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except e:
+            self.logger.exception(f"User activate or deactivate Exception: {e}")
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def validate_image_file(upload_file):
