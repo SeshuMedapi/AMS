@@ -76,19 +76,26 @@ const Usermanagement = () => {
     if (selectedUserId !== null) {
       try {
         const user = data1.find((u) => u.id === selectedUserId);
-        const newStatus = !user.is_active;
+        
+        // Ensure the user exists
+        if (!user) {
+          console.error("User not found");
+          return;
+        }
   
+        // Determine the new status based on current status
+        const newStatus = !user.is_active; // Assuming backend uses is_active and you keep that consistent
+  
+        // Make the API request to toggle the status
         await useAxios.post('/user/activate', {
           user_id: selectedUserId,
-          activate: newStatus,
+          activate: newStatus,  // 'true' for activation, 'false' for deactivation
         });
-        
-        fetchData();
-        fetchUserData();
-
+  
+        // Update the local state with the new status (optimize UI)
         setData1((prevData) =>
           prevData.map((u) =>
-            u.id === selectedUserId ? { ...u, isActive: newStatus } : u
+            u.id === selectedUserId ? { ...u, is_active: newStatus } : u
           )
         );
   
@@ -96,11 +103,13 @@ const Usermanagement = () => {
       } catch (error) {
         console.error("Error toggling user status:", error);
       } finally {
+        // Close modal and clear selectedUserId
         setShowConfirmModal(false);
         setSelectedUserId(null);
       }
     }
   };
+  
 
   const handleResetPassword = () => setShowResetPass(true);
   const handleAddUser = () => setAddUser(true);
@@ -537,12 +546,13 @@ const Usermanagement = () => {
       >
         <h4>Are you sure?</h4>
         <p>
-          Do you want to {data1.find((user) => user.id === selectedUserId)?.isActive ? "deactivate" : "activate"} this user?
-        </p>
-        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
+        Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
+      </p>
+
+        <button className="btn-secondary" onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
           Yes
         </button>
-        <button onClick={() => setShowConfirmModal(false)}>No</button>
+        <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>No</button>
       </Modal>
 
       {(showPage || addUser) && (
