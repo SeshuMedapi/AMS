@@ -195,6 +195,13 @@ const Calendar = () => {
               }}
             />
 
+<Permission requiredPermission="view_calendar" action="hide">
+<Modal show={showModal} onHide={handleCloseModal}>
+  <p>hhugkjhukhk</p>
+  </Modal>
+  </Permission>
+  
+          <Permission requiredPermission="edit_calendar" action="hide">
             <Modal show={showModal} onHide={handleCloseModal}>
               {loading && (
                 <div className="loader-overlay">
@@ -207,6 +214,7 @@ const Calendar = () => {
                   </div>
                 </div>
               )}
+            
               <div className={loading ? "blurred" : ""}>
                 <Modal.Header closeButton>
                   <Modal.Title>{currentEvent.id ? "Edit Event" : "Add Event"}</Modal.Title>
@@ -279,6 +287,7 @@ const Calendar = () => {
                 </Modal.Footer>
               </div>
             </Modal>
+            </Permission>
           </div>
                 {/* Calendar Summary Section */}
             <div className="calendar-summary">
