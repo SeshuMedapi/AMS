@@ -85,7 +85,7 @@ const styles = {
     width: '100%',
   },
   loginButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#C68EB1',
     color: 'white',
     border: 'none',
     padding: '10px 20px',

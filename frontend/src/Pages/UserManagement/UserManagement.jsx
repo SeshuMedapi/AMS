@@ -530,24 +530,28 @@ const Usermanagement = () => {
       </div>
 
       <Modal
-        isOpen={showConfirmModal}
-        onRequestClose={() => setShowConfirmModal(false)}
-        contentLabel="Confirm Toggle Status"
-        ariaHideApp={false}
-        style={{
-          content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
-        }}
-      >
-        <h4>Are you sure?</h4>
-        <Permission requiredPermission="view_user" action="hide">
-        <p>
-          Do you want to {data1.find((user) => user.id === selectedUserId)?.isActive ? "deactivate" : "activate"} this user?
-        </p>
-        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
-          Yes
-        </button>
-        <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>No</button>
-      </Modal>
+  isOpen={showConfirmModal}
+  onRequestClose={() => setShowConfirmModal(false)}
+  contentLabel="Confirm Toggle Status"
+  ariaHideApp={false}
+  style={{
+    content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
+  }}
+>
+  <h4>Are you sure?</h4>
+  <Permission requiredPermission="view_user" action="hide">
+    <p>
+      Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
+    </p>
+  </Permission>
+  <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
+    Yes
+  </button>
+  <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>
+    No
+  </button>
+</Modal>
+
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>
