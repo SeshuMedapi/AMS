@@ -4,7 +4,7 @@ import AddUser from "./Add_User";
 import AddAdmin from "./Add_Admin";
 import AddRole from "./Add_Role";
 import useAxios from "../../Shared modules/Web Service/axiosConfig";
-import Modal from "react-modal";
+import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
@@ -73,6 +73,16 @@ const Usermanagement = () => {
       console.error("Error deleting role:", error);
     }
   };
+
+  const conditionalRowStyles = [
+  {
+    when: (row) => !row.is_active,
+    style: {
+      textDecoration: "line-through",
+      color: "#d63031",
+    },
+  },
+];
 
   const handleStatusToggle = async () => {
     if (selectedUserId !== null) {
@@ -234,7 +244,7 @@ const Usermanagement = () => {
   const columnRole = [
     {
       name: "Role Name",
-      selector: (row) => row.name,
+      selector: (row) => row.role_name,
       sortable: true,
       style: {
         fontWeight: "600",
@@ -267,7 +277,7 @@ const Usermanagement = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              {perm[1]}
+              {perm.codename}
             </span>
           ))}
         </div>
@@ -403,6 +413,7 @@ const Usermanagement = () => {
           <DataTable
             columns={columns}
             data={data}
+            conditionalRowStyles={conditionalRowStyles}
             pagination
             responsive
             highlightOnHover
@@ -435,6 +446,7 @@ const Usermanagement = () => {
           <DataTable
             columns={columns1}
             data={data1}
+            conditionalRowStyles={conditionalRowStyles}
             pagination
             responsive
             highlightOnHover
@@ -497,60 +509,31 @@ const Usermanagement = () => {
         </Permission>}
       </div>
 
-      <div
-        className={`modal fade ${showDeleteModal ? 'show' : ''}`}
-        tabIndex="-1"
-        role="dialog"
+      {/* <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
         aria-labelledby="deleteRoleModalLabel"
-        aria-hidden={showDeleteModal ? 'false' : 'true'}
-        style={{ display: showDeleteModal ? 'block' : 'none' }}
       >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="deleteRoleModalLabel">Confirm Deletion</h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              Are you sure you want to delete this role?
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className=" btn-secondary"
-                data-dismiss="modal"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={() => handleDeleteRole(roleToDelete)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        <Modal.Header closeButton>
+          <Modal.Title id="deleteRoleModalLabel">Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this role?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={() => handleDeleteRole(roleToDelete)}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
 
       <Modal
-        isOpen={showConfirmModal}
-        onRequestClose={() => setShowConfirmModal(false)}
-        contentLabel="Confirm Toggle Status"
-        ariaHideApp={false}
-        style={{
-          content: { maxWidth: "400px", margin: "auto", textAlign: "center" },
-        }}
+        show={showConfirmModal}
+        onHide={() => setShowConfirmModal(false)}
+        centered
       >
         <h4>Are you sure?</h4>
         <Permission requiredPermission="view_user" action="hide">
@@ -564,6 +547,46 @@ const Usermanagement = () => {
         <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>
           No
         </button>
+
+        <Modal.Header closeButton>
+          <Modal.Title>Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Permission check for company */}
+          <Permission requiredPermission="view_company" action="hide">
+            <p>
+              Do you want to{" "}
+              {data.find((user) => user.id === selectedUserId)?.is_active
+                ? "deactivate"
+                : "activate"}{" "}
+              this company?
+            </p>
+          </Permission>
+
+          {/* Permission check for user */}
+          <Permission requiredPermission="view_user" action="hide">
+            <p>
+              Do you want to{" "}
+              {data1.find((user) => user.id === selectedUserId)?.is_active
+                ? "deactivate"
+                : "activate"}{" "}
+              this user?
+            </p>
+          </Permission>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="success"
+            onClick={handleStatusToggle}
+            style={{ marginRight: "10px" }}
+          >
+            Yes
+          </Button>
+          <Button variant="danger" onClick={() => setShowConfirmModal(false)}>
+            No
+          </Button>
+        </Modal.Footer>
+>>>>>>> ab4243b (add_role changes in backend)
       </Modal>
 
       {(showPage || addUser) && (

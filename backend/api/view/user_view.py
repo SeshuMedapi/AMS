@@ -2,11 +2,13 @@ from ..authentication import SkipAuth, PermissionBasedAccess
 from ..services.user_service import UserService
 from api.api_models.users import UserSerializer, GroupSerializer, User
 from api.api_models.company import AdminUserSerializer, Company
+from api.api_models.custom_group import CustomGroup
 from api.exception.app_exception import *
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Permission, Group
 from django.core.files.uploadedfile import UploadedFile
+from django.conf import settings
 
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
@@ -38,6 +40,7 @@ class LoginView(APIView):
             return Response({
                             "token": token.key, 
                              "user": UserSerializer(user).data, 
+                             "session_time": settings.TOKEN_EXPIRED_AFTER_SECONDS,
                              "permissions": permissions_code_names
                              })
         else:
@@ -58,17 +61,21 @@ class RoleView(APIView):
     def get(self, request, user_id):
         roles = Group.objects.all()
         if user_id:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=user_id,is_active=True)
             role = user.groups.values_list('name', flat=True).first()
             if role == 'HR':
-                user_group = ['SuperAdmin', 'Admin','HR']
-                roles = Group.objects.exclude(name__in=user_group)
+                user_group = ['SuperAdmin', 'Admin','HR']                
+                roles_in = CustomGroup.objects.filter(company_id=user.company.id)
+                roles = Group.objects.filter(id__in=[i.group_id for i in roles_in]).exclude(name__in=user_group)
             elif role == 'Admin':
                 user_group = ['SuperAdmin', 'Admin']
-                roles = Group.objects.exclude(name__in=user_group)
+                roles_in = CustomGroup.objects.filter(company_id=user.company.id)
+                roles = Group.objects.filter(id__in=[i.group_id for i in roles_in]).exclude(name__in=user_group)
             else:
                 user_group = ['SuperAdmin', 'Admin','HR', 'Manager']
-                roles = Group.objects.exclude(name__in=user_group)
+                roles_in = CustomGroup.objects.filter(company_id=user.company.id)
+                roles = Group.objects.filter(id__in=[i.group_id for i in roles_in]).exclude(name__in=user_group)
+        print(roles)
         serializer = GroupSerializer(roles, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -205,6 +212,11 @@ class UserView(viewsets.ViewSet):
                     "permissions": ["create_user"],
                     "any": True
                 },
+
+        "put":{
+            "permissions" : ["edit_user"],
+            "any" : True
+        },
         "activateUser_or_deactivateUser" :{
             "permissions": ["activate_user"],
             "any": True
@@ -242,6 +254,35 @@ class UserView(viewsets.ViewSet):
         except Exception as e:
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except e:
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def put(self, request):
+        try:
+            self.logger.info("User update")
+            service = UserService()
+            user ={
+                'id':request.data['id'],
+                'first_name': request.data['first_name'],
+                'last_name': request.data['last_name'],
+                'phone_number': request.data['phone_number'],
+                # 'role_id': request.data['role_id']                
+                }
+            user = service.updateUser(**user)
+            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            self.logger.warning(f"User edit exception {e}")
+            return Response({"message": f"Invalid post data {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationException as e:
+            self.logger.warning(f"User edit exception {e}")
+            return Response({"message": f"Invalid post data {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        except UserNotFound as e:
+            self.logger.warning(f"User not found for edit {e}")
+            return Response({"message":"User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            self.logger.exception(f"User edit Exception {e}")
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except e:
+            self.logger.exception(f"User edit Exception: {e}")
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def activateUser_or_deactivateUser(self, request):

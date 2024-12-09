@@ -48,7 +48,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'permissions']
+        fields = ['id', 'group', 'permissions']
 
     def get_permissions(self, obj):
         return obj.permissions.values_list('id', 'codename')

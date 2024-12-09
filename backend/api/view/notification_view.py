@@ -13,23 +13,23 @@ class NotificationView(viewsets.ViewSet):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get_notification": {
-                    "permissions": ["view_user"],
+                    "permissions": ["view_company","view_user"],
                     "any": True
                 },
         "read_notification": {
-                    "permissions": ["view_user"],
+                    "permissions": ["view_company","view_user"],
                     "any": True
                 },
         "read_all_notification": {
-                    "permissions": ["view_user"],
+                    "permissions": ["view_company","view_user"],
                     "any": True
                 },
         "deactive_notification":{
-                    "permissions": ["view_user"],
+                    "permissions": ["view_company","view_user"],
                     "any": True
         },
         "deactive_all_notification" : {
-                    "permissions": ["view_user"],
+                    "permissions": ["view_company","view_user"],
                     "any": True
         }
         

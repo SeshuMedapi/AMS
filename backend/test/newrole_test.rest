@@ -42,3 +42,13 @@ Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
 DELETE http://localhost:8000/api/newrole/5
 content-type: application/json 
 Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+
+###Activate and Deactivate Role
+POST http://localhost:8001/api/role/activate
+content-type: application/json
+Authorization: Token 6bd43b1fe7fb9889d72f9e563560f84b7896bc94
+
+{
+    "role_id": 2,
+    "activate": true
+}

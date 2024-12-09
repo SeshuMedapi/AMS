@@ -33,3 +33,7 @@ class PermissionException(Exception):
 class UserNotFound(Exception):
     """User not in the DB"""
     pass
+
+class RoleNotFound(Exception):
+    """Role not in the DB"""
+    pass
