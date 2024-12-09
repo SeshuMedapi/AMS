@@ -1,5 +1,6 @@
 from django.urls import path
 from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView
+from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
 from api.view.role_view import AddRoleView, PermissionView
@@ -13,8 +14,9 @@ urlpatterns = [
     path("logout", LogoutView.as_view()),
     path("admin",AdminView.as_view({"get":"get","post":"post"})),
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
-    path("user", UserView.as_view({"get":"get","post":"post"})),
+    path("user", UserView.as_view({"get":"get","post":"post","put":"put"})),
     path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
+    path("role/activate", ActivateRoleview.as_view({"post":"activateRole_or_deactivateRole"})),
     path("role/<int:user_id>", RoleView.as_view()),
 
     path("resetpassword/request", ResetPassword.as_view({'post': 'post_reset_password_request'})),
@@ -26,6 +28,7 @@ urlpatterns = [
 
     path("profile_picture", ProfilePictureView.as_view()),
     path("myinfo", MyinfoView.as_view({"get":"get", "put":"put"})),
+    path("myinfo/changepassword", MyinfoView.as_view({"put":"change_my_password"})),
 
     path("notification", NotificationView.as_view({"get": "get_notification"})),
     path("notification/read/<int:notification_id>", NotificationView.as_view({"put": "read_notification"})),

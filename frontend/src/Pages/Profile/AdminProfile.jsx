@@ -68,38 +68,9 @@ function AdminProfile() {
     }
   };
 
-  const handleSaveProfile = async (updatedUser) => {
-    const confirmUpdate = window.confirm(
-      "Are you sure you want to save the changes to your profile?"
-    );
-    if (!confirmUpdate) return;
-  
-    try {
-      console.log("Sending updated user data:", updatedUser); // Debug payload
-      const response = await axiosInstance.put("/update_profile", updatedUser);
-  
-      if (response.status === 200) {
-        console.log("API response:", response.data); // Debug server response
-        setUser(response.data); // Update user data in the state
-        setEditMode(false);
-        setShowSuccess(true);
-        setApiError(null);
-        setTimeout(() => {
-          setShowSuccess(false); // Auto-hide success alert after 3 seconds
-        }, 3000);
-      } else {
-        throw new Error(`Unexpected response: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error); // Log the error
-      setApiError(
-        error.response?.data?.message || "An unknown error occurred. Please try again."
-      );
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false); // Auto-hide error alert after 3 seconds
-      }, 3000);
-    }
+  const handSave = (updatedUser) => {
+    setUser(updatedUser);
+    setEditMode(false);
   };
   
   const handleEditProfile = () => {
@@ -110,6 +81,13 @@ function AdminProfile() {
     setEditMode(false);
     setShowChangePswd(false);
     setShowLogout(false);
+  };
+
+  const handlesaved = () => {
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 2000);
   };
 
   const handleShowChangePswd = () => {
@@ -254,17 +232,17 @@ function AdminProfile() {
               </Alert>
               {editMode && (
                 <ProfileEditor
-                  user={user}
-                  handleCancel={handleCancel}
-                  handSave={handleSaveProfile}
-                />
+                user={user}
+                handleCancel={handleCancel}
+                handSave={handSave}
+              />
               )}
             </div>
           </div>
         </div>
       </div>
       {showChangePswd && (
-        <ChangePassword handleCancel={handleCancel} />
+        <ChangePassword handleCancel={handleCancel} handlesaved={handlesaved}/>
       )}
       {showLogout && <LogoutProfile handleCancel={handleCancel} />}
     </div>

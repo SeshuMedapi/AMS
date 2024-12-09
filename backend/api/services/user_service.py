@@ -2,6 +2,7 @@ from api.api_models.users import User
 from django.db import transaction
 from api.api_models.reset_password import ResetPassword
 from api.api_models.company import Company
+from api.api_models.custom_group import CustomGroup
 from api.services.email_service import EmailService
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
@@ -15,9 +16,10 @@ from django.conf import settings
 from django.db.models import F
 from mimetypes import guess_type
 from datetime import datetime
-import uuid, re, os
+import uuid, re, os, logging
 
 class UserService():
+    logger = logging.getLogger("app_log")
 
     email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     password_rule = r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$]).{8,}$'
@@ -78,7 +80,20 @@ class UserService():
             role = Group.objects.get(name='Admin')
             user.groups.clear()
             user.groups.add(role)
-        
+
+            for i in Group.objects.filter(name__in=settings.ROLES).exclude(name__in=['SuperAdmin','Admin']):
+                if not CustomGroup.objects.filter(group_id=i.id, company=user.company).exists():        
+                    c = CustomGroup.objects.create(
+                        group_id=i.id,
+                        company_id=user.company.id
+                    )
+                    c.save()
+
+                    permissions = i.permissions.all()
+                    c.permissions.set(permissions)
+                else:
+                    print(f"CustomGroup already exists for Group ID: {i.id}")
+
             formatted_email = settings.WELCOME_COMPANY_EMAIL.substitute(
                         {"company": user.company,
                         "password_reset_url": (f"{settings.APP_DOMAIN_BASE_URL}/ResetPassword?token={reset_token}"),
@@ -118,6 +133,30 @@ class UserService():
                         })
             EmailService(settings.SMTP_EMAIL_HOST, settings.SMTP_EMAIL_USERNAME, settings.SMTP_EMAIL_PASSWORD).send_smtp_email(user.email, formatted_email, "Attendance Management Portal - welcome")
             return user
+        
+    def updateUser(self, **kwargs):
+        user_id = kwargs.get('id')
+        user = User.objects.filter(id=user_id).first()
+        if user:
+            user.first_name = kwargs.get('first_name')
+            user.last_name = kwargs.get('last_name')
+            user.phone_number = kwargs.get('phone_number')
+            self._validateUserUpdate(user)
+            with transaction.atomic():
+                user.save()
+                role = Group.objects.get(id=kwargs.get('role_id'))
+                user.groups.clear()
+                user.groups.add(role)
+                role.save()
+            return user
+        else:
+            raise UserNotFound
+        
+    def _validateUserUpdate(self, user):
+        if not user.email:
+            raise ValidationException("Invalid email id")
+        if not re.fullmatch(self.email_regex, user.email):
+            raise ValidationException(f"Invalid email id {user.email}")
     
     def _validateUserCreation(self, user):
         if not user:

@@ -3,7 +3,7 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "admin1@jivass.com", 
+    "username": "superadmin@jivass.com", 
     "password": "Jivass@123"
 }
 

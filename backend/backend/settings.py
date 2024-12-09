@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api',
-    'corsheaders',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -106,7 +106,7 @@ DATABASES = {
         },
         'NAME': 'ams',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -241,7 +241,7 @@ LOGGING = {
 
 PERMISSIONS = (
                 ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
-                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''),
+                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role','')
             )
 
 ROLES = ['SuperAdmin', 
@@ -269,7 +269,8 @@ ROLE_PERMISSION = [
             'view_calendar',
             'add_role',
             'edit_role', 
-            'activate_user'      
+            'activate_user',
+            'activate_role'      
         ]
     },
         {
