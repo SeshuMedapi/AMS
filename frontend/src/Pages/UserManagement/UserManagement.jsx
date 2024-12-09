@@ -535,19 +535,6 @@ const Usermanagement = () => {
         onHide={() => setShowConfirmModal(false)}
         centered
       >
-        <h4>Are you sure?</h4>
-        <Permission requiredPermission="view_user" action="hide">
-          <p>
-            Do you want to {data1.find((user) => user.id === selectedUserId)?.is_active ? "deactivate" : "activate"} this user?
-          </p>
-        </Permission>
-        <button onClick={handleStatusToggle} style={{ marginRight: "10px" }}>
-          Yes
-        </button>
-        <button className="btn-danger" onClick={() => setShowConfirmModal(false)}>
-          No
-        </button>
-
         <Modal.Header closeButton>
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
@@ -586,7 +573,6 @@ const Usermanagement = () => {
             No
           </Button>
         </Modal.Footer>
->>>>>>> ab4243b (add_role changes in backend)
       </Modal>
 
       {(showPage || addUser) && (
