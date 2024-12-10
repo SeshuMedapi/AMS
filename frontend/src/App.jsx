@@ -14,6 +14,7 @@ import PrivateRoute from "./Shared modules/Context management/privateRoutes";
 import { AuthProvider } from "./Shared modules/Context management/authContext";
 import SessionExpiredModal from "./View Components/Session components/SessionTimeoutModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import FloatingPunchButton from "./Pages/PunchButton/FloatingPunchButton"
 
 function App() {
   // const [showModal, setShowModal] = useState(false);
@@ -107,6 +108,7 @@ function App() {
         <AuthProvider>
         <div className="app">
         <SessionExpiredModal />
+        <FloatingPunchButton />
         <Router>
             <Routes>
                 {/* Public Routes */}
