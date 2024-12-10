@@ -1,0 +1,35 @@
+### Request Login
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "dev1@gmail.com",
+    "password": "Jivass@123"
+}
+
+### To get notification by page wise 
+GET http://localhost:8000/api/notification?page=1
+content-type: application/json
+Authorization: Token 3bbb1078b597771fe3c4403ecf078d3085cf66e3
+
+### To make read notification by id
+PUT http://localhost:8000/api/notification/read/1
+content-type: application/json
+Authorization: Token 3bbb1078b597771fe3c4403ecf078d3085cf66e3
+
+### To make read all notification
+PUT http://localhost:8000/api/notification/read/all
+content-type: application/json
+Authorization: Token 3bbb1078b597771fe3c4403ecf078d3085cf66e3
+
+### To deactivate notification by id
+PUT http://localhost:8000/api/notification/deactive/1
+content-type: application/json
+Authorization: Token 3bbb1078b597771fe3c4403ecf078d3085cf66e3
+
+
+### To deactivate all notification
+PUT http://localhost:8000/api/notification/deactive/all
+content-type: application/json
+Authorization: Token 3bbb1078b597771fe3c4403ecf078d3085cf66e3
+

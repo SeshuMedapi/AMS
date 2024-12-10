@@ -1,0 +1,18 @@
+### Request Login
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "hr@gmail.com",
+    "password": "Jivass@123"
+}
+
+###punch-in
+POST http://localhost:8000/api/punch-in
+content-type: application/json
+Authorization: Token c4815f09ab8f0bf0a67651668e5aad62ab5f57e4
+
+###punch-out
+POST http://localhost:8000/api/punch-out
+content-type: application/json
+Authorization: Token c4815f09ab8f0bf0a67651668e5aad62ab5f57e4

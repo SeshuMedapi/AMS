@@ -32,10 +32,19 @@ class LoginView(APIView):
             if old_token:
                 old_token.delete()
             token, created = Token.objects.get_or_create(user=user)
-            permissions =  Permission.objects.filter( group__user__id = user.id )
-            permissions_code_names = []
-            for permission in permissions:
-                permissions_code_names.append(permission.codename)
+
+            if user.company:
+                user_group = CustomGroup.objects.filter(group__user=user, company_id=user.company.id).first()
+                if user_group:
+                    permissions_code_names = user_group.permissions.all().values_list('codename', flat=True)
+                else:
+                    permissions_code_names = []
+            else:
+                if user.groups.exists():
+                    permissions_code_names = user.groups.values_list('permissions__codename', flat=True)
+                else:
+                    permissions_code_names = []
+            
 
             return Response({
                             "token": token.key, 

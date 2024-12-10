@@ -263,7 +263,7 @@ ROLE_PERMISSION = [
     {
         "role": "Admin",
         "permissions": [
-            'view_user',
+            'view_users',
             'create_user',
             'edit_user',    
             'view_calendar',
@@ -276,7 +276,7 @@ ROLE_PERMISSION = [
         {
         "role": "HR",
         "permissions": [
-            'view_user',
+            'view_users',
             'create_user',
             'edit_user',
             'view_calendar',
@@ -287,7 +287,7 @@ ROLE_PERMISSION = [
         {
         "role": "Manager",
         "permissions": [
-            'view_user',
+            'view_users',
             'create_user',
             'edit_user',
             'view_calendar',

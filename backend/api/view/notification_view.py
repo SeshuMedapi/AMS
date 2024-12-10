@@ -13,26 +13,25 @@ class NotificationView(viewsets.ViewSet):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get_notification": {
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
                 },
         "read_notification": {
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
                 },
         "read_all_notification": {
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
                 },
         "deactive_notification":{
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
         },
         "deactive_all_notification" : {
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
-        }
-        
+        }   
     }
 
     def get_notification(self, request):
@@ -45,7 +44,6 @@ class NotificationView(viewsets.ViewSet):
         except Exception as e:
             self.logger.warning(f"Read notification exception {e}")
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
     def read_notification(self, request, notification_id):
         try:

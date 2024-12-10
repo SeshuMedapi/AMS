@@ -7,7 +7,7 @@ from api.exception.app_exception import *
 class RoleService:
     def list_roles(self, user_id):
         company_id = User.objects.get(id=user_id).company.id
-        custom_groups = CustomGroup.objects.filter(company_id=company_id).prefetch_related('permissions')
+        custom_groups = CustomGroup.objects.filter(company_id=company_id).exclude(group__name__in=["SuperAdmin", "Admin"]).prefetch_related('permissions')
         
         roles = []
         for custom_group in custom_groups:

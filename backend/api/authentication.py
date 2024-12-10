@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import permissions
 from django.contrib.auth.models import Permission, Group
+from api.api_models.custom_group import CustomGroup
 
 from datetime import timedelta
 from django.utils import timezone
@@ -77,20 +78,34 @@ class PermissionBasedAccess(permissions.IsAuthenticated):
             isAuthorized  = False
 
             if not method_permissions or len(method_permissions) == 0:
-                        isAuthorized = False
+                isAuthorized = False
             else:
                 isAny = method_permission_config.get('any')
 
-                if isAny:
-                    isAuthorized = Permission.objects.filter(
-                            group__user__id=request.user.id, 
-                            codename__in= method_permissions
-                            ).exists()
+                method_permission = [i.id for i in Permission.objects.filter(codename__in=method_permissions)]
+                
+                if request.user.id != 1:
+                    if isAny:
+                        isAuthorized = CustomGroup.objects.filter(
+                                company=request.user.company, 
+                                permissions__in= method_permission
+                                ).exists()
+                    else:
+                        isAuthorized = CustomGroup.objects.filter(
+                                company=request.user.company, 
+                                permissions__contains= method_permission
+                                ).exists()
                 else:
-                    isAuthorized = Permission.objects.filter(
-                            group__user__id=request.user.id, 
-                            codename__contains = method_permissions
-                            ).exists()
+                    if isAny:
+                        isAuthorized = Permission.objects.filter(
+                                group__user__id=request.user.id, 
+                                codename__in= method_permissions
+                                ).exists()
+                    else:
+                        isAuthorized = Permission.objects.filter(
+                                group__user__id=request.user.id, 
+                                codename__contains = method_permissions
+                                ).exists()
             return (isAuth and isAuthorized)
 
 

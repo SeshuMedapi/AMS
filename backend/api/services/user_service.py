@@ -81,7 +81,7 @@ class UserService():
             user.groups.clear()
             user.groups.add(role)
 
-            for i in Group.objects.filter(name__in=settings.ROLES).exclude(name__in=['SuperAdmin','Admin']):
+            for i in Group.objects.filter(name__in=settings.ROLES):
                 if not CustomGroup.objects.filter(group_id=i.id, company=user.company).exists():        
                     c = CustomGroup.objects.create(
                         group_id=i.id,
