@@ -7,67 +7,146 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-  
+    font-size: 2rem;
+    margin-right: 20px;
 
     opacity: 0.8;
   
     &:hover {
-      opacity: 1; 
-    }
-  
-    .punch-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px 30px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: #fff;
-      border: none;
-      border-radius: 50px;
+      opacity: 1;
       cursor: pointer;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-      background-color: #28a745; 
-      transition: all 0.3s ease, transform 0.2s ease;
-  
-      &:hover {
-        transform: scale(1.1); 
-        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
-      }
-  
-      &.punched-in {
-        background-color: #dc3545;
-        &:hover {
-          background-color: #c82333; 
-        }
-      }
-  
-      &::before {
-        content: "";
-        display: inline-block;
-        margin-right: 10px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: #fff;
-  
-        background-color: currentColor;
-        transform: scale(1.5);
-      }
+      scale: 1.1;
+      transition: all 0.5s ease;
     }
   
-    @media (max-width: 768px) {
-      bottom: 10px;
-      right: 10px;
-  
-      .punch-button {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-  
-        &:hover {
-          transform: scale(1.05); 
+  }
+ 
+// General Modal Container Styles
+.info-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  // Section-Specific Styles
+  .personal-info,
+  .punch-into,
+  .shift-info {
+    padding: 15px;
+    background-color: #f9f9f9; // Soft background
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+
+    // Titles for each section
+    &::before {
+      content: attr(data-title);
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #4a90e2; // Accent color
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    // List Item Styles
+    ul {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        color: #555;
+
+        // Label Styling
+        strong {
+          color: #333;
+          font-weight: 600;
         }
       }
     }
   }
-  
+}
+
+// Modal Header
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 15px 20px;
+  border-bottom: none;
+
+  .modal-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .btn-close {
+    color: #fff;
+    opacity: 1;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Modal Footer
+.modal-footer {
+  padding: 15px 20px;
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  border-top: none;
+
+  .btn-cancel {
+    background-color: #050f18;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+
+    &:hover {
+      background-color: #02131f;
+    }
+  }
+
+  .btn-confirm {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+
+// Transitions and Hover Effects
+.modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 5px;
+    background: linear-gradient(to right, #007bff, #17a2b8);
+  }
+}
+
+// Animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+

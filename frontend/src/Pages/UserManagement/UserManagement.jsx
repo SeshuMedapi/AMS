@@ -8,6 +8,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
+import EditRole from "./Edit_Role";
 
 const Usermanagement = () => {
   const [data, setData] = useState([]); 
@@ -17,12 +18,14 @@ const Usermanagement = () => {
   const [addUser, setAddUser] = useState(false);
   const [addRole, setRole] = useState(false);
   const [addUsers, setAddUsers] = useState(false);
+  const [editrole, setEditrole] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
   const [roleToDelete, setRoleToDelete] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const[roledata, SetRoleData] = useState("null")
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -135,7 +138,13 @@ const Usermanagement = () => {
   const handleAddUser = () => setAddUser(true);
   const handleRole = () => setRole(true);
   const handleAddUsers = () => setAddUsers(true);
+  const handleEditRole = (row) =>{
+    setEditrole(true);
+    SetRoleData(row);
+  }
+  
   const handleCancel = () => {
+    setEditrole(false);
     setShowPage(false);
     setAddUser(false);
     setRole(false);
@@ -153,13 +162,6 @@ const Usermanagement = () => {
     } catch (error) {
       console.error("Error deleting data:", error);
     }
-  };
-
-  const handleEditRole = (role) => {
-    // Your logic to handle the role editing
-    // For example, show a modal with the role details
-    console.log("Editing role:", role);
-    // You can use a state to toggle visibility of an edit form/modal and pass the `role` object to pre-fill the form.
   };
 
   const columns = [
@@ -302,7 +304,7 @@ const Usermanagement = () => {
             }}
             onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
             onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
-            onClick={() => handleEdit(row)}
+            onClick={() => handleEditRole(row)}
           />
         </div>
       ),
@@ -581,6 +583,7 @@ const Usermanagement = () => {
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
       {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
+      {editrole && <EditRole onCancel={handleCancel} roledata={roledata}/>}
     </div>
   );
 };
