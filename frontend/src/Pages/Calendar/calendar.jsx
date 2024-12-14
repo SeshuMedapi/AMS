@@ -194,12 +194,12 @@ const Calendar = () => {
                 return {};
               }}
             />
-
+{/* 
 <Permission requiredPermission="view_calendar" action="hide">
 <Modal show={showModal} onHide={handleCloseModal}>
   <p>hhugkjhukhk</p>
   </Modal>
-  </Permission>
+  </Permission> */}
   
           <Permission requiredPermission="edit_calendar" action="hide">
             <Modal show={showModal} onHide={handleCloseModal}>
