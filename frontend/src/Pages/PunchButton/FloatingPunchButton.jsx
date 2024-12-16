@@ -1,48 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import "./FloatingPunchButton.scss";
 import { Modal } from "react-bootstrap";
 import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 import punchbutton from "/src/assets/punch.png";
 
-const FloatingPunchButton = () => {
-  const [isPunchedIn, setIsPunchedIn] = useState(false); // Track punch status
-  const [showModal, setShowModal] = useState(false); // Control modal visibility
+const FloatingPunchButton = ({ userId }) => {
+  const [status, setStatus] = useState(null); 
+  const [punchData, setPunchData] = useState(null); 
+  const [showModal, setShowModal] = useState(false); 
 
-  // Modal Handlers
-  const handlePunchIconClick = () => setShowModal(true);
-  const handleCancel = () => setShowModal(false);
+  useEffect(() => {
+    const fetchPunchData = async () => {
+      try {
+        const response = await axiosInstance.get(`/punch-in`);
+        setStatus(response.data.status);
+        setPunchData(response.data);
+      } catch (error) {
+        console.error("Error fetching punch data:", error);
+      }
+    };
+    fetchPunchData();
+  }, [userId]);
 
   // Toggle Punch In/Out
-  const handleIconToggle = () => {
-    setIsPunchedIn(!isPunchedIn); // Toggle Punch In/Out status
-    setShowModal(false); // Close modal after toggling
+  const handlePunchAction = async () => {
+    try {
+      if (status === "PunchIN") {
+        await axiosInstance.post(`/punch-in`);
+        setStatus("PunchOUT");
+      } else if (status === "PunchOUT") {
+        await axiosInstance.post(`/punch-out`);
+        setStatus("LoggedOut");
+      }
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error toggling punch status:", error);
+    }
   };
 
-  // Modal Title based on punch state
-  const modalTitle = isPunchedIn
-    ? "Are you sure you want to Punch Out?"
-    : "Are you sure you want to Punch In?";
+  // Modal Handlers
+  const handlePunchIconClick = () => {
+    if (status) setShowModal(true);
+  };
+  const handleCancel = () => setShowModal(false);
 
-  // Data for dynamic rendering
-  const personalInfo = [
-    { label: "Employee Id", value: "N/A" },
-    { label: "Employee Name", value: "N/A" },
-    { label: "Department", value: "N/A" },
-  ];
-
-  const punchDetails = [
-    { label: "Time Stamp", value: "N/A" },
-    { label: "PunchInZone", value: "N/A" },
-    { label: "Punch Type", value: isPunchedIn ? "PunchOut" : "PunchIn" },
-  ];
-
-  const shiftInfo = [
-    { label: "Shift Name", value: "N/A" },
-    { label: "Shift Start Time", value: "N/A" },
-    { label: "Shift End Time", value: "N/A" },
-  ];
-
-  // Function to render a list dynamically
+  // Render dynamic info
   const renderInfoList = (info) => (
     <ul>
       {info.map((item, index) => (
@@ -53,46 +56,76 @@ const FloatingPunchButton = () => {
     </ul>
   );
 
+  const punchDetails = [
+    { label: "Time", value: punchData?.time || "N/A" },
+    { label: "PunchInZone", value: punchData?.zone || "N/A" }, 
+    ...(status === "PunchOut"
+      ? [
+          { label: "Punch In Time", value: punchData?.punchin || "N/A" },
+        ]
+      : []),
+    ...(status === "LoggedOut"
+      ? [
+          { label: "Punch In Time", value: punchData?.punchin || "N/A" },
+          { label: "Punch Out Time", value: punchData?.punchout || "N/A" },
+        ]
+      : []),
+    { label: "Punch Type", value: status },
+  ];
+
   return (
     <div className="floating-punch-container">
       {/* Floating Punch Icon */}
-      <div className="punch-icon" onClick={handlePunchIconClick}>
+      <div
+        className={`punch-icon`}
+        onClick={handlePunchIconClick}
+        style={{ cursor: "pointer" }}
+      >
         <img src={punchbutton} alt="Punch Button" style={{ width: "50px", height: "50px" }} />
       </div>
 
       {/* Modal */}
       <Modal show={showModal} centered onHide={handleCancel}>
-        <Modal.Header closeButton >
-          <Modal.Title>{modalTitle}</Modal.Title>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {status === "PunchIN"
+              ? "Are you sure you want to Punch In?"
+              : status === "PunchOUT"
+              ? "Are you sure you want to Punch Out?"
+              : "Punch Details"}
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <div className="info-container">
-            <div className="personal-info">{renderInfoList(personalInfo)}</div>
             <div className="punch-info">{renderInfoList(punchDetails)}</div>
-            <div className="shift-info">{renderInfoList(shiftInfo)}</div>
           </div>
         </Modal.Body>
 
         <Modal.Footer>
-          {/* Toggle Between Log In and Log Out Icons */}
-          {isPunchedIn ? (
-            <IoIosLogOut
-            className="punch-icon"
-              size={50}
-              color="red"
-              onClick={handleIconToggle} // Toggle on click
-              style={{ cursor: "pointer" }}
-            />
-          ) : (
-            <IoIosLogIn
-              className="punch-icon"
-              size={50}
-              color="green"
-              onClick={handleIconToggle} // Toggle on click
-              style={{ cursor: "pointer" }}
-            />
-          )}
+        {status === "PunchIN" && (
+          <IoIosLogIn
+            size={50}
+            color="green"
+            onClick={handlePunchAction}
+            style={{ cursor: "pointer" }}
+          />
+        )}
+        {status === "PunchOUT" && (
+          <IoIosLogOut
+            size={50}
+            color="red"
+            onClick={handlePunchAction}
+            style={{ cursor: "pointer" }}
+          />
+        )}
+        {status === "LoggedOut" && (
+          <IoIosLogIn
+            size={50}
+            color="grey"
+            style={{ cursor: "not-allowed" }} // Non-clickable style
+          />
+        )} 
         </Modal.Footer>
       </Modal>
     </div>
