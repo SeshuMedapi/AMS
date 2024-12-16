@@ -4,6 +4,7 @@ from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
 from api.view.role_view import AddRoleView, PermissionView
+from api.view.punch_view import PunchInView, PunchOutView
 from .view.myinfo_view import MyinfoView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -39,6 +40,9 @@ urlpatterns = [
     path("newrole/<int:user_id>", AddRoleView.as_view(), name='newrole'),
     path("newrole/<int:role_id>", AddRoleView.as_view(), name='edit_role'),
     path("permission_list", PermissionView.as_view(), name='permissionlists'),
+
+    path('punch-in', PunchInView.as_view(), name='punch_in'),
+    path('punch-out', PunchOutView.as_view(), name='punch_out'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

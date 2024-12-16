@@ -101,12 +101,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'OPTIONS': {
-        'options': '-c search_path='+'public'
-        },
-        'NAME': 'ams',
+        # 'OPTIONS': {
+        # 'options': '-c search_path='+'public'
+        # },
+        'NAME': 'AMS',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -160,7 +160,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 AUTH_USER_MODEL = 'api.User'
 
