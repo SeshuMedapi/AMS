@@ -27,6 +27,7 @@
     "datatables.net-bs": "^2.0.5",
     "datatables.net-responsive": "^3.0.2",
     "datatables.net-responsive-bs": "^3.0.2",
+    "date-fns": "^4.1.0",
     "dompurify": "^3.1.6",
     "echarts": "^5.5.0",
     "echarts-for-react": "^3.0.2",
