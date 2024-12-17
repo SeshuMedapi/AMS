@@ -112,3 +112,19 @@
 .punch-icon:hover {
   transform: scale(1.1);
 }
+.punch-in-icon:hover {
+  color: darkgreen;
+  transform: scale(1.1); /* Slight zoom-in effect */
+}
+
+.punch-out-icon:hover {
+  color: darkred;
+  transform: scale(1.1);
+}
+
+.after-out-icon:hover {
+  color: grey; 
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+

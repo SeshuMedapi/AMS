@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 import punchbutton from "/src/assets/punch.png";
 import { format } from "date-fns";
+// import ReactTooltip from "react-tooltip";
 
 const FloatingPunchButton = ({ userId }) => {
   const [status, setStatus] = useState(null); 
@@ -79,7 +80,7 @@ const FloatingPunchButton = ({ userId }) => {
     <div className="floating-punch-container">
       {/* Floating Punch Icon */}
       <div
-        className={`punch-icon`}
+        className="punch-icon"
         onClick={handlePunchIconClick}
         style={{ cursor: "pointer" }}
       >
@@ -107,14 +108,17 @@ const FloatingPunchButton = ({ userId }) => {
         <Modal.Footer>
         {status === "PunchIN" && (
           <IoIosLogIn
+          className="punch-in-icon"
             size={50}
             color="green"
             onClick={handlePunchAction}
             style={{ cursor: "pointer" }}
           />
+          
         )}
         {status === "PunchOUT" && (
           <IoIosLogOut
+            className="punch-out-icon"
             size={50}
             color="red"
             onClick={handlePunchAction}
@@ -123,6 +127,7 @@ const FloatingPunchButton = ({ userId }) => {
         )}
         {status === "LoggedOut" && (
           <IoIosLogIn
+            className="after-out-icon"
             size={50}
             color="grey"
             style={{ cursor: "not-allowed" }}

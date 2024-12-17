@@ -88,7 +88,7 @@ function App() {
         // localStorage.setItem("sessionLoggedOut", True);
         // Apply blur effect to the background
         // document.body.classList.add('blurred');
-        setShowModal(true);
+        // setShowModal(true);
         navigate('/');
       }
     }

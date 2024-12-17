@@ -124,7 +124,7 @@ const Calendar = () => {
 
   return (
     <div className="shadow-sm px-3 py-3 rounded" style={{
-      backgroundColor: "rgba(255, 254, 211, 0.5)",
+      backgroundColor: "rgba(196, 193, 39, 0.5)",
     }}>
         <div className="container mt-5">
         <div className="row card-body">
