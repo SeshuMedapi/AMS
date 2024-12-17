@@ -335,8 +335,10 @@ const Usermanagement = () => {
   ];
 
   return (
-    <div>
-      <div className="container">
+    <div className="shadow-sm px-3 py-3 rounded" style={{
+      backgroundColor: "rgba(255, 254, 211, 0.5)",
+    }}>
+      <div className="container ">
         <div className="row">
           <div className="col-9 d-flex">
             <div className="btn-group" role="group">
