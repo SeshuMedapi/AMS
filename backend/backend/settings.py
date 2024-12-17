@@ -241,7 +241,7 @@ LOGGING = {
 
 PERMISSIONS = (
                 ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
-                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role','')
+                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role',''), ('punch_in', '')
             )
 
 ROLES = ['SuperAdmin', 
@@ -281,7 +281,8 @@ ROLE_PERMISSION = [
             'edit_user',
             'view_calendar',
             'edit_calendar',
-            'activate_user'  
+            'activate_user',
+            'punch_in',
         ]
     },
         {
@@ -291,7 +292,8 @@ ROLE_PERMISSION = [
             'create_user',
             'edit_user',
             'view_calendar',
-            'activate_user'  
+            'activate_user',
+            'punch_in'
         ]
     },
     #     {

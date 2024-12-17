@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import AuthContext from "./authContext";
 import Layout from "../../View Components/Navigation & route/sideBarAndHeader/layout";
 import FloatingPunchButton from "../../Pages/PunchButton/FloatingPunchButton"
-
+import Permission from "../../Shared modules/Context management/permissionCheck";
 
 const PrivateRoute = ({ requiredPermission }) => {
   const { isAuthenticated, permissions } = useContext(AuthContext);
@@ -15,7 +15,9 @@ const PrivateRoute = ({ requiredPermission }) => {
   return (
 
     <Layout>
-      <FloatingPunchButton />
+      <Permission requiredPermission="punch_in" action="hide">
+        <FloatingPunchButton />
+      </Permission>
       <Outlet />
     </Layout>
     

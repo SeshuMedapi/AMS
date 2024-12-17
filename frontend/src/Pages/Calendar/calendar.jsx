@@ -123,11 +123,13 @@ const Calendar = () => {
   const { minTime, maxTime } = getDynamicTimeRestrictions(selectedDate);
 
   return (
-    <div>
+    <div className="shadow-sm px-3 py-3 rounded" style={{
+      backgroundColor: "rgba(255, 254, 211, 0.5)",
+    }}>
         <div className="container mt-5">
         <div className="row card-body">
           <div className={loading ? "blurred" : ""}>
-            <h2>{Role} Calendar</h2>
+            <h2 className="head-calender">{Role} Calendar</h2>
 
             <Permission requiredPermission="edit_calendar" action="hide">
               <a href="#" className="btn-1 add-event-btn" onClick={() => handleShowModal()}>Add Event</a>

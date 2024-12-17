@@ -10,16 +10,17 @@ const FloatingPunchButton = ({ userId }) => {
   const [punchData, setPunchData] = useState(null); 
   const [showModal, setShowModal] = useState(false); 
 
+  const fetchPunchData = async () => {
+    try {
+      const response = await axiosInstance.get(`/punch-in`);
+      setStatus(response.data.status);
+      setPunchData(response.data);
+    } catch (error) {
+      console.error("Error fetching punch data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchPunchData = async () => {
-      try {
-        const response = await axiosInstance.get(`/punch-in`);
-        setStatus(response.data.status);
-        setPunchData(response.data);
-      } catch (error) {
-        console.error("Error fetching punch data:", error);
-      }
-    };
     fetchPunchData();
   }, [userId]);
 

@@ -689,3 +689,20 @@ $font-family-poppins: "Poppins", sans-serif;
   width: 100%; /* Ensure the date picker takes full width */
 }
 
+@media screen and (max-width:1200px) {
+  .head-calender{
+    font-size: large;
+  }
+  }
+
+@media screen and (max-width:768px) {
+.head-calender{
+  font-size: medium;
+}
+}
+
+@media screen and (max-width:576) {
+  .head-calender{
+    font-size: small;
+  }
+  }
