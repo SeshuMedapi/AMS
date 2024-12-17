@@ -706,3 +706,19 @@ $font-family-poppins: "Poppins", sans-serif;
     font-size: small;
   }
   }
+
+/* Timer Container */
+.timer-container {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555; /* Light gray for session text */
+  white-space: nowrap;
+}
+
+/* Timer Badge */
+.timer-badge {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
