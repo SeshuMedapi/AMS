@@ -4,6 +4,7 @@ import "./FloatingPunchButton.scss";
 import { Modal } from "react-bootstrap";
 import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 import punchbutton from "/src/assets/punch.png";
+import { format } from "date-fns";
 
 const FloatingPunchButton = ({ userId }) => {
   const [status, setStatus] = useState(null); 
@@ -29,10 +30,10 @@ const FloatingPunchButton = ({ userId }) => {
     try {
       if (status === "PunchIN") {
         await axiosInstance.post(`/punch-in`);
-        setStatus("PunchOUT");
+        fetchPunchData();
       } else if (status === "PunchOUT") {
         await axiosInstance.post(`/punch-out`);
-        setStatus("LoggedOut");
+        fetchPunchData();
       }
       setShowModal(false);
     } catch (error) {
@@ -60,15 +61,15 @@ const FloatingPunchButton = ({ userId }) => {
   const punchDetails = [
     { label: "Time", value: punchData?.time || "N/A" },
     { label: "PunchInZone", value: punchData?.zone || "N/A" }, 
-    ...(status === "PunchOut"
+    ...(status === "PunchOUT"
       ? [
-          { label: "Punch In Time", value: punchData?.punchin || "N/A" },
+          { label: "Punch In Time", value: punchData?format(new Date(punchData.punchin), "do MMM yyyy, hh:mm a") : "N/A" },
         ]
       : []),
     ...(status === "LoggedOut"
       ? [
-          { label: "Punch In Time", value: punchData?.punchin || "N/A" },
-          { label: "Punch Out Time", value: punchData?.punchout || "N/A" },
+          { label: "Punch In Time", value: punchData?format(new Date(punchData.punchin), "do MMM yyyy, hh:mm a") : "N/A" },
+          { label: "Punch Out Time", value: punchData?format(new Date(punchData.punchout), "do MMM yyyy, hh:mm a") : "N/A" },
         ]
       : []),
     { label: "Punch Type", value: status },
@@ -124,7 +125,7 @@ const FloatingPunchButton = ({ userId }) => {
           <IoIosLogIn
             size={50}
             color="grey"
-            style={{ cursor: "not-allowed" }} // Non-clickable style
+            style={{ cursor: "not-allowed" }}
           />
         )} 
         </Modal.Footer>

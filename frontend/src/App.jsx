@@ -89,6 +89,7 @@ function App() {
         // Apply blur effect to the background
         // document.body.classList.add('blurred');
         setShowModal(true);
+        navigate('/');
       }
     }
     };
