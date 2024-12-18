@@ -60,7 +60,7 @@ const FloatingPunchButton = ({ userId }) => {
 
   const punchDetails = [
     { label: "Time", value: punchData?.time || "N/A" },
-    { label: "PunchInZone", value: punchData?.zone || "N/A" }, 
+    { label: "PunchInZone", value: punchData?.punchzone || "N/A" }, 
     ...(status === "PunchOUT"
       ? [
           { label: "Punch In Time", value: punchData?format(new Date(punchData.punchin), "do MMM yyyy, hh:mm a") : "N/A" },

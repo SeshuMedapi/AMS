@@ -7,6 +7,8 @@ class PunchInOut(models.Model):
     punch_in_time = models.DateTimeField(null=True, blank=True)
     punch_out_time = models.DateTimeField(null=True, blank=True)
     date = models.DateField()
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'date')

@@ -10,14 +10,14 @@ content-type: application/json
 ###get punch
 GET http://localhost:8000/api/punch-in
 content-type: application/json
-Authorization: Token 627c58988afc54f5c5b502c3794b47a4e9bca79f
+Authorization: Token ef3a7ec0ef7fd36430f85cf9eb44f2ea2eea39d3
 
 ###punch-in
 POST http://localhost:8000/api/punch-in
 content-type: application/json
-Authorization: Token 627c58988afc54f5c5b502c3794b47a4e9bca79f
+Authorization: Token ef3a7ec0ef7fd36430f85cf9eb44f2ea2eea39d3
 
 ###punch-out
 POST http://localhost:8000/api/punch-out
 content-type: application/json
-Authorization: Token 627c58988afc54f5c5b502c3794b47a4e9bca79f
+Authorization: Token ef3a7ec0ef7fd36430f85cf9eb44f2ea2eea39d3
