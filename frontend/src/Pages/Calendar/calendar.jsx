@@ -124,10 +124,10 @@ const Calendar = () => {
 
   return (
     <div className="shadow-sm px-3 py-3 rounded" style={{
-      backgroundColor: "rgba(255, 254, 211, 0.5)",
+      backgroundColor: "rgb(255, 255, 255)",
     }}>
         <div className="container mt-5">
-        <div className="row card-body">
+        <div className="row card-body nbody">
           <div className={loading ? "blurred" : ""}>
             <h2 className="head-calender">{Role} Calendar</h2>
 

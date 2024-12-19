@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  emailvalidator,
-  UsPhoneNumberValidator,
-  NameValidator,
-} from "../../Shared modules/Exception handling/regexValidation";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
@@ -23,6 +18,7 @@ function EditRole({ onCancel, roledata }) {
 
   const userId = localStorage.getItem("userId");
 
+  // Fetch permissions from the API
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
@@ -49,10 +45,17 @@ function EditRole({ onCancel, roledata }) {
     fetchPermissions();
   }, []);
 
+  // Populate fields if roledata is provided (used when editing)
   useEffect(() => {
     if (roledata) {
       setRoleName(roledata.role_name || "");
-      setSelectedPermissions(roledata.permissions || []);
+      
+      // If roledata.permissions is an array of objects, extract the IDs
+      if (Array.isArray(roledata.permissions)) {
+        setSelectedPermissions(roledata.permissions.map(permission => permission.id)); 
+      } else {
+        setSelectedPermissions(roledata.permissions || []);
+      }
     }
   }, [roledata]);
 
@@ -76,7 +79,7 @@ function EditRole({ onCancel, roledata }) {
   };
 
   // Handle Save action
-  const handleSave = async () => {
+  const handleupdate = async () => {
     if (roleName.trim() === "") {
       setRoleNameError("Role name is required");
       return;
@@ -96,7 +99,7 @@ function EditRole({ onCancel, roledata }) {
         permissions: selectedPermissions,
       };
 
-      const response = await axiosInstance.post(`newrole/${userId}`, roleData);
+      const response = await axiosInstance.put(`newrole/${userId}`, roleData);
       if (response.status === 200 || response.status === 201) {
         toast.success("Role added successfully!");
         onUserAdded();
@@ -185,7 +188,7 @@ function EditRole({ onCancel, roledata }) {
           <Permission requiredPermission="add_role" action="hide">
             <button
               className="me-2 fw-bold btnUserUpgdate"
-              onClick={handleSave}
+              onClick={handleupdate}
               disabled={isLoading || isButtonDisabled}
             >
               {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Update"}

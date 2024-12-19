@@ -23,28 +23,25 @@
   transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
   border: 2px solid transparent;
 }
-// Override the .btn-primary active background color for sidebar buttons
+
 .btn-primary.active, 
 .btn-primary:focus, 
 .btn-primary:active {
   background-color: transparent !important;
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-color: #E26EE5;
+  transform: scale(1.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-color: #E26EE5 !important;
+  color: #ffffff !important;
 }
 
-
 .btn-primary:hover {
-  // background-color: #A594F9;
   background-color: #F0A8D0;
-  
   color: #ffffff;
   transform: scale(1.1); 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-  // border-color: #007bff;
   border-color: #E26EE5;
-
 }
+
 
 .img-size {
   width: 1.25rem;
@@ -1016,6 +1013,9 @@
 }
 .card-body {
   cursor: pointer;
+}
+.nbody{
+  margin-top: -40px;
 }
 .popup-card {
   max-height: 100vh;
