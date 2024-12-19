@@ -336,7 +336,7 @@ const Usermanagement = () => {
 
   return (
     <div className="shadow-sm px-3 py-3 rounded" style={{
-      backgroundColor: "rgba(255, 254, 211, 0.5)",
+      backgroundColor: "rgb(255, 255, 255)",
     }}>
       <div className="container ">
         <div className="row">

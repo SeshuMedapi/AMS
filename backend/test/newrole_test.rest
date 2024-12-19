@@ -3,14 +3,14 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "test@gmail.com", 
+    "username": "company1@gmail.com", 
     "password": "Jivass@123"
 }
 
 ###list permission
 GET http://localhost:8000/api/permission_list
 content-type: application/json
-Authorization: Token 2ddd01b9bfba7c8623f9a395203a0c8a55d2f180
+Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
 
 ###Get Roles
 GET http://localhost:8000/api/newrole/52
@@ -19,23 +19,23 @@ Authorization: Token 2ddd01b9bfba7c8623f9a395203a0c8a55d2f180
 
 
 ###Add Roles
-POST http://localhost:8000/api/newrole/52
+POST http://localhost:8000/api/newrole/4
 content-type: application/json 
-Authorization: Token 03ef62bc3607ff50e6de22f5996d34180a4def93
+Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
 
 {
     "role_name" : "testm",
-    "permissions" : [36, 37, 38]
+    "permissions" : [47]
 }
 
 ###Update Roles
-PUT http://localhost:8000/api/newrole/4
+PUT http://localhost:8000/api/newrole/13
 content-type: application/json 
-Authorization: Token 1e08c1386d6d2a8f938775f4c71393dc9ff6a90d
+Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
 
 {
-    "role_name" : "Manager",
-    "permissions" : [52, 37, 38, 36]
+    "role_name" : "testm",
+    "permissions" : [47, 48]
 }
 
 ###Delete Roles
