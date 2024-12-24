@@ -103,7 +103,7 @@ const Header = ({ isSidebarOpen, toggleSidebar }) => {
             className={`burger-icon ${isActive("dashboard") ? "active" : ""}`}
             onClick={() => {
               toggleSidebar();
-              handleNavigation("dashboard");
+              // handleNavigation("dashboard");
             }}
             ref={hamburgerRef}
           >
