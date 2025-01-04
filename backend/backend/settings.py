@@ -104,7 +104,7 @@ DATABASES = {
         # 'OPTIONS': {
         # 'options': '-c search_path='+'public'
         # },
-        'NAME': 'ams',
+        'NAME': 'ams_demo',
         'USER': 'postgres',
         'PASSWORD':'Seshu@27',
         'HOST':'localhost',
