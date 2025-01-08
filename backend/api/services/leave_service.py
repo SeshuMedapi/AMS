@@ -5,29 +5,15 @@ from api.api_models.leave_type import Leavetype
 
 class LeaveService:
     def myleave(self, user):
-        """
-        Retrieve all leave requests made by the user.
-        """
         try:
             leave_requests = LeaveRequest.objects.filter(user=user).select_related('leavetype', 'status')
-            response = [
-                {
-                    "id": leave.id,
-                    "leave_type": leave.leavetype.name,
-                    "start_date": leave.startdate,
-                    "end_date": leave.enddate,
-                    "reason": leave.reason,
-                    "status": leave.status.name,
-                }
-                for leave in leave_requests
-            ]
-            return response
+            return leave_requests
         except Exception as e:
             raise Exception(f"Error retrieving leave requests: {e}")
 
     def leavereq(self, user, leave_data):
         try:
-            leave_type_id = leave_data.get("leave_type_id")
+            leave_type_id = leave_data.get("leave_type")
             start_date = leave_data.get("start_date")
             end_date = leave_data.get("end_date")
             reason = leave_data.get("reason")
@@ -35,9 +21,10 @@ class LeaveService:
             if not all([leave_type_id, start_date, end_date, reason]):
                 raise ValueError("All fields are required to create a leave request.")
 
-            pending_status = Reqstatus.objects.get(name="Pending")
+            pending_status = Reqstatus.objects.get(status="Pending")
+            leavetype_instance = Leavetype.objects.get(id=leave_type_id)
             leave_request = LeaveRequest.objects.create(
-                leavetype=leave_type_id,
+                leavetype=leavetype_instance,
                 startdate=start_date,
                 enddate=end_date,
                 reason=reason,

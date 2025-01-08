@@ -3,7 +3,7 @@ from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPa
 from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
-from api.view.leave_view import LeaveView
+from api.view.leave_view import LeaveView, LeaveStatusView
 from api.view.role_view import AddRoleView, PermissionView
 from api.view.punch_view import PunchInView, PunchOutView
 from .view.myinfo_view import MyinfoView
@@ -37,6 +37,9 @@ urlpatterns = [
     path("notification/read/all", NotificationView.as_view({"put": "read_all_notification"})),
     path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
     path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
+
+    path("reqstatus", LeaveStatusView.as_view({"get":"get_reqstatus"})),
+    path("leavetype", LeaveStatusView.as_view({"get":"get_leavetype"})),
 
     path("myleave", LeaveView.as_view({"get": "get_myleave"})),
     path("myleave/request", LeaveView.as_view({"post": "request_myleave"})),
