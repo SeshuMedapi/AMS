@@ -36,7 +36,7 @@ const LandingPage = () => {
           <img src={LandingPageImg} alt="Landing Image" className="lp_header-image" />
         </div>
         <div className="lp_header-right">
-          <h1>ATTENDANCE AND TASK MANAGEMENT SYSTEM</h1>
+          <h1>ATTENDANCE & TASK MANAGEMENT SYSTEM</h1>
           <p>Effortlessly track attendance and manage tasks with our smart system, designed to boost productivity and streamline workflow in real-time.</p>
           <a href="#" className="lp_btn">Get Started</a>
         </div>
