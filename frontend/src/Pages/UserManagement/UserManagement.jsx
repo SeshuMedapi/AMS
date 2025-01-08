@@ -32,7 +32,7 @@ const Usermanagement = () => {
     if (perm && perm.includes("view_company")) {
       fetchData();
     }
-    if (perm && perm.includes("view_user")) {
+    if (perm && perm.includes("view_users")) {
       fetchUserData();
     }
     if (perm && perm.includes("add_role")) {
@@ -95,7 +95,7 @@ const Usermanagement = () => {
         if (perm && perm.includes("view_company")) {
           user = data.find((u) => u.id === selectedUserId);
         }
-        if (perm && perm.includes("view_user")) {
+        if (perm && perm.includes("view_users")) {
           user = data1.find((u) => u.id === selectedUserId);
         }
         const newStatus = !user.is_active;
@@ -114,7 +114,7 @@ const Usermanagement = () => {
         if (perm && perm.includes("view_company")) {
           fetchData();
         }
-        if (perm && perm.includes("view_user")) {
+        if (perm && perm.includes("view_users")) {
           fetchUserData();
         }
 
@@ -356,7 +356,7 @@ const Usermanagement = () => {
                 </a>
               </div>
             </Permission>
-            <Permission requiredPermission="view_user" action="hide">
+            <Permission requiredPermission="view_users" action="hide">
               <div className="">
                 <a
                   href="#"
@@ -446,7 +446,7 @@ const Usermanagement = () => {
             }}
           />
         </Permission>}
-        {activeButton === "all" && <Permission requiredPermission="view_user" action="hide">
+        {activeButton === "all" && <Permission requiredPermission="view_users" action="hide">
           <DataTable
             columns={columns1}
             data={data1}
@@ -555,7 +555,7 @@ const Usermanagement = () => {
           </Permission>
 
           {/* Permission check for user */}
-          <Permission requiredPermission="view_user" action="hide">
+          <Permission requiredPermission="view_users" action="hide">
             <p>
               Do you want to{" "}
               {data1.find((user) => user.id === selectedUserId)?.is_active
@@ -585,7 +585,7 @@ const Usermanagement = () => {
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
       {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
-      {editrole && <EditRole onCancel={handleCancel} roledata={roledata}/>}
+      {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata}/>}
     </div>
   );
 };

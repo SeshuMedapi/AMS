@@ -3,6 +3,7 @@ from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPa
 from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
+from api.view.leave_view import LeaveView, LeaveStatusView
 from api.view.role_view import AddRoleView, PermissionView
 from api.view.punch_view import PunchInView, PunchOutView
 from .view.myinfo_view import MyinfoView
@@ -37,8 +38,16 @@ urlpatterns = [
     path("notification/deactive/<int:notification_id>", NotificationView.as_view({"put": "deactive_notification"})),
     path("notification/deactive/all", NotificationView.as_view({"put": "deactive_all_notification"})),
 
-    path("newrole/<int:user_id>", AddRoleView.as_view(), name='newrole'),
-    path("newrole/<int:role_id>", AddRoleView.as_view(), name='edit_role'),
+    path("reqstatus", LeaveStatusView.as_view({"get":"get_reqstatus"})),
+    path("leavetype", LeaveStatusView.as_view({"get":"get_leavetype"})),
+
+    path("myleave", LeaveView.as_view({"get": "get_myleave"})),
+    path("myleave/request", LeaveView.as_view({"post": "request_myleave"})),
+    path("requested/leave", LeaveView.as_view({"get": "get_requested_leave"})),
+    path("approve/leave", LeaveView.as_view({"post": "approve_leave"})),
+
+    path("newrole/<int:user_id>", AddRoleView.as_view({"get":"get","post":"post"}), name='newrole'),
+    path("updaterole/<int:role_id>", AddRoleView.as_view({"put":"put"}), name='update_role'),
     path("permission_list", PermissionView.as_view(), name='permissionlists'),
 
     path('punch-in', PunchInView.as_view(), name='punch_in'),

@@ -32,10 +32,15 @@ class LoginView(APIView):
             if old_token:
                 old_token.delete()
             token, created = Token.objects.get_or_create(user=user)
-            permissions =  Permission.objects.filter( group__user__id = user.id )
             permissions_code_names = []
-            for permission in permissions:
-                permissions_code_names.append(permission.codename)
+            if user.groups.filter(name__in=['SuperAdmin', 'Admin']).exists():
+                permissions = Permission.objects.filter(group__user=user)
+                permissions_code_names = [permission.codename for permission in permissions]
+            else:
+                custom_groups = user.groups.prefetch_related('custom_groups__permissions')
+                for custom_group in custom_groups:
+                    permissions = custom_group.custom_groups.first().permissions.all()
+                    permissions_code_names.extend(permissions.values_list('codename', flat=True))
 
             return Response({
                             "token": token.key, 
@@ -84,7 +89,7 @@ class AdminView(viewsets.ViewSet):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get":{
-                    "permissions": ["view_company","view_user"],
+                    "permissions": ["view_company","view_users"],
                     "any": True
                 },
         "post":{
@@ -205,7 +210,7 @@ class UserView(viewsets.ViewSet):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get":{
-                    "permissions": ["view_user"],
+                    "permissions": ["view_users"],
                     "any": True
                 },
         "post":{
@@ -322,11 +327,11 @@ class ProfilePictureView(APIView):
     permission_classes = [PermissionBasedAccess]
     permission_config = {
         "get": {
-                    "permissions": ["view_user"],
+                    "permissions": ["view_users"],
                     "any": True
                 },
         "post":{
-                    "permissions": ["view_user"],
+                    "permissions": ["view_users"],
                     "any": True
                 }
     }

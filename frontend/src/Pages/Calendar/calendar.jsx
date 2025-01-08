@@ -129,7 +129,7 @@ const Calendar = () => {
         <div className="container mt-5">
         <div className="row card-body nbody">
           <div className={loading ? "blurred" : ""}>
-            <h2 className="head-calender">{Role} CALENDAR 4th JAN</h2>
+            <h2 className="head-calender">{Role} CALENDAR</h2>
 
             <Permission requiredPermission="edit_calendar" action="hide">
               <a href="#" className="btn-1 add-event-btn" onClick={() => handleShowModal()}>Add Event</a>

@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 
 from api.api_models.users import User
 from api.api_models.custom_group import CustomGroup
+from api.api_models.leave_type import Leavetype
+from api.api_models.req_status import Reqstatus
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -13,6 +15,18 @@ class Command(BaseCommand):
             # Create groups if not already created
             for role in settings.ROLES:
                 Group.objects.get_or_create(name=role)
+
+            leavetype = Leavetype.objects.all()
+            leavetype.delete()
+
+            reqstatus = Reqstatus.objects.all()
+            reqstatus.delete()
+
+            for leave_type in settings.LEAVETYPE:
+                Leavetype.objects.create(leavetype=leave_type)
+
+            for req_status in settings.LEAVESTATUS:
+                Reqstatus.objects.create(status=req_status)
 
             # Assign permissions to groups
             for role_permission in settings.ROLE_PERMISSION:
@@ -43,5 +57,6 @@ class Command(BaseCommand):
                     )
                     superadmin_group = Group.objects.get(name="SuperAdmin")
                     user.groups.add(superadmin_group)
+
                 else:
                     print("SuperAdmin already exists")

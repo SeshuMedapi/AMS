@@ -27,14 +27,14 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       name: "Dashboard",
       icon: Dashboard,
       hoverIcon: DashboardHover,
-      permission: ["view_user", "view_company"],
+      permission: ["view_users", "view_company"],
       path: "/dashboard",
     },
     {
       name: "User Management",
       icon: UserManagement,
       hoverIcon: UserManagementHover,
-      permission: ["view_user", "view_company"],
+      permission: ["view_users", "view_company"],
       path: "/user-management",
     },
     {

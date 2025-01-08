@@ -3,7 +3,7 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "superadmin@jivass.com", 
+    "username": "company1@gmail.com", 
     "password": "Jivass@123"
 }
 
@@ -28,9 +28,9 @@ Authorization: Token 36e6c900bd5e3a880a3ed584cebbf4748a7eede4
 }
 
 ### Request Get user 
-GET http://localhost:8000/api/user?user_id=53
+GET http://localhost:8000/api/user?user_id=2
 content-type: application/json 
-Authorization: Token 5ca98a14f8adb09cb2c10d67761716ce1c0f55c8
+Authorization: Token e8a3f2f52cd507c448f8de99c07c508ecf7906f2
 
 ### Request Create user 
 POST http://localhost:8000/api/user?user_id=39

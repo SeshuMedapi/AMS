@@ -4,3 +4,6 @@ from api.api_models.company import Company
 from api.api_models.calendar import CalendarEvent
 from api.api_models.notification import Notification
 from api.api_models.custom_group import CustomGroup
+from api.api_models.leave_request import LeaveRequest
+from api.api_models.leave_type import Leavetype
+from api.api_models.req_status import Reqstatus

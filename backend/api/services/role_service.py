@@ -44,19 +44,24 @@ class RoleService:
         return custom_group
 
     @transaction.atomic
-    def update_role(self, role_id, role_name, permissions):
+    def update_role(self, role_id, role_name, permissions, user_company):
         try:
-            role = Group.objects.get(id=role_id)
-        except Group.DoesNotExist:
+            custom_group = CustomGroup.objects.get(group__id=role_id, company=user_company)
+        except CustomGroup.DoesNotExist:
             raise ValueError("Role not found.")
 
         if role_name:
-            role.name = role_name
+            custom_group.group.name = role_name
+            custom_group.group.save()
+
         if permissions is not None:
-            db_permissions_results = Permission.objects.filter(id__in=permissions)
-            role.permissions.set(db_permissions_results)
-        role.save()
-        return role
+            permissions_qs = Permission.objects.filter(id__in=permissions)
+            if len(permissions_qs) != len(permissions):
+                raise ValueError("Some of the permissions provided do not exist.")
+            custom_group.permissions.set(permissions_qs)
+
+        custom_group.save()
+        return custom_group
 
     @transaction.atomic
     def delete_role(self, role_id):

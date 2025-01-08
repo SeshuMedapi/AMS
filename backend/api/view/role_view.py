@@ -43,7 +43,7 @@ class ActivateRoleview(viewsets.ViewSet):
             self.logger.exception(f"Role activate or deactivate Exception: {e}")
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class AddRoleView(APIView):
+class AddRoleView(viewsets.ViewSet):
     logger = logging.getLogger("app_log")
     permission_classes = [PermissionBasedAccess]
     permission_config = {
@@ -94,16 +94,16 @@ class AddRoleView(APIView):
         except Exception as e:
             self.logger.error(f"Error creating role: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     
     def put(self, request, role_id):
         role_name = request.data.get('role_name')
         permissions = request.data.get('permissions')
+        user_company = request.user.company
 
         try:
             service = RoleService()
-            role = service.update_role(role_id, role_name, permissions)
-            serializer = GroupSerializer(role)
+            role = service.update_role(role_id, role_name, permissions, user_company)
+            serializer = CustomGroupSerializer(role)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ValueError as ve:
             return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
