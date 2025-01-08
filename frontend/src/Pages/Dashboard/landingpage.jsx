@@ -37,7 +37,7 @@ const LandingPage = () => {
         </div>
         <div className="lp_header-right">
           <h1>ATTENDANCE & TASK MANAGEMENT SYSTEM</h1>
-          <p>Effortlessly track attendance and manage tasks with our smart system, designed to boost productivity and streamline workflow in real-time.</p>
+          <p>Efficiently track attendance and manage tasks with our smart system, designed to boost productivity and streamline workflow in real-time.</p>
           <a href="#" className="lp_btn">Get Started</a>
         </div>
       </div>
