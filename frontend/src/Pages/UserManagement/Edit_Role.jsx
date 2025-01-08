@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
-function EditRole({ onCancel, roledata }) {
+function EditRole({ onCancel, onRole, roledata }) {
   const [roleName, setRoleName] = useState("");
   const [roleNameError, setRoleNameError] = useState("");
   const [permissions, setPermissions] = useState([]);
@@ -99,11 +99,11 @@ function EditRole({ onCancel, roledata }) {
         permissions: selectedPermissions,
       };
 
-      const response = await axiosInstance.put(`newrole/${userId}`, roleData);
+      const response = await axiosInstance.put(`updaterole/${roledata.role_id}`, roleData);
       if (response.status === 200 || response.status === 201) {
         toast.success("Role added successfully!");
-        onUserAdded();
         setTimeout(() => {
+          onRole();
           onCancel();
         }, 3000);
       }

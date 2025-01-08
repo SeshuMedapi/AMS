@@ -13,9 +13,9 @@ content-type: application/json
 Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
 
 ###Get Roles
-GET http://localhost:8000/api/newrole/52
+GET http://localhost:8000/api/newrole/2
 content-type: application/json 
-Authorization: Token 2ddd01b9bfba7c8623f9a395203a0c8a55d2f180
+Authorization: Token 1e040917545c4dbad255d6d13f12fa1c5db62723
 
 
 ###Add Roles
@@ -29,13 +29,13 @@ Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
 }
 
 ###Update Roles
-PUT http://localhost:8000/api/newrole/13
+PUT http://localhost:8000/api/updaterole/5
 content-type: application/json 
-Authorization: Token 7374cbf7c7a8c0b0dac6f8cb4fc89aaa27c675f4
+Authorization: Token 1e040917545c4dbad255d6d13f12fa1c5db62723
 
 {
-    "role_name" : "testm",
-    "permissions" : [47, 48]
+    "role_name" : "Developer",
+    "permissions" : [69,48, 47]
 }
 
 ###Delete Roles

@@ -1,0 +1,43 @@
+POST http://localhost:8000/api/login
+content-type: application/json
+
+{
+    "username": "dev1@jivass.com", 
+    "password": "Jivass@123"
+}
+
+
+###
+GET http://localhost:8000/api/myleave
+content-type: application/json  
+Authorization: Token <your_token_here>
+
+
+###
+POST http://localhost:8000/api/myleave/request
+content-type: application/json
+Authorization: Token <your_token_here>
+
+{
+    "leave_type_id": 1, 
+    "start_date": "2025-02-01", 
+    "end_date": "2025-02-05", 
+    "reason": "Personal",
+}
+
+
+###
+GET http://localhost:8000/api/requested/leave
+content-type: application/json
+Authorization: Token <approver_token_here>
+
+
+###
+POST http://localhost:8000/api/approve/leave
+content-type: application/json
+Authorization: Token <approver_token_here>
+
+{
+    "leave_id": 1, 
+    "approve": true
+}
