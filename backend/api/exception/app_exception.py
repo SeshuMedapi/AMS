@@ -11,6 +11,9 @@ class UserNameConflict(Exception):
 class CompanyExistException(Exception):
     "Company already registered"
 
+class CompanyNotFound(Exception):
+    "company Not Found"
+
 class ResetPasswordTokenExpired(Exception):
     "User password token expired"
     pass

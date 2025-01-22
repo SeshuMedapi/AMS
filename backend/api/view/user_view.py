@@ -2,6 +2,7 @@ from ..authentication import SkipAuth, PermissionBasedAccess
 from ..services.user_service import UserService
 from api.api_models.users import UserSerializer, GroupSerializer, User
 from api.api_models.company import AdminUserSerializer, Company
+from api.api_models.company_branch import CompanyBranch, CompanyBranchSerializer
 from api.api_models.custom_group import CustomGroup
 from api.exception.app_exception import *
 from django.core.exceptions import ValidationError
@@ -392,3 +393,72 @@ class ProfilePictureView(APIView):
             self.logger.warning(f"{e}")
             return Response({"message": "Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class BranchView(APIView):
+    logger = logging.getLogger("app_log")
+
+    permission_classes = [PermissionBasedAccess]
+    permission_config = {
+        "get": {
+                    "permissions": ["add_branch"],
+                    "any": True
+                },
+        "post":{
+                    "permissions": ["add_branch"],
+                    "any": True
+                }
+    }
+
+    def get(self, request, user_id):
+        pass
+        # try:
+        #     service = UserService()
+        #     roles = service.list_roles(user_id)
+        #     # serializer = RoleSerializer(roles, many=True)
+        #     return Response(roles, status=status.HTTP_200_OK)
+        # except Exception as e:
+        #     self.logger.error(f"Error fetching roles: {e}")
+        #     return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request):
+        try:
+            user_id = request.user.id
+
+            company_id = User.objects.get(id=user_id).company
+            service = UserService()
+            branch = service.add_branch(company_id, request.data)
+            serializer = CompanyBranchSerializer(branch)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except ValueError as ve:
+            return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            self.logger.error(f"Error creating role: {e}")
+            return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    # def put(self, request, role_id):
+    #     role_name = request.data.get('role_name')
+    #     permissions = request.data.get('permissions')
+    #     user_company = request.user.company
+
+    #     try:
+    #         service = UserService()
+    #         role = service.update_role(role_id, role_name, permissions, user_company)
+    #         serializer = CustomGroupSerializer(role)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     except ValueError as ve:
+    #         return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e:
+    #         self.logger.error(f"Error updating role: {e}")
+    #         return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # def delete(self, request, role_id):
+    #     try:
+    #         service = UserService()
+    #         service.delete_role(role_id)
+    #         return Response({"message": "Role deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    #     except ValueError as ve:
+    #         return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e:
+    #         self.logger.error(f"Error deleting role: {e}")
+    #         return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
