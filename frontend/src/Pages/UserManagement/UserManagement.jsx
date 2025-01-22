@@ -6,6 +6,7 @@ import AddRole from "./Add_Role";
 import useAxios from "../../Shared modules/Web Service/axiosConfig";
 import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
+import AddBranch from "./Add_Branch";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
@@ -18,6 +19,7 @@ const Usermanagement = () => {
   const [addUser, setAddUser] = useState(false);
   const [addRole, setRole] = useState(false);
   const [addUsers, setAddUsers] = useState(false);
+  const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
@@ -138,6 +140,7 @@ const Usermanagement = () => {
   const handleAddUser = () => setAddUser(true);
   const handleRole = () => setRole(true);
   const handleAddUsers = () => setAddUsers(true);
+  const handleAddBranch = () => setAddBranch(true);
   const handleEditRole = (row) =>{
     setEditrole(true);
     SetRoleData(row);
@@ -149,6 +152,7 @@ const Usermanagement = () => {
     setAddUser(false);
     setRole(false);
     setAddUsers(false);
+    setAddBranch(false);
   };
 
   const handleClick = (button) => {
@@ -370,6 +374,20 @@ const Usermanagement = () => {
                 </a>
               </div>
             </Permission>
+            <Permission requiredPermission="add_branch" action="hide">
+              <div className="">
+                <a
+                  href="#"
+                  className={`btn btn-non  ${
+                    activeButton === "branch" ? "active" : ""
+                  }`}
+                  role="group"
+                  onClick={() => handleClick("branch")}
+                >
+                  Branches
+                </a>
+              </div>
+            </Permission>
             <Permission requiredPermission="add_role" action="hide">
               <div className="">
                 <a
@@ -390,6 +408,14 @@ const Usermanagement = () => {
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddUser}>
                 + Register Company
+              </button>
+            </div>
+          </Permission>}
+
+          {activeButton === "branch" && <Permission requiredPermission="add_branch" action="hide">
+            <div className="col-3 d-flex justify-content-end">
+              <button className="border-btn" onClick={handleAddBranch}>
+                + Add Branch
               </button>
             </div>
           </Permission>}
@@ -585,6 +611,7 @@ const Usermanagement = () => {
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
       {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
+      {addBranch && <AddBranch onCancel={handleCancel}/> }
       {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata}/>}
     </div>
   );
