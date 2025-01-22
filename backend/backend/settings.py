@@ -245,7 +245,7 @@ LEAVETYPE = ['Annual', 'Sick', 'Compensatory', 'Other']
 
 PERMISSIONS = (
                 ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
-                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role',''), ('punch_in', ''), ('request_leave', ''), ('approve_leave', '')
+                ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role',''), ('punch_in', ''), ('request_leave', ''), ('approve_leave', ''),('add_branch', ''),
             )
 
 ROLES = ['SuperAdmin', 
@@ -274,7 +274,8 @@ ROLE_PERMISSION = [
             'add_role',
             'edit_role', 
             'activate_user',
-            'activate_role'      
+            'activate_role',
+            'add_branch'    
         ]
     },
         {

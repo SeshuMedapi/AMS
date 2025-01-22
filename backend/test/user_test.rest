@@ -90,3 +90,14 @@ Authorization: Token 6bd43b1fe7fb9889d72f9e563560f84b7896bc94
     "user_id": 2,
     "activate": true
 }
+
+
+### create Branch
+POST http://localhost:8000/api/branch
+content-type: application/json 
+Authorization: Token 02e1892ce3fd9b44243b8f3583c2fba7ebc53431
+
+{
+    "branch" : "test",
+    "address" : "agvfgewgfvfwvf"
+}

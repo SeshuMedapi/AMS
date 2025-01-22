@@ -1,5 +1,5 @@
 from django.urls import path
-from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView
+from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView, BranchView
 from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
@@ -17,6 +17,7 @@ urlpatterns = [
     path("admin",AdminView.as_view({"get":"get","post":"post"})),
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post","put":"put"})),
+    path("branch", BranchView.as_view()),
     path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/activate", ActivateRoleview.as_view({"post":"activateRole_or_deactivateRole"})),
     path("role/<int:user_id>", RoleView.as_view()),

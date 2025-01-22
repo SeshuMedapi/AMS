@@ -3,6 +3,7 @@ from django.db import transaction
 from api.api_models.reset_password import ResetPassword
 from api.api_models.company import Company
 from api.api_models.custom_group import CustomGroup
+from api.api_models.company_branch import CompanyBranch
 from api.services.email_service import EmailService
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
@@ -330,3 +331,14 @@ class UserService():
             auth_user.save()
         else:
             raise UserNotFound
+    
+    @transaction.atomic()
+    def add_branch(self, company_id, data):
+        if company_id:
+            branch = data['branch']
+            address = data['address']
+            company_branch = CompanyBranch.objects.create(company=company_id, branch= branch, address= address)
+            company_branch.save()
+            return company_branch
+        else: 
+            raise CompanyNotFound
