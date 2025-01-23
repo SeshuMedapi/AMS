@@ -14,6 +14,7 @@ import EditRole from "./Edit_Role";
 const Usermanagement = () => {
   const [data, setData] = useState([]); 
   const [data1, setData1] = useState([]); 
+  const [branchdata, setBranchData] = useState([]); 
   const [roles, setRoles] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [addUser, setAddUser] = useState(false);
@@ -39,6 +40,9 @@ const Usermanagement = () => {
     }
     if (perm && perm.includes("add_role")) {
       fetchRoles();
+    }
+    if (perm && perm.includes("add_branch")) {
+      fetchBranch();
     }
   }, []);
 
@@ -68,6 +72,15 @@ const Usermanagement = () => {
       console.error("Error fetching roles data:", error);
     }
   };
+
+  const fetchBranch = async ()  => {
+    try {
+      const response = await useAxios.get(`branch`);
+      setBranchData(response.data);
+    } catch (error) {
+      console.error("Error fetching roles data:", error);
+    }
+  }
 
   const handleDeleteRole = async (roleId) => {
     try {
@@ -112,12 +125,14 @@ const Usermanagement = () => {
           activate: newStatus,
         });
 
-
         if (perm && perm.includes("view_company")) {
           fetchData();
         }
         if (perm && perm.includes("view_users")) {
           fetchUserData();
+        }
+        if (perm && perm.includes("add_branch")) {
+          fetchBranch();
         }
 
         setData1((prevData) =>
@@ -135,7 +150,6 @@ const Usermanagement = () => {
     }
   };
   
-
   const handleResetPassword = () => setShowResetPass(true);
   const handleAddUser = () => setAddUser(true);
   const handleRole = () => setRole(true);
@@ -245,6 +259,34 @@ const Usermanagement = () => {
       ),
       sortable: false,
     },
+  ];
+
+  const columns_branch = [
+    {
+      name: "Branch",
+      selector: (row) => row.branch,
+      sortable: true,
+    },
+    {
+      name: "Address",
+      selector: (row) => row.address,
+      sortable: true,
+    },
+    {
+      name: "Country",
+      selector: (row) => row.country,
+      sortable: true,
+    },
+    {
+      name: "State",
+      selector: (row) => row.state,
+      sortable: true,
+    },
+    {
+      name: "City",
+      selector: (row) => row.city,
+      sortable: true,
+    }
   ];
 
   const columnRole = [
@@ -415,7 +457,7 @@ const Usermanagement = () => {
           {activeButton === "branch" && <Permission requiredPermission="add_branch" action="hide">
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddBranch}>
-                + Add Branch
+                + Create Branch
               </button>
             </div>
           </Permission>}
@@ -423,7 +465,7 @@ const Usermanagement = () => {
           {activeButton === "all" && <Permission requiredPermission="create_user" action="hide">
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddUsers}>
-                + Add User
+                + Create User
               </button>
             </div>
           </Permission>}
@@ -477,6 +519,38 @@ const Usermanagement = () => {
             columns={columns1}
             data={data1}
             conditionalRowStyles={conditionalRowStyles}
+            pagination
+            responsive
+            highlightOnHover
+            noHeader
+            customStyles={{
+              headRow: {
+                style: {
+                  borderBottom: "1px solid black",
+                  fontWeight: "bold",
+                  borderTopLeftRadius: "20px",
+                  borderTopRightRadius: "20px",
+                },
+              },
+              rows: {
+                style: {
+                  borderBottom: "1px solid #ECEFF3",
+                },
+              },
+              pagination: {
+                style: {
+                  backgroundColor: "#EAEDF1",
+                  boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "0 0 20px 20px",
+                },
+              },
+            }}
+          />
+        </Permission>}
+        {activeButton === "branch" && <Permission requiredPermission="add_branch" action="hide">
+          <DataTable
+            columns={columns_branch}
+            data={branchdata}
             pagination
             responsive
             highlightOnHover
@@ -611,7 +685,7 @@ const Usermanagement = () => {
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
       {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
-      {addBranch && <AddBranch onCancel={handleCancel}/> }
+      {addBranch && <AddBranch onCancel={handleCancel} onBranch={fetchBranch} />}
       {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata}/>}
     </div>
   );

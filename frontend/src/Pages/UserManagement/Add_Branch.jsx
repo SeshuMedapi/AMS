@@ -1,93 +1,91 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
+import { Country, State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Permission from "../../Shared modules/Context management/permissionCheck";
+import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
-function AddBranch({ onCancel }) {
-  const [roleName, setRoleName] = useState("");
-  const [roleNameError, setRoleNameError] = useState("");
-  const [permissions, setPermissions] = useState([]);
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+function AddBranch({ onCancel, onBranch }) {
+  const [branchName, setBranchName] = useState("");
+  const [branchNameError, setBranchNameError] = useState("");
+  const [address, setAddress] = useState("");
+  const [addressError, setAddressError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [apiError, setApiError] = useState(null);
-  const [isPermissionsLoading, setIsPermissionsLoading] = useState(true);
+
+  // Country, state, and city state management
+  const [countries] = useState(Country.getAllCountries());
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState("");
 
   const userId = localStorage.getItem("userId");
 
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      try {
-        const response = await axiosInstance.get("permission_list");
-        const permissionsList = response.data;
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+    setStates(State.getStatesOfCountry(country.isoCode));
+    setCities([]);
+    setSelectedState(null); // Clear state selection when country changes
+    setSelectedCity(""); // Clear city selection when country changes
+  };
 
-        // Deduplicate and sort permissions by name
-        const deduplicatedPermissions = permissionsList.reduce((acc, current) => {
-          if (!acc.find((item) => item.permission === current.permission)) {
-            acc.push(current);
-          }
-          return acc;
-        }, []);
-        deduplicatedPermissions.sort((a, b) => a.permission.localeCompare(b.permission));
+  const handleStateChange = (state) => {
+    setSelectedState(state);
+    setCities(City.getCitiesOfState(selectedCountry.isoCode, state.isoCode));
+  };
 
-        setPermissions(deduplicatedPermissions);
-      } catch (error) {
-        console.error("Error fetching permissions:", error);
-        toast.error("Failed to load permissions. Please try again later.");
-      } finally {
-        setIsPermissionsLoading(false);
-      }
-    };
-    fetchPermissions();
-  }, []);
-
-  // Handle role name input change
-  const handleRoleNameChange = (value) => {
-    setRoleName(value);
+  const handleBranchNameChange = (value) => {
+    setBranchName(value);
     if (value.trim() === "") {
-      setRoleNameError("Role name is required");
+      setBranchNameError("Branch name is required");
     } else {
-      setRoleNameError("");
+      setBranchNameError("");
     }
   };
 
-  // Handle permission checkbox changes
-  const handlePermissionChange = (permissionId) => {
-    setSelectedPermissions((prev) =>
-      prev.includes(permissionId)
-        ? prev.filter((id) => id !== permissionId)
-        : [...prev, permissionId]
-    );
+  const handleAddressChange = (value) => {
+    setAddress(value);
+    if (value.trim() === "") {
+      setAddressError("Address is required");
+    } else {
+      setAddressError("");
+    }
   };
 
-  // Handle Save action
   const handleSave = async () => {
-    if (roleName.trim() === "") {
-      setRoleNameError("Role name is required");
+    if (branchName.trim() === "") {
+      setBranchNameError("Branch is required");
       return;
     }
-
-    if (selectedPermissions.length === 0) {
-      toast.error("At least one permission is required.");
+    if (address.trim() === "") {
+      setAddressError("Address is required");
       return;
     }
-
+    if (!selectedCity) {
+      toast.error("City is required");
+      return;
+    }
     setIsLoading(true);
     setIsButtonDisabled(true);
 
     try {
-      const roleData = {
-        role_name: roleName.trim(),
-        permissions: selectedPermissions,
+      const branchData = {
+        branch: branchName.trim(),
+        address: address.trim(),
+        country: selectedCountry['name'],
+        state: selectedState['name'],
+        city: selectedCity,
       };
 
-      const response = await axiosInstance.post(`newrole/${userId}`, roleData);
+      const response = await axiosInstance.post("branch", branchData);
       if (response.status === 200 || response.status === 201) {
-        toast.success("Role added successfully!");
-        onUserAdded();
+        toast.success("Branch added successfully!");
+        onBranch();
         setTimeout(() => {
           onCancel();
         }, 3000);
@@ -127,11 +125,11 @@ function AddBranch({ onCancel }) {
             <input
               type="text"
               placeholder="Enter Branch Name"
-              className={`form-control form-control-all ${roleNameError ? "is-invalid" : ""}`}
-              value={roleName}
-              onChange={(e) => handleRoleNameChange(e.target.value)}
+              className={`form-control form-control-all ${branchNameError ? "is-invalid" : ""}`}
+              value={branchName}
+              onChange={(e) => handleBranchNameChange(e.target.value)}
             />
-            {roleNameError && <div className="text-danger">{roleNameError}</div>}
+            {branchNameError && <div className="text-danger">{branchNameError}</div>}
           </div>
           <div className="mb-2">
             <label className="form-label fw-bold">
@@ -139,12 +137,68 @@ function AddBranch({ onCancel }) {
             </label>
             <input
               type="text"
-              placeholder="Enter Branch Name"
-              className={`form-control form-control-all ${roleNameError ? "is-invalid" : ""}`}
-              value={roleName}
-              onChange={(e) => handleRoleNameChange(e.target.value)}
+              placeholder="Enter Address"
+              className={`form-control form-control-all ${addressError ? "is-invalid" : ""}`}
+              value={address}
+              onChange={(e) => handleAddressChange(e.target.value)}
             />
-            {roleNameError && <div className="text-danger">{roleNameError}</div>}
+            {addressError && <div className="text-danger">{addressError}</div>}
+          </div>
+          {/* Country, State, and City Dropdowns */}
+          <div className="mb-2">
+            <label className="form-label fw-bold">
+              Country <span className="text-danger">*</span>
+            </label>
+            <select
+						className='form-select'
+						onChange={(e) =>
+							handleCountryChange(
+								countries.find((c) => c.isoCode === e.target.value),
+							)
+						}>
+						<option value=''>Select Country</option>
+						{countries.map((country) => (
+							<option key={country.isoCode} value={country.isoCode}>
+								{country.name}
+							</option>
+						))}
+					</select>
+          </div>
+          <div className="mb-2">
+            <label className="form-label fw-bold">
+              State <span className="text-danger">*</span>
+            </label>
+            <select
+              className="form-control"
+              disabled={!selectedCountry}
+              value={selectedState?.isoCode || ""}
+              onChange={(e) => handleStateChange(states.find((s) => s.isoCode === e.target.value))}
+            >
+              <option value="">Select State</option>
+              {states.map((state) => (
+                <option key={state.isoCode} value={state.isoCode}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-2">
+            <label className="form-label fw-bold">
+              City <span className="text-danger">*</span>
+            </label>
+            <select
+              className="form-control"
+              disabled={!selectedState || !selectedCountry}
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+            >
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city.name} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
           </div>
         </form>
       </div>
@@ -159,7 +213,7 @@ function AddBranch({ onCancel }) {
               onClick={handleSave}
               disabled={isLoading || isButtonDisabled}
             >
-              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Add Role"}
+              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Add Branch"}
             </button>
           </Permission>
         </div>

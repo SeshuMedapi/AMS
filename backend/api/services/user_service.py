@@ -45,7 +45,7 @@ class UserService():
             users = User.objects.filter(groups__id__in=manager_ids,company=user_.company).annotate(group_name=F('groups__name'))
         else:
             users = User.objects.none()
-        print(users)
+
         return users
     
     def activateUserOrDeactivateUser(self, id, isActivate):
@@ -337,8 +337,21 @@ class UserService():
         if company_id:
             branch = data['branch']
             address = data['address']
-            company_branch = CompanyBranch.objects.create(company=company_id, branch= branch, address= address)
+            country = data['country']
+            state = data['state']
+            city = data['city']
+
+            company_branch = CompanyBranch.objects.create(company=company_id, branch=branch, country=country ,state=state ,city=city ,address=address)
             company_branch.save()
             return company_branch
         else: 
             raise CompanyNotFound
+        
+    def list_branch(self, user):
+        if user:
+            company = User.objects.get(id=user.id).company
+            company_branch = CompanyBranch.objects.filter(company=company)
+            return company_branch
+        else:
+            raise UserNotFound
+
