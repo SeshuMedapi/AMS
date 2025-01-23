@@ -91,13 +91,29 @@ Authorization: Token 6bd43b1fe7fb9889d72f9e563560f84b7896bc94
     "activate": true
 }
 
+<<<<<<< HEAD
+=======
+### get Branch
+GET http://localhost:8000/api/branch
+content-type: application/json 
+Authorization: Token 2ee278b2c46ffc27a97584ee871215b4785f28cb
+>>>>>>> d4ee08b (add_branch(post))
 
 ### create Branch
 POST http://localhost:8000/api/branch
 content-type: application/json 
+<<<<<<< HEAD
 Authorization: Token 02e1892ce3fd9b44243b8f3583c2fba7ebc53431
 
 {
+=======
+Authorization: Token 2ee278b2c46ffc27a97584ee871215b4785f28cb
+
+{
+    "country" : "test",
+    "state" : "test",
+    "city" : "test",
+>>>>>>> d4ee08b (add_branch(post))
     "branch" : "test",
     "address" : "agvfgewgfvfwvf"
 }

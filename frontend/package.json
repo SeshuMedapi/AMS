@@ -24,6 +24,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "country-state-city": "^3.2.1",
     "datatables.net": "^2.0.5",
     "datatables.net-bs": "^2.0.5",
     "datatables.net-responsive": "^3.0.2",
@@ -37,6 +38,7 @@
     "react": "^18.3.0",
     "react-big-calendar": "^1.15.0",
     "react-bootstrap": "^2.10.5",
+    "react-country-state-city": "^1.1.10",
     "react-currency-format": "^1.1.0",
     "react-currency-input-field": "^3.8.0",
     "react-data-table-component": "^7.6.2",
@@ -55,6 +57,7 @@
     "react-toastify": "^10.0.5",
     "styled-components": "^6.1.9",
     "web-vitals": "^2.1.4",
+    "world-countries": "^5.0.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

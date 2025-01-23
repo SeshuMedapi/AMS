@@ -197,6 +197,7 @@ function LoginPage() {
       const session_time = response.data.session_time;
       localStorage.setItem("userId", userdetailid);
       localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("sessionTime", session_time);
       console.log(permissionvalue);
       login(token, permissionvalue, session_time); // Use the login function from the context
       // navigate("/dashboard"); // Redirect to dashboard after successful login
