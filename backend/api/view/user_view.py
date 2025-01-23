@@ -408,16 +408,18 @@ class BranchView(APIView):
                 }
     }
 
-    def get(self, request, user_id):
-        pass
-        # try:
-        #     service = UserService()
-        #     roles = service.list_roles(user_id)
-        #     # serializer = RoleSerializer(roles, many=True)
-        #     return Response(roles, status=status.HTTP_200_OK)
-        # except Exception as e:
-        #     self.logger.error(f"Error fetching roles: {e}")
-        #     return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get(self, request):
+        try:
+            user = request.user
+            service = UserService()
+            branch = service.list_branch(user)
+            print(branch)
+            serializer = CompanyBranchSerializer(branch, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            self.logger.error(f"Error fetching branches: {e}")
+            return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def post(self, request):
         try:
@@ -433,7 +435,7 @@ class BranchView(APIView):
         except ValueError as ve:
             return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            self.logger.error(f"Error creating role: {e}")
+            self.logger.error(f"Error creating branch: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     # def put(self, request, role_id):
