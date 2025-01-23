@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import permissions
 from django.contrib.auth.models import Permission, Group
+from api.api_models.users import User
 
 from datetime import timedelta
 from django.utils import timezone
@@ -74,24 +75,40 @@ class PermissionBasedAccess(permissions.IsAuthenticated):
                 return isAuth
             
             method_permissions = method_permission_config.get('permissions')
-            isAuthorized  = False
+            isAuthorized = True
 
             if not method_permissions or len(method_permissions) == 0:
-                        isAuthorized = False
+                isAuthorized = False
             else:
                 isAny = method_permission_config.get('any')
+                user = User.objects.get(id=request.user.id)
 
-                if isAny:
-                    isAuthorized = Permission.objects.filter(
-                            group__user__id=request.user.id, 
-                            codename__in= method_permissions
-                            ).exists()
+                if user.groups.filter(name__in=['SuperAdmin', 'Admin']).exists():
+                    if isAny:
+                        isAuthorized = Permission.objects.filter(
+                            group__user__id=request.user.id,
+                            codename__in=method_permissions
+                        ).exists()
+                    else:
+                        group_permissions = Permission.objects.filter(
+                            group__user__id=request.user.id
+                        ).values_list('codename', flat=True)
+                        isAuthorized = set(method_permissions).issubset(set(group_permissions))
                 else:
-                    isAuthorized = Permission.objects.filter(
-                            group__user__id=request.user.id, 
-                            codename__contains = method_permissions
-                            ).exists()
-            return (isAuth and isAuthorized)
+                    custom_groups = user.groups.prefetch_related('custom_groups__permissions')
+                    custom_permissions = set()
+
+                    for custom_group in custom_groups:
+                        if custom_group.custom_groups.exists():
+                            permissions = custom_group.custom_groups.first().permissions.all()
+                            custom_permissions.update(permissions.values_list('codename', flat=True))
+
+                    if isAny:
+                        isAuthorized = bool(set(method_permissions) & custom_permissions)
+                    else:
+                        isAuthorized = set(method_permissions).issubset(custom_permissions)
+
+            return isAuthorized
 
 
 class UserPermission:

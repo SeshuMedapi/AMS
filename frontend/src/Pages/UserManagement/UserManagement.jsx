@@ -6,6 +6,7 @@ import AddRole from "./Add_Role";
 import useAxios from "../../Shared modules/Web Service/axiosConfig";
 import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
+import AddBranch from "./Add_Branch";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
@@ -18,6 +19,7 @@ const Usermanagement = () => {
   const [addUser, setAddUser] = useState(false);
   const [addRole, setRole] = useState(false);
   const [addUsers, setAddUsers] = useState(false);
+  const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
@@ -32,7 +34,7 @@ const Usermanagement = () => {
     if (perm && perm.includes("view_company")) {
       fetchData();
     }
-    if (perm && perm.includes("view_user")) {
+    if (perm && perm.includes("view_users")) {
       fetchUserData();
     }
     if (perm && perm.includes("add_role")) {
@@ -95,7 +97,7 @@ const Usermanagement = () => {
         if (perm && perm.includes("view_company")) {
           user = data.find((u) => u.id === selectedUserId);
         }
-        if (perm && perm.includes("view_user")) {
+        if (perm && perm.includes("view_users")) {
           user = data1.find((u) => u.id === selectedUserId);
         }
         const newStatus = !user.is_active;
@@ -114,7 +116,7 @@ const Usermanagement = () => {
         if (perm && perm.includes("view_company")) {
           fetchData();
         }
-        if (perm && perm.includes("view_user")) {
+        if (perm && perm.includes("view_users")) {
           fetchUserData();
         }
 
@@ -138,6 +140,7 @@ const Usermanagement = () => {
   const handleAddUser = () => setAddUser(true);
   const handleRole = () => setRole(true);
   const handleAddUsers = () => setAddUsers(true);
+  const handleAddBranch = () => setAddBranch(true);
   const handleEditRole = (row) =>{
     setEditrole(true);
     SetRoleData(row);
@@ -149,6 +152,7 @@ const Usermanagement = () => {
     setAddUser(false);
     setRole(false);
     setAddUsers(false);
+    setAddBranch(false);
   };
 
   const handleClick = (button) => {
@@ -356,7 +360,7 @@ const Usermanagement = () => {
                 </a>
               </div>
             </Permission>
-            <Permission requiredPermission="view_user" action="hide">
+            <Permission requiredPermission="view_users" action="hide">
               <div className="">
                 <a
                   href="#"
@@ -367,6 +371,20 @@ const Usermanagement = () => {
                   onClick={() => handleClick("all")}
                 >
                   Users
+                </a>
+              </div>
+            </Permission>
+            <Permission requiredPermission="add_branch" action="hide">
+              <div className="">
+                <a
+                  href="#"
+                  className={`btn btn-non  ${
+                    activeButton === "branch" ? "active" : ""
+                  }`}
+                  role="group"
+                  onClick={() => handleClick("branch")}
+                >
+                  Branches
                 </a>
               </div>
             </Permission>
@@ -390,6 +408,14 @@ const Usermanagement = () => {
             <div className="col-3 d-flex justify-content-end">
               <button className="border-btn" onClick={handleAddUser}>
                 + Register Company
+              </button>
+            </div>
+          </Permission>}
+
+          {activeButton === "branch" && <Permission requiredPermission="add_branch" action="hide">
+            <div className="col-3 d-flex justify-content-end">
+              <button className="border-btn" onClick={handleAddBranch}>
+                + Add Branch
               </button>
             </div>
           </Permission>}
@@ -446,7 +472,7 @@ const Usermanagement = () => {
             }}
           />
         </Permission>}
-        {activeButton === "all" && <Permission requiredPermission="view_user" action="hide">
+        {activeButton === "all" && <Permission requiredPermission="view_users" action="hide">
           <DataTable
             columns={columns1}
             data={data1}
@@ -555,7 +581,7 @@ const Usermanagement = () => {
           </Permission>
 
           {/* Permission check for user */}
-          <Permission requiredPermission="view_user" action="hide">
+          <Permission requiredPermission="view_users" action="hide">
             <p>
               Do you want to{" "}
               {data1.find((user) => user.id === selectedUserId)?.is_active
@@ -585,7 +611,8 @@ const Usermanagement = () => {
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
       {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
-      {editrole && <EditRole onCancel={handleCancel} roledata={roledata}/>}
+      {addBranch && <AddBranch onCancel={handleCancel}/> }
+      {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata}/>}
     </div>
   );
 };
