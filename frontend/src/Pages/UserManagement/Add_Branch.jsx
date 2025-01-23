@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 
-function EditRole({ onCancel, onRole, roledata }) {
+function AddBranch({ onCancel }) {
   const [roleName, setRoleName] = useState("");
   const [roleNameError, setRoleNameError] = useState("");
   const [permissions, setPermissions] = useState([]);
@@ -18,7 +18,6 @@ function EditRole({ onCancel, onRole, roledata }) {
 
   const userId = localStorage.getItem("userId");
 
-  // Fetch permissions from the API
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
@@ -45,20 +44,6 @@ function EditRole({ onCancel, onRole, roledata }) {
     fetchPermissions();
   }, []);
 
-  // Populate fields if roledata is provided (used when editing)
-  useEffect(() => {
-    if (roledata) {
-      setRoleName(roledata.role_name || "");
-      
-      // If roledata.permissions is an array of objects, extract the IDs
-      if (Array.isArray(roledata.permissions)) {
-        setSelectedPermissions(roledata.permissions.map(permission => permission.id)); 
-      } else {
-        setSelectedPermissions(roledata.permissions || []);
-      }
-    }
-  }, [roledata]);
-
   // Handle role name input change
   const handleRoleNameChange = (value) => {
     setRoleName(value);
@@ -79,7 +64,7 @@ function EditRole({ onCancel, onRole, roledata }) {
   };
 
   // Handle Save action
-  const handleupdate = async () => {
+  const handleSave = async () => {
     if (roleName.trim() === "") {
       setRoleNameError("Role name is required");
       return;
@@ -99,11 +84,11 @@ function EditRole({ onCancel, onRole, roledata }) {
         permissions: selectedPermissions,
       };
 
-      const response = await axiosInstance.put(`updaterole/${roledata.role_id}`, roleData);
+      const response = await axiosInstance.post(`newrole/${userId}`, roleData);
       if (response.status === 200 || response.status === 201) {
         toast.success("Role added successfully!");
+        onUserAdded();
         setTimeout(() => {
-          onRole();
           onCancel();
         }, 3000);
       }
@@ -127,7 +112,7 @@ function EditRole({ onCancel, onRole, roledata }) {
       <ToastContainer />
       <div className="d-flex align-items-center border-0 border-bottom Popup-Header">
         <div className="d-flex align-items-center OIC-Edit-Head">
-          <h3 className="d-inline ms-4">Edit Role</h3>
+          <h3 className="d-inline ms-4">Add Branch</h3>
         </div>
         <div className="me-5">
           <FontAwesomeIcon icon={faTimes} className="addUser-x-icon" onClick={onCancel} />
@@ -137,46 +122,29 @@ function EditRole({ onCancel, onRole, roledata }) {
         <form className="p-3">
           <div className="mb-2">
             <label className="form-label fw-bold">
-              Role Name <span className="text-danger">*</span>
+              Branch <span className="text-danger">*</span>
             </label>
             <input
               type="text"
-              placeholder="Enter Role Name"
+              placeholder="Enter Branch Name"
               className={`form-control form-control-all ${roleNameError ? "is-invalid" : ""}`}
               value={roleName}
               onChange={(e) => handleRoleNameChange(e.target.value)}
             />
             {roleNameError && <div className="text-danger">{roleNameError}</div>}
           </div>
-
           <div className="mb-2">
             <label className="form-label fw-bold">
-              Permissions <span className="text-danger">*</span>
+              Address <span className="text-danger">*</span>
             </label>
-            {isPermissionsLoading ? (
-              <div>Loading permissions...</div>
-            ) : (
-              <div className="permission-list">
-                {permissions.map((permission) => (
-                  <div key={permission.id} className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id={`permission-${permission.id}`}
-                      value={permission.id}
-                      checked={selectedPermissions.includes(permission.id)}
-                      onChange={() => handlePermissionChange(permission.id)}
-                    />
-                    <label className="form-check-label" htmlFor={`permission-${permission.id}`}>
-                      {permission.permission}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            )}
-            {selectedPermissions.length === 0 && !isPermissionsLoading && (
-              <div className="text-danger">At least one permission is required.</div>
-            )}
+            <input
+              type="text"
+              placeholder="Enter Branch Name"
+              className={`form-control form-control-all ${roleNameError ? "is-invalid" : ""}`}
+              value={roleName}
+              onChange={(e) => handleRoleNameChange(e.target.value)}
+            />
+            {roleNameError && <div className="text-danger">{roleNameError}</div>}
           </div>
         </form>
       </div>
@@ -188,10 +156,10 @@ function EditRole({ onCancel, onRole, roledata }) {
           <Permission requiredPermission="add_role" action="hide">
             <button
               className="me-2 fw-bold btnUserUpgdate"
-              onClick={handleupdate}
+              onClick={handleSave}
               disabled={isLoading || isButtonDisabled}
             >
-              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Update"}
+              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Add Role"}
             </button>
           </Permission>
         </div>
@@ -200,4 +168,4 @@ function EditRole({ onCancel, onRole, roledata }) {
   );
 }
 
-export default EditRole;
+export default AddBranch;
