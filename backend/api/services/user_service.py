@@ -346,6 +346,22 @@ class UserService():
             return company_branch
         else: 
             raise CompanyNotFound
+
+    @transaction.atomic()
+    def edit_branch(self, branch_id, data):
+        try:
+            branch = CompanyBranch.objects.get(id=branch_id)
+        except CompanyBranch.DoesNotExist:
+            raise ValueError("Branch not found.")
+        
+        branch.branch = data.get('branch', branch.branch)
+        branch.address = data.get('address', branch.address)
+        branch.country = data.get('country', branch.country)
+        branch.state = data.get('state', branch.state)
+        branch.city = data.get('city', branch.city)
+        
+        branch.save()
+        return branch
         
     def list_branch(self, user):
         if user:

@@ -22,6 +22,7 @@ const Usermanagement = () => {
   const [addUsers, setAddUsers] = useState(false);
   const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
+  const [editBranch, setEditBranch] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -159,6 +160,10 @@ const Usermanagement = () => {
     setEditrole(true);
     SetRoleData(row);
   }
+  const handleEditBranch = (row) =>{
+    setEditBranch(true);
+    setBranchData(row);
+  }
   
   const handleCancel = () => {
     setEditrole(false);
@@ -286,7 +291,26 @@ const Usermanagement = () => {
       name: "City",
       selector: (row) => row.city,
       sortable: true,
-    }
+    },
+    {
+      name: "Edit",
+      selector: (row) => (
+        <div style={{ textAlign: "center" }}>
+          <FaEdit
+            style={{
+              cursor: "pointer",
+              color: "#1e90ff",
+              fontSize: "18px",
+              margin: "5px",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+            onClick={() => handleEditBranch(row)}
+          />
+        </div>
+      ),
+    },
   ];
 
   const columnRole = [

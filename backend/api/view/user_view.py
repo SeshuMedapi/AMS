@@ -405,6 +405,10 @@ class BranchView(APIView):
         "post":{
                     "permissions": ["add_branch"],
                     "any": True
+                },
+        "put":{
+                    "permissions": ["add_branch"],
+                    "any": True
                 }
     }
 
@@ -413,7 +417,6 @@ class BranchView(APIView):
             user = request.user
             service = UserService()
             branch = service.list_branch(user)
-            print(branch)
             serializer = CompanyBranchSerializer(branch, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -424,12 +427,10 @@ class BranchView(APIView):
     def post(self, request):
         try:
             user_id = request.user.id
-
             company_id = User.objects.get(id=user_id).company
             service = UserService()
             branch = service.add_branch(company_id, request.data)
             serializer = CompanyBranchSerializer(branch)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except ValueError as ve:
@@ -438,22 +439,19 @@ class BranchView(APIView):
             self.logger.error(f"Error creating branch: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    # def put(self, request, role_id):
-    #     role_name = request.data.get('role_name')
-    #     permissions = request.data.get('permissions')
-    #     user_company = request.user.company
+    def put(self, request, branch_id):
+        try:
+            service = UserService()
+            branch = service.edit_branch(branch_id, request.data)
+            serializer = CompanyBranchSerializer(branch)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-    #     try:
-    #         service = UserService()
-    #         role = service.update_role(role_id, role_name, permissions, user_company)
-    #         serializer = CustomGroupSerializer(role)
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     except ValueError as ve:
-    #         return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
-    #     except Exception as e:
-    #         self.logger.error(f"Error updating role: {e}")
-    #         return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        except ValueError as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            self.logger.error(f"Error updating branch: {e}")
+            return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
     # def delete(self, request, role_id):
     #     try:
     #         service = UserService()

@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post","put":"put"})),
     path("branch", BranchView.as_view()),
+    path("branch/<int:branch_id>", BranchView.as_view(), name='edit-branch'),
     path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/activate", ActivateRoleview.as_view({"post":"activateRole_or_deactivateRole"})),
     path("role/<int:user_id>", RoleView.as_view()),
