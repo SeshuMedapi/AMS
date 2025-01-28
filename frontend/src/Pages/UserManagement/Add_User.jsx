@@ -45,23 +45,25 @@ function AddUser({ onCancel, onUserAdded }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
   const [role, setRole] = useState("");
+  const [branch, setBranch] = useState(null);
   const [roleError, setRoleError] = useState("");
+  const [branchError, setBranchError] = useState("");
   const [roles, setRoles] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [apiError, setApiError] = useState(null);
   const [overallpassword, setoverallpassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [selectedCountryCode, setSelectedCountryCode] = useState("+91"); // Set India as the default country code
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+91");
   const [employeeId, setEmployeeId] = useState("");
   const [employeeIdError, setEmployeeIdError] = useState("");
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    if (userId) {
       const fetchRoles = async () => {
         try {
-          const response = await axiosInstance.get(`/role/${userId}`);
+          const response = await axiosInstance.get(`/role`);
           setRoles(response.data);
         } catch (error) {
           console.error("Error fetching roles:", error);
@@ -69,8 +71,20 @@ function AddUser({ onCancel, onUserAdded }) {
         }
       };
       fetchRoles();
-    }
-  }, [userId]);
+    }, 300);
+
+  useEffect(() => {
+      const fetchBranches = async () => {
+        try {
+          const response = await axiosInstance.get(`/branches`);
+          setBranches(response.data);
+        } catch (error) {
+          console.error("Error fetching branches:", error);
+          setBranches([]);
+        }
+      };
+      fetchBranches();
+    }, 300);
 
   const formatPhoneNumber = (input) => {
     const value = input.replace(/\D/g, "");
@@ -313,6 +327,13 @@ function AddUser({ onCancel, onUserAdded }) {
     }
   };
 
+  const handleBranchChange = (value) => {
+    setBranch(Number(value));
+    if (clickedSave) {
+      setBranchError(validateBranch(value));
+    }
+  };
+
   const validateName = (name) => {
     if (!name.trim()) return "First Name is required";
     if (!NameValidator(name)) return "Invalid Name";
@@ -359,6 +380,13 @@ function AddUser({ onCancel, onUserAdded }) {
     return "";
   };
 
+  const validateBranch = (branch) => {
+    if (!branch) {
+      return "Branch is required";
+    }
+    return "";
+  };
+
   const handleSave = async () => {
     setClickedSave(true);
     setIsLoading(true);
@@ -375,6 +403,7 @@ function AddUser({ onCancel, onUserAdded }) {
     setEmailError(mailError);
     setPhoneNumberError(numberError);
     setRoleError(roleError);
+    setBranchError(branchError);
     setEmployeeIdError(employeeIdError);
 
     // Check if there are any validation errors
@@ -399,6 +428,7 @@ function AddUser({ onCancel, onUserAdded }) {
         email: mail.toLowerCase().trim(),
         phone_number: String(phoneNumber.trim()),
         role_id: role,
+        branch_id:branch,
       };
 
       const response = await axiosInstance.post(`/user?user_id=${userId}`, userData);
@@ -631,6 +661,26 @@ function AddUser({ onCancel, onUserAdded }) {
               ))}
             </select>
             {roleError && <div className="text-danger">{roleError}</div>}
+          </div>
+          <div className="mb-2">
+            <label className="form-label fw-bold">
+              Branch <span className="text-danger">*</span>
+            </label>
+            <select
+              className={`form-select form-control form-control-all ${
+                branchError ? "is-invalid" : ""
+              }`}
+              value={branch}
+              onChange={(e) => handleBranchChange(e.target.value)}
+            >
+              <option value="">Select Branch</option>
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.branch}
+                </option>
+              ))}
+            </select>
+            {branchError && <div className="text-danger">{branchError}</div>}
           </div>
         </form>
       </div>

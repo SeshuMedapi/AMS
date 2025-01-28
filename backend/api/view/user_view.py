@@ -64,7 +64,8 @@ class LogoutView(APIView):
 class RoleView(APIView):
     permission_classes = [SkipAuth]
 
-    def get(self, request, user_id):
+    def get(self, request):
+        user_id = request.user.id
         roles = Group.objects.all()
         if user_id:
             user = User.objects.get(id=user_id,is_active=True)
@@ -247,7 +248,8 @@ class UserView(viewsets.ViewSet):
             'first_name': request.data['first_name'],
             'last_name': request.data['last_name'],
             'phone_number': request.data['phone_number'],
-            'role_id': request.data['role_id']
+            'role_id': request.data['role_id'],
+            'branch_id': request.data['branch_id']
         }
  
         try:
@@ -271,7 +273,8 @@ class UserView(viewsets.ViewSet):
                 'first_name': request.data['first_name'],
                 'last_name': request.data['last_name'],
                 'phone_number': request.data['phone_number'],
-                # 'role_id': request.data['role_id']                
+                'role_id': request.data['role_id'],   
+                'branch_id': request.data['branch_id']
                 }
             user = service.updateUser(**user)
             return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
@@ -393,7 +396,7 @@ class ProfilePictureView(APIView):
             self.logger.warning(f"{e}")
             return Response({"message": "Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class BranchView(APIView):
+class BranchView(viewsets.ViewSet):
     logger = logging.getLogger("app_log")
 
     permission_classes = [PermissionBasedAccess]
@@ -409,7 +412,11 @@ class BranchView(APIView):
         "put":{
                     "permissions": ["add_branch"],
                     "any": True
-                }
+                },
+        "activateBranch_or_deactivateBranch" :{
+            "permissions": ["add_branch"],
+            "any": True
+        }   
     }
 
     def get(self, request):
@@ -422,7 +429,6 @@ class BranchView(APIView):
         except Exception as e:
             self.logger.error(f"Error fetching branches: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
     def post(self, request):
         try:
@@ -452,13 +458,46 @@ class BranchView(APIView):
             self.logger.error(f"Error updating branch: {e}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    # def delete(self, request, role_id):
-    #     try:
-    #         service = UserService()
-    #         service.delete_role(role_id)
-    #         return Response({"message": "Role deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    #     except ValueError as ve:
-    #         return Response({"message": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
-    #     except Exception as e:
-    #         self.logger.error(f"Error deleting role: {e}")
-    #         return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def activateBranch_or_deactivateBranch(self, request):
+        try:
+            self.logger.info("User Activate or Deactivate")
+            service = UserService()
+            branch_id = request.data['branch_id']
+            activate = request.data['activate']
+            service.activateBranchOrDeactivateBranch(branch_id, activate)
+            return Response({"status":"success"}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            self.logger.warning(f"Branch activate or deactivate exception {e}")
+            return Response({"message": f"Invalid post data {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        except BranchNotFound as e:
+            self.logger.warning(f"Branch not found for activate or deactivate {e}")
+            return Response({"message":"Branch not found for activate or deactivate"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            self.logger.exception(f"Branch activate or deactivate Exception {e}")
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except e:
+            self.logger.exception(f"Branch activate or deactivate Exception: {e}")
+            return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BranchApiView(APIView):
+    logger = logging.getLogger("app_log")
+
+    permission_classes = [PermissionBasedAccess]
+    permission_config = {
+        "get": {
+                    "permissions": ["add_branch"],
+                    "any": True
+                },
+    }
+
+    def get(self, request):
+        try:
+            user = request.user
+            service = UserService()
+            branch = service.list_branches(user)
+            serializer = CompanyBranchSerializer(branch, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            self.logger.error(f"Error fetching branches: {e}")
+            return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

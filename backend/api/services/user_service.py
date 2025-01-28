@@ -110,6 +110,7 @@ class UserService():
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
+        user.branch = kwargs.get('branch_id')
         user.password = make_password("Jivass@123")
         user.is_active = True
         user.company = company
@@ -142,6 +143,7 @@ class UserService():
             user.first_name = kwargs.get('first_name')
             user.last_name = kwargs.get('last_name')
             user.phone_number = kwargs.get('phone_number')
+            user.branch = kwargs.get('branch_id')
             self._validateUserUpdate(user)
             with transaction.atomic():
                 user.save()
@@ -370,4 +372,19 @@ class UserService():
             return company_branch
         else:
             raise UserNotFound
-
+    
+    def list_branches(self, user):
+        if user:
+            company = User.objects.get(id=user.id).company
+            company_branch = CompanyBranch.objects.filter(company=company, status=True)
+            return company_branch
+        else:
+            raise UserNotFound
+        
+    def activateBranchOrDeactivateBranch(self, id, isActivate):
+        branch = CompanyBranch.objects.get(id=id)
+        if branch:
+            branch.status = isActivate
+            branch.save()
+        else:
+            raise BranchNotFound
