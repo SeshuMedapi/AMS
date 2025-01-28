@@ -4,9 +4,11 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from api.api_models.company import Company
 from api.api_models.custom_group import CustomGroup
+from api.api_models.company_branch import CompanyBranch
 
 class User(AbstractUser):
     username = None
+    branch = models.ForeignKey(CompanyBranch, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=100, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)

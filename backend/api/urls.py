@@ -1,5 +1,5 @@
 from django.urls import path
-from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView, BranchView
+from api.view.user_view import LoginView, UserView, RoleView, AdminView, ResetPassword, LogoutView, ProfilePictureView, BranchView, BranchApiView
 from api.view.role_view import ActivateRoleview
 from api.view.calendar_view import CalendarEventsView
 from api.view.notification_view import NotificationView
@@ -10,18 +10,19 @@ from .view.myinfo_view import MyinfoView
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
     path("login", LoginView.as_view()),
     path("logout", LogoutView.as_view()),
     path("admin",AdminView.as_view({"get":"get","post":"post"})),
     path('admin/<int:company_id>', AdminView.as_view({'delete': 'delete'})),
     path("user", UserView.as_view({"get":"get","post":"post","put":"put"})),
-    path("branch", BranchView.as_view()),
-    path("branch/<int:branch_id>", BranchView.as_view(), name='edit-branch'),
+    path("branch", BranchView.as_view({"get":"get","post":"post"})),
+    path("branches", BranchApiView.as_view()),
+    path("branch/activate", BranchView.as_view({"post":"activateBranch_or_deactivateBranch"})),
+    path("branch/<int:branch_id>", BranchView.as_view({"put":"put"}), name='edit-branch'),
     path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/activate", ActivateRoleview.as_view({"post":"activateRole_or_deactivateRole"})),
-    path("role/<int:user_id>", RoleView.as_view()),
+    path("role", RoleView.as_view()),
 
     path("resetpassword/request", ResetPassword.as_view({'post': 'post_reset_password_request'})),
     path("resetpassword", ResetPassword.as_view({'post': 'post_set_new_password'})),

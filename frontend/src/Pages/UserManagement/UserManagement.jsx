@@ -7,6 +7,7 @@ import useAxios from "../../Shared modules/Web Service/axiosConfig";
 import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import AddBranch from "./Add_Branch";
+import EditBranch from "./Edit_Branch";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
@@ -22,14 +23,17 @@ const Usermanagement = () => {
   const [addUsers, setAddUsers] = useState(false);
   const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
-  const [editBranch, setEditBranch] = useState(false);
+  const [editbranch, setEditBranch] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
   const [roleToDelete, setRoleToDelete] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showBranchModal, setShowBranchModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedBranchId, setSelectedBranchId] = useState(null);
   const[roledata, SetRoleData] = useState("null")
+  const[branch, SetBranch] = useState("null")
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -93,6 +97,16 @@ const Usermanagement = () => {
     }
   };
 
+  const conditionalBranchStyles = [
+    {
+      when: (row) => !row.status,
+      style: {
+        textDecoration: "line-through",
+        color: "#d63031",
+      },
+    },
+  ];
+
   const conditionalRowStyles = [
   {
     when: (row) => !row.is_active,
@@ -103,7 +117,34 @@ const Usermanagement = () => {
   },
 ];
 
-  const handleStatusToggle = async () => {
+  const handleBranchToggle = async () => {
+    if (selectedBranchId !== null) {
+      try {
+        let branchstatus = null
+        if (perm && perm.includes("add_branch")) {
+          console.log(branchdata[0].id);
+          console.log(selectedBranchId);
+          branchstatus = branchdata.find((u) => u.id === selectedBranchId);
+        }
+        const branchstat = !branchstatus.status;
+        await useAxios.post('/branch/activate', {
+          branch_id: selectedBranchId,
+          activate: branchstat,
+        });
+
+        if (perm && perm.includes("add_branch")) {
+          fetchBranch();
+        }
+      }
+      catch (error) {
+        console.error("Error toggling branch status:", error);
+      } finally {
+        setShowBranchModal(false);
+        setSelectedBranchId(null);
+      }
+    }
+  }
+    const handleStatusToggle = async () => {
     if (selectedUserId !== null) {
       try {
         let user = null;
@@ -126,14 +167,16 @@ const Usermanagement = () => {
           activate: newStatus,
         });
 
+        await useAxios.post('/branch/activate', {
+          branch_id: selectedBranchId,
+          activate: newStatus,
+        });
+
         if (perm && perm.includes("view_company")) {
           fetchData();
         }
         if (perm && perm.includes("view_users")) {
           fetchUserData();
-        }
-        if (perm && perm.includes("add_branch")) {
-          fetchBranch();
         }
 
         setData1((prevData) =>
@@ -162,7 +205,7 @@ const Usermanagement = () => {
   }
   const handleEditBranch = (row) =>{
     setEditBranch(true);
-    setBranchData(row);
+    SetBranch(row);
   }
   
   const handleCancel = () => {
@@ -172,6 +215,7 @@ const Usermanagement = () => {
     setRole(false);
     setAddUsers(false);
     setAddBranch(false);
+    setEditBranch(false);
   };
 
   const handleClick = (button) => {
@@ -311,6 +355,25 @@ const Usermanagement = () => {
         </div>
       ),
     },
+    {
+      name: "Status",
+      cell: (row) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setSelectedBranchId(row.id);
+            setShowBranchModal(true);
+          }}
+        >
+          {row.status ? (
+            <FaToggleOn size={24} color="#00b894" />
+          ) : (
+            <FaToggleOff size={24} color="#d63031" />
+          )}
+        </div>
+      ),
+      sortable: false,
+    },
   ];
 
   const columnRole = [
@@ -379,29 +442,29 @@ const Usermanagement = () => {
         </div>
       ),
     },
-    {
-      name: "Delete",
-      selector: (row) => (
-        <div style={{ textAlign: "center" }}>
-          <FaTrash
-            style={{
-              cursor: "pointer",
-              color: "#e74c3c",
-              fontSize: "18px",
-              margin: "5px",
-              transition: "transform 0.2s",
-            }}
-            onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
-            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
-            onClick={() => {
-              setRoleToDelete(row.id);
-              setShowDeleteModal(true);
-            }}
-          />
-        </div>
-      ),
-      sortable: false,
-    },
+    // {
+    //   name: "Delete",
+    //   selector: (row) => (
+    //     <div style={{ textAlign: "center" }}>
+    //       <FaTrash
+    //         style={{
+    //           cursor: "pointer",
+    //           color: "#e74c3c",
+    //           fontSize: "18px",
+    //           margin: "5px",
+    //           transition: "transform 0.2s",
+    //         }}
+    //         onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
+    //         onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+    //         onClick={() => {
+    //           setRoleToDelete(row.id);
+    //           setShowDeleteModal(true);
+    //         }}
+    //       />
+    //     </div>
+    //   ),
+    //   sortable: false,
+    // },
   ];
 
   return (
@@ -575,6 +638,7 @@ const Usermanagement = () => {
           <DataTable
             columns={columns_branch}
             data={branchdata}
+            conditionalRowStyles={conditionalBranchStyles}
             pagination
             responsive
             highlightOnHover
@@ -667,7 +731,6 @@ const Usermanagement = () => {
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Permission check for company */}
           <Permission requiredPermission="view_company" action="hide">
             <p>
               Do you want to{" "}
@@ -678,7 +741,6 @@ const Usermanagement = () => {
             </p>
           </Permission>
 
-          {/* Permission check for user */}
           <Permission requiredPermission="view_users" action="hide">
             <p>
               Do you want to{" "}
@@ -703,14 +765,48 @@ const Usermanagement = () => {
         </Modal.Footer>
       </Modal>
 
+      <Modal
+        show={showBranchModal}
+        onHide={() => setShowBranchModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Permission requiredPermission="add_branch" action="hide">
+            <p>
+              Do you want to{" "}
+              {branchdata.find((branch) => branch.id === selectedBranchId)?.status
+                ? "deactivate"
+                : "activate"}{" "}
+              this branch?
+            </p>
+          </Permission>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="success"
+            onClick={handleBranchToggle}
+            style={{ marginRight: "10px" }}
+          >
+            Yes
+          </Button>
+          <Button variant="danger" onClick={() => setShowBranchModal(false)}>
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>
       )}
       {addUser && <AddAdmin onCancel={handleCancel} onUserAdded={fetchData} />}
-      {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles}/>}
+      {addRole && <AddRole onCancel={handleCancel} onUserAdded={fetchRoles} />}
       {addUsers && <AddUser onCancel={handleCancel} onUserAdded={fetchUserData} />}
       {addBranch && <AddBranch onCancel={handleCancel} onBranch={fetchBranch} />}
-      {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata}/>}
+      {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata} />}
+      {editbranch && <EditBranch onCancel={handleCancel} onBranch={fetchBranch} branchData={branch} />}
     </div>
   );
 };

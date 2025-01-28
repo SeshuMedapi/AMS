@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Country, State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,10 +7,10 @@ import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
-function AddBranch({ onCancel, onBranch }) {
-  const [branchName, setBranchName] = useState("");
+function EditBranch({ onCancel, onBranch, branchData }) {
+  const [branchName, setBranchName] = useState(branchData.branch || "");
   const [branchNameError, setBranchNameError] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(branchData.address || "");
   const [addressError, setAddressError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -19,24 +19,38 @@ function AddBranch({ onCancel, onBranch }) {
   const [countries] = useState(Country.getAllCountries());
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(
+    countries.find((c) => c.name === branchData.country) || null
+  );
+  const [selectedState, setSelectedState] = useState(
+    branchData.state ? State.getStatesOfCountry(branchData.country)?.find((s) => s.name === branchData.state) : null
+  );
+  const [selectedCity, setSelectedCity] = useState(branchData.city || "");
 
-  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    if (selectedCountry) {
+      setStates(State.getStatesOfCountry(selectedCountry.isoCode));
+    }
+  }, [selectedCountry]);
 
-  const handleCountryChange = (country) => {
+  useEffect(() => {
+    if (selectedState && selectedCountry) {
+      setCities(City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode));
+    }
+  }, [selectedState, selectedCountry]);
+
+  const handleCountryChange = useCallback((country) => {
     setSelectedCountry(country);
     setStates(State.getStatesOfCountry(country.isoCode));
     setCities([]);
     setSelectedState(null);
     setSelectedCity("");
-  };
+  }, []);
 
-  const handleStateChange = (state) => {
+  const handleStateChange = useCallback((state) => {
     setSelectedState(state);
     setCities(City.getCitiesOfState(selectedCountry.isoCode, state.isoCode));
-  };
+  }, [selectedCountry]);
 
   const handleBranchNameChange = (value) => {
     setBranchName(value);
@@ -58,7 +72,7 @@ function AddBranch({ onCancel, onBranch }) {
 
   const handleSave = async () => {
     if (branchName.trim() === "") {
-      setBranchNameError("Branch is required");
+      setBranchNameError("Branch name is required");
       return;
     }
     if (address.trim() === "") {
@@ -69,21 +83,22 @@ function AddBranch({ onCancel, onBranch }) {
       toast.error("City is required");
       return;
     }
+
     setIsLoading(true);
     setIsButtonDisabled(true);
 
     try {
-      const branchData = {
+      const updatedBranchData = {
         branch: branchName.trim(),
         address: address.trim(),
-        country: selectedCountry['name'],
-        state: selectedState['name'],
+        country: selectedCountry.name,
+        state: selectedState.name,
         city: selectedCity,
       };
 
-      const response = await axiosInstance.post("branch", branchData);
+      const response = await axiosInstance.put(`branch/${branchData.id}`, updatedBranchData);
       if (response.status === 200 || response.status === 201) {
-        toast.success("Branch added successfully!");
+        toast.success("Branch updated successfully!");
         onBranch();
         setTimeout(() => {
           onCancel();
@@ -108,12 +123,8 @@ function AddBranch({ onCancel, onBranch }) {
     <div className="position-fixed top-0 end-0 bg-white Side-popup">
       <ToastContainer />
       <div className="d-flex align-items-center border-0 border-bottom Popup-Header">
-        <div className="d-flex align-items-center OIC-Edit-Head">
-          <h3 className="d-inline ms-4">Add Branch</h3>
-        </div>
-        <div className="me-5">
-          <FontAwesomeIcon icon={faTimes} className="addUser-x-icon" onClick={onCancel} />
-        </div>
+        <h3 className="d-inline ms-4">Edit Branch</h3>
+        <FontAwesomeIcon icon={faTimes} className="addUser-x-icon" onClick={onCancel} />
       </div>
       <div className="form-container">
         <form className="p-3">
@@ -124,7 +135,7 @@ function AddBranch({ onCancel, onBranch }) {
             <input
               type="text"
               placeholder="Enter Branch Name"
-              className={`form-control form-control-all ${branchNameError ? "is-invalid" : ""}`}
+              className={`form-control ${branchNameError ? "is-invalid" : ""}`}
               value={branchName}
               onChange={(e) => handleBranchNameChange(e.target.value)}
             />
@@ -137,41 +148,42 @@ function AddBranch({ onCancel, onBranch }) {
             <input
               type="text"
               placeholder="Enter Address"
-              className={`form-control form-control-all ${addressError ? "is-invalid" : ""}`}
+              className={`form-control ${addressError ? "is-invalid" : ""}`}
               value={address}
               onChange={(e) => handleAddressChange(e.target.value)}
             />
             {addressError && <div className="text-danger">{addressError}</div>}
           </div>
-          {/* Country, State, and City Dropdowns */}
           <div className="mb-2">
             <label className="form-label fw-bold">
               Country <span className="text-danger">*</span>
             </label>
             <select
-						className='form-select'
-						onChange={(e) =>
-							handleCountryChange(
-								countries.find((c) => c.isoCode === e.target.value),
-							)
-						}>
-						<option value=''>Select Country</option>
-						{countries.map((country) => (
-							<option key={country.isoCode} value={country.isoCode}>
-								{country.name}
-							</option>
-						))}
-					</select>
+              className="form-select"
+              value={selectedCountry?.isoCode || ""}
+              onChange={(e) =>
+                handleCountryChange(countries.find((c) => c.isoCode === e.target.value))
+              }
+            >
+              <option value="">Select Country</option>
+              {countries.map((country) => (
+                <option key={country.isoCode} value={country.isoCode}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-2">
             <label className="form-label fw-bold">
               State <span className="text-danger">*</span>
             </label>
             <select
-              className="form-control"
-              disabled={!selectedCountry}
+              className="form-select"
               value={selectedState?.isoCode || ""}
-              onChange={(e) => handleStateChange(states.find((s) => s.isoCode === e.target.value))}
+              onChange={(e) =>
+                handleStateChange(states.find((s) => s.isoCode === e.target.value))
+              }
+              disabled={!selectedCountry}
             >
               <option value="">Select State</option>
               {states.map((state) => (
@@ -186,10 +198,10 @@ function AddBranch({ onCancel, onBranch }) {
               City <span className="text-danger">*</span>
             </label>
             <select
-              className="form-control"
-              disabled={!selectedState || !selectedCountry}
+              className="form-select"
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
+              disabled={!selectedState}
             >
               <option value="">Select City</option>
               {cities.map((city) => (
@@ -212,7 +224,7 @@ function AddBranch({ onCancel, onBranch }) {
               onClick={handleSave}
               disabled={isLoading || isButtonDisabled}
             >
-              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Add Branch"}
+              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Update Branch"}
             </button>
           </Permission>
         </div>
@@ -221,4 +233,4 @@ function AddBranch({ onCancel, onBranch }) {
   );
 }
 
-export default AddBranch;
+export default EditBranch;

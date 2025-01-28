@@ -42,8 +42,24 @@ Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
     "first_name": "hr", 
     "last_name": "hr", 
     "phone_number": "11238547", 
-    "role_id" : 3
+    "role_id" : 3,
+    "branch_id" : 2
 }
+
+### Request update user 
+PUT http://localhost:8000/api/user?user_id=39
+content-type: application/json 
+Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
+
+{
+    "email": "company1@gmail.com", 
+    "first_name": "company", 
+    "last_name": "cpmpany", 
+    "phone_number": "11238547", 
+    "role_id" : 3,
+    "branch_id" : 2
+}
+
 
 ### Get All Roles
 GET  http://localhost:8000/api/role/53
@@ -111,7 +127,7 @@ Authorization: Token 2ee278b2c46ffc27a97584ee871215b4785f28cb
 ### create Branch
 PUT http://localhost:8000/api/branch/7
 content-type: application/json
-Authorization: Token a1ec699aecf1c31d16c9de5b889a23b0cc465b7d
+Authorization: Token da56e7a0d51fce3e01735c9253a12e780308d16e
 
 {
     "country" : "test1",
@@ -121,3 +137,17 @@ Authorization: Token a1ec699aecf1c31d16c9de5b889a23b0cc465b7d
     "address" : "test"
 }
 
+###
+GET http://localhost:8000/api/branches
+content-type: application/json
+Authorization: Token da56e7a0d51fce3e01735c9253a12e780308d16e
+
+###
+POST http://localhost:8000/api/branch/activate
+content-type: application/json
+Authorization: Token 3539c156800ef59c90798b41d4894d828e337663
+
+{
+    "branch_id": 8,
+    "activate": false
+}

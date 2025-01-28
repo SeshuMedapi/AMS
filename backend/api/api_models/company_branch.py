@@ -9,6 +9,7 @@ class CompanyBranch(models.Model):
     state = models.CharField(max_length=200)
     city = models.CharField(max_length=300)
     address = models.TextField()
+    status = models.BooleanField(default=True)
 
 class CompanyBranchSerializer(ModelSerializer):
     class Meta:

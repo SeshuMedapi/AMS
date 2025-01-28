@@ -40,3 +40,7 @@ class UserNotFound(Exception):
 class RoleNotFound(Exception):
     """Role not in the DB"""
     pass
+
+class BranchNotFound(Exception):
+    """Branch not in the DB"""
+    pass
