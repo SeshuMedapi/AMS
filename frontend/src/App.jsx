@@ -7,6 +7,7 @@ import LoginPage from "./Pages/Login/login";
 import Dashboard from "./Pages/Dashboard/dashboard";
 import Usermanagement from "./Pages/UserManagement/UserManagement";
 import Calendar from "./Pages/Calendar/calendar";
+import LeaveManagement from "./Pages/LeaveManagement/LeaveManagement"
 import AdminProfile from "./Pages/Profile/AdminProfile";
 import LandingPage from "./Pages/Dashboard/landingpage";
 import PrivateRoute from "./Shared modules/Context management/privateRoutes";
@@ -60,6 +61,8 @@ function MainApp() {
                     <Route path="/AdminProfile" element={<AdminProfile />} />
                     <Route path="/User-Management" element={<Usermanagement />} />
                     <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/leave-management" element={<LeaveManagement/>} />
+
                 </Route>
             </Routes>
         </div>
