@@ -13,6 +13,8 @@ import ReportHover from "../../assets/SideBarNav/Menu/Report.svg";
 import InvoicesHover from "../../assets/SideBarNav/Menu/Invoice.svg";
 import UserManagementHover from "../../assets/SideBarNav/Menu/User Management.svg";
 import OICHover from "../../assets/SideBarNav/oicIconHover.svg";
+import LeaveManagementIcon from "../../assets/SideBarNav/HoverMenu/LeaveManagement.svg";
+import LeaveManagementHoverIcon from "../../assets/SideBarNav/Menu/LeaveManagement.svg";
 
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
@@ -43,6 +45,13 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
       hoverIcon: Calendar,
       permission: ["view_calendar"],
       path: "/calendar",
+    },
+    {
+      name: "Leave Management",
+      icon: LeaveManagementIcon,
+      hoverIcon: LeaveManagementHoverIcon,
+      permission: ["view_users"],
+      path: "/leave-management",
     },
   ];
 
