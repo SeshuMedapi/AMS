@@ -3,7 +3,7 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-    "username": "company1@gmail.com", 
+    "username": "userone@gmail.com", 
     "password": "Jivass@123"
 }
 
@@ -47,17 +47,16 @@ Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
 }
 
 ### Request update user 
-PUT http://localhost:8000/api/user?user_id=39
+PUT http://localhost:8000/api/users/3/
 content-type: application/json 
-Authorization: Token 92b0cf798948fa9c47f27a33238f2d291f860ffa
+Authorization: Token 6bcef5dfcd3259a781effe768d6d0c193f0d260a
 
 {
-    "email": "company1@gmail.com", 
-    "first_name": "company", 
-    "last_name": "cpmpany", 
+    "first_name": "companyA", 
+    "last_name": "company", 
     "phone_number": "11238547", 
-    "role_id" : 3,
-    "branch_id" : 2
+    "role_id" : 4,
+    "branch_id" : 1
 }
 
 
@@ -151,3 +150,9 @@ Authorization: Token 3539c156800ef59c90798b41d4894d828e337663
     "branch_id": 8,
     "activate": false
 }
+
+###
+PUT http://localhost:8000/api/users/3/
+Content-Type: application/json
+Authorization: 310d4f65d58d6d7c259b90f3d4f71de4a1681353
+{}

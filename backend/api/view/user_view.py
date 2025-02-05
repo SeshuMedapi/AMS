@@ -223,7 +223,7 @@ class UserView(viewsets.ViewSet):
         "put":{
             "permissions" : ["edit_user"],
             "any" : True
-        },
+            },
         "activateUser_or_deactivateUser" :{
             "permissions": ["activate_user"],
             "any": True
@@ -264,19 +264,19 @@ class UserView(viewsets.ViewSet):
         except e:
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    def put(self, request):
+    def put(self, request,user_id):
         try:
             self.logger.info("User update")
             service = UserService()
             user ={
-                'id':request.data['id'],
                 'first_name': request.data['first_name'],
                 'last_name': request.data['last_name'],
                 'phone_number': request.data['phone_number'],
                 'role_id': request.data['role_id'],   
                 'branch_id': request.data['branch_id']
                 }
-            user = service.updateUser(**user)
+            user = service.updateUser(user_id,**user)
+
             return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         except ValidationError as e:
             self.logger.warning(f"User edit exception {e}")
@@ -293,6 +293,31 @@ class UserView(viewsets.ViewSet):
         except e:
             self.logger.exception(f"User edit Exception: {e}")
             return Response({"message":"Internal Server Exception"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # def put(self, request, user_id):
+    #     try:
+    #         self.logger.info(f"Received PUT request to update user ID: {user_id}")
+    #         self.logger.info(f"Request Data: {request.data}")
+
+    #         service = UserService()
+    #         user = service.updateUser(user_id, request.data)
+
+    #         self.logger.info(f"User updated successfully: {user}")
+
+    #         # Serialize and return response using your existing UserSerializer
+    #         serializer = UserSerializer(user)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    #     except ValueError as e:
+    #         self.logger.warning(f"ValueError: {e}")
+    #         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    #     except UserNotFound as e:
+    #         self.logger.warning(f"User not found: {e}")
+    #         return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    #     except Exception as e:
+    #         self.logger.exception(f"Unexpected error while updating user: {e}")
+    #         return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
     def activateUser_or_deactivateUser(self, request):
         try:
