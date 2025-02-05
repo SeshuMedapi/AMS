@@ -55,7 +55,6 @@ function Sidebar({ isOpen, onSidebarItemClick }) {
     },
   ];
 
-  // Automatically set the active button based on the current URL
   useEffect(() => {
     const activePath = location.pathname;
     const activeIndex = navItems.findIndex((item) => item.path === activePath);

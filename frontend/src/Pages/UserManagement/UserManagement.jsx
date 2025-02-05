@@ -62,7 +62,7 @@ const Usermanagement = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await useAxios.get(`user?user_id=${userId}`);
+      const response = await useAxios.get(`user`);
       setData1(response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);

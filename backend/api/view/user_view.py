@@ -39,16 +39,19 @@ class LoginView(APIView):
                 permissions_code_names = [permission.codename for permission in permissions]
             else:
                 custom_groups = user.groups.prefetch_related('custom_groups__permissions')
+
+                permissions_code_names = []
                 for custom_group in custom_groups:
-                    permissions = custom_group.custom_groups.first().permissions.all()
-                    permissions_code_names.extend(permissions.values_list('codename', flat=True))
+                    custom_group_instance = custom_group.custom_groups.filter(company=user.company).first()
+                    if custom_group_instance:
+                        permissions_code_names.extend(custom_group_instance.permissions.values_list('codename', flat=True))
 
             return Response({
-                            "token": token.key, 
-                             "user": UserSerializer(user).data, 
-                             "session_time": settings.TOKEN_EXPIRED_AFTER_SECONDS,
-                             "permissions": permissions_code_names
-                             })
+                "token": token.key, 
+                "user": UserSerializer(user).data, 
+                "session_time": settings.TOKEN_EXPIRED_AFTER_SECONDS,
+                "permissions": permissions_code_names
+            })
         else:
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -232,7 +235,7 @@ class UserView(viewsets.ViewSet):
     
     def get(self, request):
         service = UserService()
-        user_id = request.query_params.get('user_id')
+        user_id = request.user.id
         try:
             user = service.GetUsers(user_id)
             serializer = UserSerializer(user, many=True)
@@ -242,7 +245,7 @@ class UserView(viewsets.ViewSet):
 
     def post(self, request):
         service = UserService()
-        user_id = request.query_params.get('user_id')
+        user_id = request.user.id
         user ={
             'email': (request.data['email']).lower(),
             'first_name': request.data['first_name'],
@@ -266,6 +269,7 @@ class UserView(viewsets.ViewSet):
     
     def put(self, request):
         try:
+            user_id = request.query_params.get('user_id')
             self.logger.info("User update")
             service = UserService()
             user ={
@@ -276,7 +280,7 @@ class UserView(viewsets.ViewSet):
                 'role_id': request.data['role_id'],   
                 'branch_id': request.data['branch_id']
                 }
-            user = service.updateUser(**user)
+            user = service.updateUser(user_id, **user)
             return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         except ValidationError as e:
             self.logger.warning(f"User edit exception {e}")
