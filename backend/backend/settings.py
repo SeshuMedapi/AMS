@@ -104,9 +104,9 @@ DATABASES = {
         # 'OPTIONS': {
         # 'options': '-c search_path='+'public'
         # },
-        'NAME': 'ams',
+        'NAME': 'AMS',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
@@ -244,7 +244,7 @@ LEAVESTATUS = ['Pending', 'Approved', 'Rejected']
 LEAVETYPE = ['Annual', 'Sick', 'Compensatory', 'Other']
 
 PERMISSIONS = (
-                ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),
+                ('create_company', ''), ('view_company', ''), ('delete_company', ''), ('create_user', ''), ('edit_user', ''), ('activate_user', ''), ('view_users', ''),('user_view', ''),
                 ('view_calendar', ''), ('edit_calendar', ''), ('add_role', ''), ('edit_role', ''), ('activate_role',''), ('punch_in', ''), ('request_leave', ''), ('approve_leave', ''),('add_branch', ''),
             )
 
@@ -288,7 +288,8 @@ ROLE_PERMISSION = [
             'edit_calendar',
             'activate_user',
             'punch_in',
-            'approve_leave'
+            'approve_leave',
+            'user_details'
         ]
     },
         {

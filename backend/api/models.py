@@ -8,3 +8,5 @@ from api.api_models.leave_request import LeaveRequest
 from api.api_models.leave_type import Leavetype
 from api.api_models.req_status import Reqstatus
 from api.api_models.company_branch import CompanyBranch
+from api.api_models.personal_details import PersonalDetails
+from api.api_models.opertaional_details import OperationalDetails

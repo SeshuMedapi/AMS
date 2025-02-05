@@ -431,7 +431,7 @@ function AddUser({ onCancel, onUserAdded }) {
         branch_id:branch,
       };
 
-      const response = await axiosInstance.post(`/user?user_id=${userId}`, userData);
+      const response = await axiosInstance.post(`/user`, userData);
       onUserAdded();
       switch (response.status) {
         case 200:

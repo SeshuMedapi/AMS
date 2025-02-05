@@ -110,7 +110,7 @@ class UserService():
         user.first_name = kwargs.get('first_name')
         user.last_name = kwargs.get('last_name')
         user.phone_number = kwargs.get('phone_number')
-        user.branch = kwargs.get('branch_id')
+        user.branch_id = kwargs.get('branch_id')
         user.password = make_password("Jivass@123")
         user.is_active = True
         user.company = company
@@ -127,6 +127,7 @@ class UserService():
             role = Group.objects.get(id=kwargs.get('role_id'))
             user.groups.clear()
             user.groups.add(role)
+            
 
             formatted_email = settings.WELCOME_COMPANY_EMAIL.substitute(
                         {"company": user.company,
@@ -136,14 +137,13 @@ class UserService():
             EmailService(settings.SMTP_EMAIL_HOST, settings.SMTP_EMAIL_USERNAME, settings.SMTP_EMAIL_PASSWORD).send_smtp_email(user.email, formatted_email, "Attendance Management Portal - welcome")
             return user
         
-    def updateUser(self, **kwargs):
-        user_id = kwargs.get('id')
+    def updateUser(self, user_id,**kwargs):
         user = User.objects.filter(id=user_id).first()
         if user:
             user.first_name = kwargs.get('first_name')
             user.last_name = kwargs.get('last_name')
             user.phone_number = kwargs.get('phone_number')
-            user.branch = kwargs.get('branch_id')
+            user.branch_id = kwargs.get('branch_id')
             self._validateUserUpdate(user)
             with transaction.atomic():
                 user.save()
