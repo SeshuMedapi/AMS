@@ -11,8 +11,9 @@ import EditBranch from "./Edit_Branch";
 import CreateUser from "./CreateUser";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
-import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash } from 'react-icons/fa';
+import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash, } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
+
 
 const Usermanagement = () => {
   const [data, setData] = useState([]); 
@@ -198,7 +199,7 @@ const Usermanagement = () => {
     }
   };
   
-  const handleResetPassword = () => setShowResetPass(true);
+const handleResetPassword = () => setShowResetPass(true);
   const handleAddUser = () => setAddUser(true);
   const handleRole = () => setRole(true);
   const handleAddUsers = () => setAddUsers(true);
@@ -224,6 +225,7 @@ const Usermanagement = () => {
     setAddUsers(false);
     setAddBranch(false);
     setEditBranch(false);
+    setEditUser(false);
   };
 
   const handleClick = (button) => {
@@ -265,7 +267,7 @@ const Usermanagement = () => {
           ) : (
             <FaToggleOff size={24} color="#d63031" />
           )}
-        </div>
+        </div>  
       ),
       sortable: false,
     },
@@ -834,6 +836,9 @@ const Usermanagement = () => {
       {addBranch && <AddBranch onCancel={handleCancel} onBranch={fetchBranch} />}
       {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata} />}
       {editbranch && <EditBranch onCancel={handleCancel} onBranch={fetchBranch} branchData={branch} />}
+      {editUser && <EditUser onCancel={handleCancel} onSave={handleSubmit} userData={userData} />}
+
+      
     </div>
   );
 };

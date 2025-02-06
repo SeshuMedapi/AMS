@@ -112,6 +112,7 @@ DATABASES = {
     }
 }
 
+
 # SMTP_EMAIL_BACKEND = os.getenv('SMTP_EMAIL_BACKEND')
 # SMTP_EMAIL_HOST = os.getenv('SMTP_EMAIL_HOST')
 # SMTP_EMAIL_PORT = os.getenv('SMTP_EMAIL_PORT')
