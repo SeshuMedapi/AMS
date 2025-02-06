@@ -104,13 +104,14 @@ DATABASES = {
         # 'OPTIONS': {
         # 'options': '-c search_path='+'public'
         # },
-        'NAME': 'ams_29new',
+        'NAME': 'ams',
         'USER': 'postgres',
-        'PASSWORD':'Pwd4Postgres',
+        'PASSWORD':'Seshu@27',
         'HOST':'localhost',
         'PORT':'',
     }
 }
+
 
 # SMTP_EMAIL_BACKEND = os.getenv('SMTP_EMAIL_BACKEND')
 # SMTP_EMAIL_HOST = os.getenv('SMTP_EMAIL_HOST')
