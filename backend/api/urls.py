@@ -23,7 +23,7 @@ urlpatterns = [
     path("user/activate", UserView.as_view({"post":"activateUser_or_deactivateUser"})),
     path("role/activate", ActivateRoleview.as_view({"post":"activateRole_or_deactivateRole"})),
     path("role", RoleView.as_view()),
-
+    path('users/<int:user_id>/', UserView.as_view({'put': 'put'}), name='update-user'),
     path("resetpassword/request", ResetPassword.as_view({'post': 'post_reset_password_request'})),
     path("resetpassword", ResetPassword.as_view({'post': 'post_set_new_password'})),
     path("resetpassword/istokenvalid", ResetPassword.as_view({'post': 'post_is_reset_password_valid'})),
