@@ -24,6 +24,7 @@ const Usermanagement = () => {
   const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
   const [editbranch, setEditBranch] = useState(false);
+  const [edituser, setEditUser] = useState(false);
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -34,6 +35,7 @@ const Usermanagement = () => {
   const [selectedBranchId, setSelectedBranchId] = useState(null);
   const[roledata, SetRoleData] = useState("null")
   const[branch, SetBranch] = useState("null")
+  const [user, setUser] = useState("null")
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -207,6 +209,10 @@ const Usermanagement = () => {
     setEditBranch(true);
     SetBranch(row);
   }
+  const handleEditUser = (row) =>{
+    setEditUser(true);
+    setUser(row);
+  }
   
   const handleCancel = () => {
     setEditrole(false);
@@ -307,6 +313,25 @@ const Usermanagement = () => {
         </div>
       ),
       sortable: false,
+    },
+    {
+      name: "Edit",
+      selector: (row) => (
+        <div style={{ textAlign: "center" }}>
+          <FaEdit
+            style={{
+              cursor: "pointer",
+              color: "#1e90ff",
+              fontSize: "18px",
+              margin: "5px",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+            onClick={() => handleEditUser(row)}
+          />
+        </div>
+      ),
     },
   ];
 
