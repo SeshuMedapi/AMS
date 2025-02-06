@@ -8,7 +8,7 @@ from api.api_models.company_branch import CompanyBranch
 
 class User(AbstractUser):
     username = None
-    branch = models.ForeignKey(CompanyBranch, on_delete=models.CASCADE)
+    branch = models.ForeignKey(CompanyBranch, on_delete=models.CASCADE,null=True)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=100, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
