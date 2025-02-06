@@ -139,11 +139,12 @@ class UserService():
         
     def updateUser(self, user_id,**kwargs):
         user = User.objects.filter(id=user_id).first()
+        branch=CompanyBranch.objects.get(id=kwargs.get('branch_id'))
         if user:
             user.first_name = kwargs.get('first_name')
             user.last_name = kwargs.get('last_name')
             user.phone_number = kwargs.get('phone_number')
-            user.branch_id = kwargs.get('branch_id')
+            user.branch = branch
             self._validateUserUpdate(user)
             with transaction.atomic():
                 user.save()
@@ -154,6 +155,42 @@ class UserService():
             return user
         else:
             raise UserNotFound
+
+    # def updateUser(self, user_id, user_data):
+    #     try:
+    #         user = User.objects.filter(id=user_id).first()
+    #         if not user:
+    #             raise UserNotFound(f"User with ID {user_id} not found")
+
+    #         self.logger.info(f"Existing user: {user}")
+
+    #         # Manually update role and branch
+    #         role_id = user_data.pop('role_id', None)
+    #         branch_id = user_data.pop('branch_id', None)
+
+    #         if role_id:
+    #             role = Group.objects.filter(id=role_id).first()
+    #             if role:
+    #                 user.groups.clear()
+    #                 user.groups.add(role)
+
+    #         if branch_id:
+    #             branch = CompanyBranch.objects.filter(id=branch_id).first()
+    #             if branch:
+    #                 user.branch = branch
+
+    #         # Updating other fields using the existing serializer
+    #         for key, value in user_data.items():
+    #             setattr(user, key, value)
+
+    #         with transaction.atomic():
+    #             user.save()
+
+    #         self.logger.info(f"User {user_id} updated successfully.")
+    #         return user
+    #     except Exception as e:
+    #         self.logger.exception(f"Error updating user {user_id}: {e}")
+    #         raise e
         
     def _validateUserUpdate(self, user):
         if not user.email:
