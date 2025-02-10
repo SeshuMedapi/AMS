@@ -8,10 +8,12 @@ import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
 function EditUser({ onCancel, onUserUpdated, userData }) {
   const [formData, setFormData] = useState({
-    username: userData.username || "",
     email: userData.email || "",
-    password: "",
-    role: userData.role || "User",
+    group_name: userData.group_name || "User",
+    first_name: userData.first_name || "",
+    last_name: userData.last_name || "",
+    phone_number: userData.phone_number || "",
+    // password: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -34,13 +36,19 @@ function EditUser({ onCancel, onUserUpdated, userData }) {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email format";
+    }
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = "First name is required";
+    }
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = "Last name is required";
+    }
+    if (!formData.phone_number.trim()) {
+      newErrors.phone_number = "Phone number is required";
     }
     return newErrors;
   };
@@ -98,21 +106,6 @@ function EditUser({ onCancel, onUserUpdated, userData }) {
         <form className="p-3">
           <div className="mb-3">
             <label className="form-label fw-bold">
-              Username <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              name="username"
-              placeholder="Enter Username"
-              className={`form-control ${errors.username ? "is-invalid" : ""}`}
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-            {errors.username && <div className="invalid-feedback">{errors.username}</div>}
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label fw-bold">
               Email <span className="text-danger">*</span>
             </label>
             <input
@@ -128,6 +121,68 @@ function EditUser({ onCancel, onUserUpdated, userData }) {
 
           <div className="mb-3">
             <label className="form-label fw-bold">
+              First Name <span className="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              name="first_name"
+              placeholder="Enter First Name"
+              className={`form-control ${errors.first_name ? "is-invalid" : ""}`}
+              value={formData.first_name}
+              onChange={handleInputChange}
+            />
+            {errors.first_name && <div className="invalid-feedback">{errors.first_name}</div>}
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">
+              Last Name <span className="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Enter Last Name"
+              className={`form-control ${errors.last_name ? "is-invalid" : ""}`}
+              value={formData.last_name}
+              onChange={handleInputChange}
+            />
+            {errors.last_name && <div className="invalid-feedback">{errors.last_name}</div>}
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">
+              Phone Number <span className="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              name="phone_number"
+              placeholder="Enter Phone Number"
+              className={`form-control ${errors.phone_number ? "is-invalid" : ""}`}
+              value={formData.phone_number}
+              onChange={handleInputChange}
+            />
+            {errors.phone_number && <div className="invalid-feedback">{errors.phone_number}</div>}
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">
+              Role <span className="text-danger">*</span>
+            </label>
+            <select
+              name="group_name"
+              className="form-select"
+              value={formData.group_name}
+              onChange={handleInputChange}
+            >
+              <option value="Admin">Admin</option>
+              <option value="HR">HR</option>
+              <option value="Manager">Manager</option>
+              <option value="User">User</option>
+            </select>
+          </div>
+{/* 
+          <div className="mb-3">
+            <label className="form-label fw-bold">
               Password <span className="text-muted">(Leave blank to keep current)</span>
             </label>
             <input
@@ -138,24 +193,7 @@ function EditUser({ onCancel, onUserUpdated, userData }) {
               value={formData.password}
               onChange={handleInputChange}
             />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label fw-bold">
-              Role <span className="text-danger">*</span>
-            </label>
-            <select
-              name="role"
-              className="form-select"
-              value={formData.role}
-              onChange={handleInputChange}
-            >
-              <option value="Admin">Admin</option>
-              <option value="HR">HR</option>
-              <option value="Manager">Manager</option>
-              <option value="User">User</option>
-            </select>
-          </div>
+          </div> */}
         </form>
       </div>
 
