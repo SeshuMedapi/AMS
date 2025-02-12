@@ -223,7 +223,7 @@ const handleResetPassword = () => setShowResetPass(true);
   // }
   const fetchUsers = async () => {
     try {
-      const response = await axiosInstance.get('/users');
+      const response = await axiosInstance.get('/api/users');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -849,6 +849,7 @@ const handleResetPassword = () => setShowResetPass(true);
           </Button>
         </Modal.Footer>
       </Modal>
+      
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>
