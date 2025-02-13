@@ -47,8 +47,9 @@ function LeaveManagement() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="leave-dashboard">
+    <div className="shadow-sm px-3 py-3 rounded" style={{
+      backgroundColor: "rgb(255, 255, 255)",
+    }}>
         {/* Header Section */}
         <div className="dashboard-header">
           <h1 className="text-2xl font-bold text-gray-800">Leave Management Dashboard</h1>
@@ -146,7 +147,7 @@ function LeaveManagement() {
             ))
           )}
         </div>
-      </div>
+
 
       {/* Leave Request Modal */}
       {showRequestForm && (
@@ -241,6 +242,7 @@ function LeaveManagement() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
