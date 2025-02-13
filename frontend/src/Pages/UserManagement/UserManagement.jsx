@@ -8,6 +8,9 @@ import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import AddBranch from "./Add_Branch";
 import EditBranch from "./Edit_Branch";
+import EditUser from "./EditUser"
+import CreateUser from "./CreateUser";
+import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash, } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
@@ -25,7 +28,11 @@ const Usermanagement = () => {
   const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
   const [editbranch, setEditBranch] = useState(false);
-  const [edituser, setEditUser] = useState(false);
+  // const [edituser, setEditUser] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [editUser, setEditUser] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -36,7 +43,7 @@ const Usermanagement = () => {
   const [selectedBranchId, setSelectedBranchId] = useState(null);
   const[roledata, SetRoleData] = useState("null")
   const[branch, SetBranch] = useState("null")
-  const [user, setUser] = useState("null")
+  // const [user, SetUser] = useState("null")
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -210,8 +217,27 @@ const handleResetPassword = () => setShowResetPass(true);
     setEditBranch(true);
     SetBranch(row);
   }
+  // const handleEditUser = (row) =>{
+  //   setEditUser(true);
+  //   SetUser(row);
+  // }
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get('/api/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
+  const handleEditUser = (row) => {
+    setSelectedUser(row);
+    setEditUser(true);
+  };
 
   
   const handleCancel = () => {
@@ -316,8 +342,8 @@ const handleResetPassword = () => setShowResetPass(true);
       sortable: false,
     },
     {
-      name: "Edit",
-      selector: (row) => (
+      name: "Actions",
+      cell: (row) => (
         <div style={{ textAlign: "center" }}>
           <FaEdit
             style={{
@@ -333,7 +359,7 @@ const handleResetPassword = () => setShowResetPass(true);
           />
         </div>
       ),
-    },
+    }
   ];
 
   const columns_branch = [
@@ -823,6 +849,7 @@ const handleResetPassword = () => setShowResetPass(true);
           </Button>
         </Modal.Footer>
       </Modal>
+      
 
       {(showPage || addUser) && (
         <div className="overlay" onClick={handleCancel}></div>
@@ -833,9 +860,18 @@ const handleResetPassword = () => setShowResetPass(true);
       {addBranch && <AddBranch onCancel={handleCancel} onBranch={fetchBranch} />}
       {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata} />}
       {editbranch && <EditBranch onCancel={handleCancel} onBranch={fetchBranch} branchData={branch} />}
-      {editUser && <EditUser onCancel={handleCancel} onSave={handleSubmit} userData={userData} />}
-
-      
+      {editUser && (
+        <EditUser
+          onCancel={() => {
+            setEditUser(false);
+            setSelectedUser(null);
+          }}
+          onUserUpdated={() => {
+            fetchUsers();
+          }}
+          userData={selectedUser}
+        />
+      )}
     </div>
   );
 };

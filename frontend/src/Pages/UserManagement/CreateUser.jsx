@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
-const CreateUser = ({ onClose, onUserCreated }) => {
+const CreateUser = ({ onClose, onUserCreated, existingUser }) => {
     const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: '',
-        role: 'User'
+        username: "",
+        email: "",
+        password: "",
+        role: "User",
     });
+
     const [errors, setErrors] = useState({});
-    const [successMessage, setSuccessMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState("");
+
+    // Populate form if editing an existing user
+    useEffect(() => {
+        if (existingUser) {
+            setFormData({
+                username: existingUser.username || "",
+                email: existingUser.email || "",
+                password: "", // Keep empty for security
+                role: existingUser.role || "User",
+            });
+        }
+    }, [existingUser]);
 
     // Handle input changes
     const handleChange = (e) => {
@@ -17,35 +30,42 @@ const CreateUser = ({ onClose, onUserCreated }) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    // Validation function
+    // Validate form
     const validateForm = () => {
         let formErrors = {};
-        if (!formData.username) formErrors.username = 'Username is required';
-        if (!formData.email) formErrors.email = 'Email is required';
-        if (!formData.password) formErrors.password = 'Password is required';
+        if (!formData.username) formErrors.username = "Username is required";
+        if (!formData.email) formErrors.email = "Email is required";
+        if (!existingUser && !formData.password) {
+            formErrors.password = "Password is required";
+        }
         return formErrors;
     };
 
-    // Handle form submission
+    // Handle form submission (Create or Update)
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                // Call API to create the user
-                const response = await axiosInstance.post('/create-user', formData);
-                
-                setSuccessMessage('User created successfully!');
-                onUserCreated(response.data.user); // Notify the parent (Dashboard) that a user was created
+                let response;
+                if (existingUser) {
+                    // Update user
+                    response = await axiosInstance.put(`/update-user/${existingUser.id}`, formData);
+                } else {
+                    // Create user
+                    response = await axiosInstance.post("/create-user", formData);
+                }
 
-                // Close the form after 2 seconds
+                setSuccessMessage(existingUser ? "User updated successfully!" : "User created successfully!");
+                onUserCreated(response.data.user);
+
                 setTimeout(() => {
-                    setSuccessMessage('');
-                    onClose(); // Close the modal
+                    setSuccessMessage("");
+                    onClose();
                 }, 2000);
             } catch (err) {
-                setErrors({ form: 'An error occurred while creating the user' });
+                setErrors({ form: "An error occurred while processing the request" });
             }
         } else {
             setErrors(validationErrors);
@@ -56,7 +76,7 @@ const CreateUser = ({ onClose, onUserCreated }) => {
         <div className="modal-overlay">
             <div className="modal">
                 <button className="close-button" onClick={onClose}>×</button>
-                <h2>Create New User</h2>
+                <h2>{existingUser ? "Edit User" : "Create New User"}</h2>
                 <form onSubmit={handleSubmit} className="create-user-form">
                     <div className="form-group">
                         <label>Username</label>
@@ -81,7 +101,7 @@ const CreateUser = ({ onClose, onUserCreated }) => {
                     </div>
 
                     <div className="form-group">
-                        <label>Password</label>
+                        <label>Password {existingUser && "(Leave blank to keep current password)"}</label>
                         <input
                             type="password"
                             name="password"
@@ -93,11 +113,7 @@ const CreateUser = ({ onClose, onUserCreated }) => {
 
                     <div className="form-group">
                         <label>Role</label>
-                        <select
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                        >
+                        <select name="role" value={formData.role} onChange={handleChange}>
                             <option value="Admin">Admin</option>
                             <option value="HR">HR</option>
                             <option value="Manager">Manager</option>
@@ -108,7 +124,7 @@ const CreateUser = ({ onClose, onUserCreated }) => {
                     {errors.form && <p className="error">{errors.form}</p>}
                     {successMessage && <p className="success">{successMessage}</p>}
 
-                    <button type="submit">Create User</button>
+                    <button type="submit">{existingUser ? "Update User" : "Create User"}</button>
                 </form>
             </div>
         </div>
