@@ -3,11 +3,7 @@ POST http://localhost:8000/api/login
 content-type: application/json
 
 {
-<<<<<<< HEAD
-    "username": "test1@gmail.com", 
-=======
-    "username": "userone@gmail.com", 
->>>>>>> ad073f222159a6be3e8b42ad48674cd01e041988
+    "username": "company2@gmail.com", 
     "password": "Jivass@123"
 }
 
