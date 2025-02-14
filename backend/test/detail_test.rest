@@ -1,0 +1,69 @@
+### Request Login 
+POST http://localhost:8000/api/login 
+content-type: application/json
+
+{
+    "username": "company2@gmail.com", 
+    "password": "Jivass@123"
+}
+
+###Get User Details
+GET http://localhost:8000/api/operationaldetail
+content-type: application/json 
+Authorization: Token d32f8d21e0897771d389072ace262aaf1e14d12e
+
+###update User Details
+PUT http://localhost:8000/api/operationaldetail
+Content-Type: application/json
+Authorization: Token d32f8d21e0897771d389072ace262aaf1e14d12e
+
+{
+    "first_name": "test",
+    "last_name": "test",
+    "phone_number": "1234567890",
+    "date_of_birth": "1990-01-01",
+    "gender": "Male",
+    "emergency_contact_name": "test test",
+    "emergency_contact_relationship": "Spouse",
+    "emergency_contact_number": "9876543210",
+    "residential_address": "123 Main Street",
+    "nationality": "American",
+    "identity_proof_type": "Passport",
+    "identity_proof_number": "A1234567",
+    "marital_status": "Married",
+    "educational_qualifications": "MCA",
+    "work_experience": "5 years",
+    "certifications_skills": "Python, Django",
+    "languages_known": "English, Spanish"
+}
+
+
+###Get User Details
+GET http://localhost:8000/api/personaldetail
+content-type: application/json 
+Authorization: Token d32f8d21e0897771d389072ace262aaf1e14d12e
+
+###update User Details
+PUT http://localhost:8000/api/personaldetail
+Content-Type: application/json
+Authorization: Token d32f8d21e0897771d389072ace262aaf1e14d12e
+
+{
+    "first_name": "test",
+    "last_name": "test",
+    "phone_number": "1234567890",
+    "date_of_birth": "1990-01-01",
+    "gender": "Male",
+    "emergency_contact_name": "test test",
+    "emergency_contact_relationship": "Spouse",
+    "emergency_contact_number": "9876543210",
+    "residential_address": "123 Main Street",
+    "nationality": "American",
+    "identity_proof_type": "Passport",
+    "identity_proof_number": "A1234567",
+    "marital_status": "Married",
+    "educational_qualifications": "MCA",
+    "work_experience": "5 years",
+    "certifications_skills": "Python, Django",
+    "languages_known": "English, Spanish"
+}

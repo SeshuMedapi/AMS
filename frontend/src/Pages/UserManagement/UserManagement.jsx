@@ -12,6 +12,7 @@ import EditUser from "./EditUser"
 import CreateUser from "./CreateUser";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
 
+
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash, } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
 
@@ -32,7 +33,6 @@ const Usermanagement = () => {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -44,6 +44,7 @@ const Usermanagement = () => {
   const[roledata, SetRoleData] = useState("null")
   const[branch, SetBranch] = useState("null")
   // const [user, SetUser] = useState("null")
+
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -238,7 +239,6 @@ const handleResetPassword = () => setShowResetPass(true);
     setSelectedUser(row);
     setEditUser(true);
   };
-
   
   const handleCancel = () => {
     setEditrole(false);

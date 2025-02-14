@@ -103,10 +103,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         # 'OPTIONS': {
         # 'options': '-c search_path='+'public'
-        # },
-        'NAME': 'ams',
+        # }
+        'NAME': 'AMS',
         'USER': 'postgres',
-        'PASSWORD':'Seshu@27',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':'',
     }
