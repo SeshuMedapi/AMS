@@ -8,13 +8,10 @@ import { Modal, Button } from 'react-bootstrap';
 import Permission from "../../Shared modules/Context management/permissionCheck";
 import AddBranch from "./Add_Branch";
 import EditBranch from "./Edit_Branch";
-<<<<<<< HEAD
 import EditUser from "./EditUser"
 import CreateUser from "./CreateUser";
 import axiosInstance from "../../Shared modules/Web Service/axiosConfig";
-=======
-import EditUser from "./Edit_User"
->>>>>>> d5f519f (latest)
+
 
 import { FaToggleOn, FaToggleOff,  FaEdit, FaTrash, } from 'react-icons/fa';
 import EditRole from "./Edit_Role";
@@ -32,15 +29,10 @@ const Usermanagement = () => {
   const [addBranch, setAddBranch] = useState(false);
   const [editrole, setEditrole] = useState(false);
   const [editbranch, setEditBranch] = useState(false);
-<<<<<<< HEAD
   // const [edituser, setEditUser] = useState(false);
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
-=======
-  const [editUser, setEditUser] = useState(false);
->>>>>>> d5f519f (latest)
   const [activeButton, setActiveButton] = useState("all");
   const userId = localStorage.getItem("userId");
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -51,11 +43,8 @@ const Usermanagement = () => {
   const [selectedBranchId, setSelectedBranchId] = useState(null);
   const[roledata, SetRoleData] = useState("null")
   const[branch, SetBranch] = useState("null")
-<<<<<<< HEAD
   // const [user, SetUser] = useState("null")
-=======
-  const[userData, setUserData] = useState("null")
->>>>>>> d5f519f (latest)
+
   const perm = JSON.parse(localStorage.getItem("permissions"));
 
   useEffect(() => {
@@ -241,7 +230,6 @@ const handleResetPassword = () => setShowResetPass(true);
       console.error('Error fetching users:', error);
     }
   };
-<<<<<<< HEAD
 
   useEffect(() => {
     fetchUsers();
@@ -251,9 +239,6 @@ const handleResetPassword = () => setShowResetPass(true);
     setSelectedUser(row);
     setEditUser(true);
   };
-
-=======
->>>>>>> d5f519f (latest)
   
   const handleCancel = () => {
     setEditrole(false);
@@ -875,7 +860,6 @@ const handleResetPassword = () => setShowResetPass(true);
       {addBranch && <AddBranch onCancel={handleCancel} onBranch={fetchBranch} />}
       {editrole && <EditRole onCancel={handleCancel} onRole={fetchRoles} roledata={roledata} />}
       {editbranch && <EditBranch onCancel={handleCancel} onBranch={fetchBranch} branchData={branch} />}
-<<<<<<< HEAD
       {editUser && (
         <EditUser
           onCancel={() => {
@@ -888,9 +872,6 @@ const handleResetPassword = () => setShowResetPass(true);
           userData={selectedUser}
         />
       )}
-=======
-      {editUser && <EditUser onCancel={handleCancel} onSave={handleSubmit} userData={userData} />}
->>>>>>> d5f519f (latest)
     </div>
   );
 };
