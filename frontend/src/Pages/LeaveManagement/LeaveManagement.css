@@ -23,7 +23,8 @@
   font-size:xx-large
 }
 .request-leave-btn {
-  background: #4f46e5;
+  /* background: #4f46e5; */
+  background-image: linear-gradient(#8E7AB5, #B784B7, #E493B3, #EEA5A6);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -34,7 +35,9 @@
 }
 
 .request-leave-btn:hover {
-  background: #4338ca;
+  /* background: #4338ca; */
+  background-image: linear-gradient(#EEA5A6,#E493B3, #B784B7,#8E7AB5);
+
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
 }
@@ -112,15 +115,15 @@
 }
 
 .toggle-btn:hover {
-  color: #4f46e5;
+  color:  #E493B3;
 }
 
 .toggle-btn.active {
-  color: #4f46e5;
-  border-bottom-color: #4f46e5;
+  color:  #8E7AB5;
+  border-bottom-color:  #E493B3;
 }
 
-.leave-requests {
+.leave-requests { 
   display: grid;
   gap: 1rem;
 }
@@ -274,18 +277,19 @@
 }
 
 .close-btn {
-  color: #64748b;
+  color: #ad2f98;
   transition: color 0.2s;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 6px;
 }
 
 .close-btn:hover {
-  color: #1e293b;
-  background: #f1f5f9;
+  color: #712b80;
+  /* background: #f1f5f9; */
+  scale: 1.1;
 }
 
 .leave-form {
@@ -345,12 +349,13 @@
 }
 
 .submit-btn {
-  background: #4f46e5;
+  background: #8E7AB5;
   color: white;
 }
 
 .submit-btn:hover {
-  background: #4338ca;
+  background:  #7551bc;
+  /* background-image: linear-gradient(#8E7AB5, #B784B7, #E493B3, #EEA5A6); */
   transform: translateY(-1px);
 }
 
