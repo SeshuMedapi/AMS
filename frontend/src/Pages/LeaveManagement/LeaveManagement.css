@@ -123,7 +123,7 @@
   border-bottom-color:  #E493B3;
 }
 
-.leave-requests {
+.leave-requests { 
   display: grid;
   gap: 1rem;
 }
